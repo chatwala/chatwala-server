@@ -54,6 +54,6 @@ var server = http.createServer(app);
 server.listen(app.get('port'), function(){
   console.log('listening on port ' + app.get('port'));
 });
-var serveraddress = server.address();
-console.log("serveraddress",serveraddress);
-messages.setHostname(serveraddress);
+// var serveraddress = server.address();
+// console.log("serveraddress",serveraddress);
+// messages.setHostname(serveraddress);
