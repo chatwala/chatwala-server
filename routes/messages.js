@@ -8,6 +8,7 @@ var GUIDUtil = require('GUIDUtil');
 
 
 
+
 nconf.env().file({ file: 'config.json'});
 var tableName = nconf.get("TABLE_NAME")
   , partitionKey = nconf.get("PARTITION_KEY")
@@ -23,30 +24,30 @@ var MESSAGES_CONTAINER = "messages";
 
 
 
-var retryOperations = new azure.ExponentialRetryPolicyFilter();
-var blobService = azure.createBlobService().withFilter(retryOperations);
+// var retryOperations = new azure.ExponentialRetryPolicyFilter();
+// var blobService = azure.createBlobService().withFilter(retryOperations);
+// 
+// blobService.createContainerIfNotExists(MESSAGES_CONTAINER, function(error){
+//     if(!error){
+//         // Container exists and is private
+//     }
+// });
 
-blobService.createContainerIfNotExists(MESSAGES_CONTAINER, function(error){
-    if(!error){
-        // Container exists and is private
-    }
-});
 
 
-
-function insertNewMessage( message, callback )
-{
-	blobService.createBlockBlobFromFile( MESSAGES_CONTAINER, message.message_id, message.file, handler );
-	function handler(err)
-	{
-		if(err)
-		{
-			callback(err);
-		}else{
-			callback();
-		}
-	}
-}
+// function insertNewMessage( message, callback )
+// {
+// 	blobService.createBlockBlobFromFile( MESSAGES_CONTAINER, message.message_id, message.file, handler );
+// 	function handler(err)
+// 	{
+// 		if(err)
+// 		{
+// 			callback(err);
+// 		}else{
+// 			callback();
+// 		}
+// 	}
+// }
 
 
 function getMessage( req, response )
@@ -74,7 +75,7 @@ function submitMessage( req, res )
 				messageKey:key,
 				file:messageFile
 			}
-			
+			/*
 			insertNewMessage( message_oject, function(err){
 				if(err)
 				{
@@ -83,7 +84,8 @@ function submitMessage( req, res )
 					res.send(200,{ status:"OK", message_key:key, recipient: recipient_id, sender:sender_id });
 				}
 			});
-			/*
+			*/
+			
 			
 			fs.readFile(messageFile, function (err, data) {
 				var message_id = req.body.message_id;
@@ -98,7 +100,7 @@ function submitMessage( req, res )
 						res.send(200,{ status:"OK", message_key:key, recipient: recipient_id, sender:sender_id });
 				  	});
 				});
-			});*/
+			});
         }
         else
         {
@@ -111,47 +113,6 @@ function submitMessage( req, res )
         res.send(400,NO_BODY);
 	}
 }
-
-function Message(storageCLient, tableName, partitionKey )
-{
-	this.storageClient = storageClient;
-	this.tableName = tableName;
-	this.partitionKey = partitionKey;
-	
-	this.storageClient.createTableIfNotExists(tableName, function tableCreated(err){
-		if err throw err;
-	});
-}
-
-Message.prototype = {
-	find: function( query, callback )
-	{
-		self = this;
-		self.storageClient.queryEntities( query, function entitiesQueried(err, entities){
-			if(err) callback(err);
-			callback(null,entities);
-		});
-	},
-	
-	addItem: function( item, callback )
-	{
-		self = this;
-		item.RowKey = uuid()l
-		item.PartitionKey = self.partitionKey;
-		item.complete = false;
-		self.storageClient.insertEntity( self.tableName, item, function entityInserted(err){
-			if(err) callback(err);
-			callback(null);
-		});
-	},
-	
-	updateItem: function( item, callback )
-	{
-		
-	},
-	
-}
-
 
 
 

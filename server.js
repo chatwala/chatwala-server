@@ -7,12 +7,30 @@ var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var messages = require('./routes/messages');
-
+var MessageList = require("./routes/messagelist");
+var Message = require("./models/message");
+	
 var http = require('http');
 var path = require('path');
+var azure = require('azure');
+var nconf = require('nconf');
+
+
+nconf.env()
+     .file({ file: 'config.json'});
+
+var tableName = nconf.get("TABLE_NAME")
+  , partitionKey = nconf.get("PARTITION_KEY")
+  , accountName = nconf.get("STORAGE_NAME")
+  , accountKey = nconf.get("STORAGE_KEY");
+
 
 var app = express();
 
+
+
+var msg = new Message( azure.createTableService(accountName,accountKey), tableName, partitionKey);
+var msgList = new MessageList(msg);
 
 
 
@@ -41,9 +59,10 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.get('/messages', messages.getMessage );
-app.post('/messages', messages.submitMessage );
-
+// app.get('/messages', messages.getMessage );
+// app.post('/messages', messages.submitMessage );
+app.get('/messages', msgList.showMessages.bind(msgList) );
+app.post('/messages', msgList.addMessage.bind(msgList) );
 
 
 

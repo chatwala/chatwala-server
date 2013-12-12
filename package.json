@@ -10,6 +10,7 @@
     "jade": "*",
 	"azure":"*",
 	"node-uuid":"*",
-	"nconf":"*"
+	"nconf":"*",
+	"async":"*"
   }
 }

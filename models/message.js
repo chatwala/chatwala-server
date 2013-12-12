@@ -2,16 +2,16 @@ var azure = require('azure')
   , uuid = require('node-uuid');
 
 
+module.exports = Message;
 
-
-function Message( storageCLient, tableName, partitionKey )
+function Message( storageClient, tableName, partitionKey )
 {
-	this.storageClient = storageClient;
-	this.tableName = tableName;
-	this.partitionKey = partitionKey;
+	this.storageClient	= storageClient;
+	this.tableName		= tableName;
+	this.partitionKey	= partitionKey;
 	
 	this.storageClient.createTableIfNotExists(tableName, function tableCreated(err){
-		if err throw err;
+		if (err) throw err;
 	});
 }
 
@@ -20,7 +20,7 @@ function Message( storageCLient, tableName, partitionKey )
 Message.prototype = {
 	find: function( query, callback )
 	{
-		self = this;
+		var self = this;
 		self.storageClient.queryEntities( query, function entitiesQueried(err, entities){
 			if(err) callback(err);
 			callback(null,entities);
@@ -29,10 +29,9 @@ Message.prototype = {
 	
 	addItem: function( item, callback )
 	{
-		self = this;
-		item.RowKey = uuid()l
+		var self = this;
+		item.RowKey = uuid();
 		item.PartitionKey = self.partitionKey;
-		item.complete = false;
 		self.storageClient.insertEntity( self.tableName, item, function entityInserted(err){
 			if(err) callback(err);
 			callback(null);
@@ -41,12 +40,11 @@ Message.prototype = {
 	
 	updateItem: function( item, callback )
 	{
-		self = this;
+		var self = this;
 		self.storageClient.queryEntity( self.tableName, self.partitionKey, item, function entityQueried( err, entity ){
-			if err throw err;
-			entity.completed = true;
+			if (err) throw err;
 			self.storageClient.updateEntity( self.tableName, entity, function entityUpdated(err){
-				if err throw err;
+				if (err) throw err;
 				callback(null);
 			});
 		});
@@ -55,4 +53,4 @@ Message.prototype = {
 }
 
 
-exports.Message = Message;
+
