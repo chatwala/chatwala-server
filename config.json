@@ -1,0 +1,6 @@
+{
+    "STORAGE_NAME": "chatwala",
+    "STORAGE_KEY": "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==",
+    "PARTITION_KEY": "chatwala",
+    "TABLE_NAME": "messages"
+}

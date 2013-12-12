@@ -9,6 +9,7 @@
     "express": "3.4.6",
     "jade": "*",
 	"azure":"*",
-	"node-uuid":"*"
+	"node-uuid":"*",
+	"nconf":"*"
   }
 }
