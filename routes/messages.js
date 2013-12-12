@@ -1,45 +1,18 @@
 var fs = require("fs");
-var azure = require('azure');
 var GUIDUtil = require('GUIDUtil');
-
-
-
-
 
 
 
 
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
-var MESSAGES_CONTAINER = "messages";
 
 
 
 
-var retryOperations = new azure.ExponentialRetryPolicyFilter();
-var blobService = azure.createBlobService().withFilter(retryOperations);
-
-blobService.createContainerIfNotExists(MESSAGES_CONTAINER, function(error){
-    if(!error){
-        // Container exists and is private
-    }
-});
 
 
 
-function insertNewMessage( message, callback )
-{
-	blobService.createBlockBlobFromFile( MESSAGES_CONTAINER, message.message_id, message.file, handler );
-	function handler(err)
-	{
-		if(err)
-		{
-			callback(err);
-		}else{
-			callback();
-		}
-	}
-}
 
 
 function getMessage( req, response )
@@ -60,24 +33,6 @@ function submitMessage( req, res )
         	console.log("files found",req.files);
 			var messageFile = req.files.userPhoto.path;
 			console.log("messageFile",messageFile);
-			
-			var key = GUIDUtil.GUID();
-			
-			var message_object  = {
-				messageKey:key,
-				file:messageFile
-			}
-			
-			insertNewMessage( message_oject, function(err){
-				if(err)
-				{
-					res.send(400,err);
-				}else{
-					res.send(200,{ status:"OK", message_key:key, recipient: recipient_id, sender:sender_id });
-				}
-			});
-			/*
-			
 			fs.readFile(messageFile, function (err, data) {
 				var message_id = req.body.message_id;
 				var recipient_id = req.body.recipient_id;
@@ -91,7 +46,7 @@ function submitMessage( req, res )
 						res.send(200,{ status:"OK", message_key:key, recipient: recipient_id, sender:sender_id });
 				  	});
 				});
-			});*/
+			});
         }
         else
         {
