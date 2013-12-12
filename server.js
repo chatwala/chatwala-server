@@ -41,13 +41,19 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.get('/messages', messages.getMessage );
+app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessage );
 
 
 
 
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app);
+
+
+server.listen(app.get('port'), function(){
   console.log('listening on port ' + app.get('port'));
 });
+var serveraddress = server.address();
+console.log("serveraddress",serveraddress);
+messages.setHostname(serveraddress);
