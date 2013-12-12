@@ -30,11 +30,14 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.multipart());
+
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+// routing
 app.get('/', routes.index);
 app.get('/users', user.list);
 
@@ -46,5 +49,5 @@ app.post('/messages', messages.submitMessage );
 
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+  console.log('listening on port ' + app.get('port'));
 });

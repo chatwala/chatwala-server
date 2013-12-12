@@ -1,15 +1,29 @@
 var fs = require("fs");
+var GUIDUtil = require('GUIDUtil');
 
 
-exports.submitMessage = function( req, res )
+
+
+var NO_BODY = "files not found";
+var NO_FILES = "body not found";
+
+
+
+
+
+
+
+
+
+function getMessage( req, response )
 {
-	// console.log("body",request.body);
-	// console.log("files",request.files);
-	// console.log("rawBody",request.rawBody);
-	// 
-	// 
-	// response.send("submitMessage");
-	
+	response.send("getMessage");
+}
+
+
+
+function submitMessage( req, res )
+{
 	if(req.hasOwnProperty("body"))
 	{
 		console.log(req.body);
@@ -20,51 +34,36 @@ exports.submitMessage = function( req, res )
 			var messageFile = req.files.userPhoto.path;
 			console.log("messageFile",messageFile);
 			fs.readFile(messageFile, function (err, data) {
-			  // ...
 				var message_id = req.body.message_id;
 				var recipient_id = req.body.recipient_id;
-				var new_dir = __dirname + "/uploads/"+recipient_id
+				var sender_id = req.body.sender_id;
+				var key = GUIDUtil.GUID();
+				var new_dir = __dirname + "/uploads/"+key;
 				fs.mkdir(new_dir, function(err){
-					var newPath = new_dir+"/"+message_id+".wala";
+					var newPath = new_dir+"/chat.wala";
 					console.log("newPath",newPath);
 				 	fs.writeFile(newPath, data, function (err) {
-						res.send(200,"OK");
+						res.send(200,{ status:"OK", message_key:key, recipient: recipient_id, sender:sender_id });
 				  	});
 				});
-			
-				
-				
 			});
         }
         else
         {
-			console.log("files required");
-            // fail. no file
-            res.send(400,"files required");
+			console.log(NO_FILES);
+            res.send(400,NO_FILES);
         }
 	    
 	}else{
-		console.log("body not found");
-        // fail. no file
-        res.send(400,"body not found");
+		console.log(NO_BODY);
+        res.send(400,NO_BODY);
 	}
 }
 
 
-exports.getMessage = function( req, response )
-{
-	response.send("getMessage");
-}
 
 
 
-function s4() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-             .toString(16)
-             .substring(1);
-};
 
-function guid() {
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-         s4() + '-' + s4() + s4() + s4();
-}
+exports.submitMessage = submitMessage;
+exports.getMessage = getMessage;
