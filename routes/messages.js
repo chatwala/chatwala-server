@@ -103,12 +103,12 @@ function submitMessage( req, res )
         else
         {
 			console.log(NO_FILES);
-            res.send(400,NO_FILES);
+            res.send(400,{status:"FAIL", message:NO_FILES});
         }
 	    
 	}else{
 		console.log(NO_BODY);
-        res.send(400,NO_BODY);
+        res.send(400,{status:"FAIL", message:NO_BODY});
 	}
 }
 
