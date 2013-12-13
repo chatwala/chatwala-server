@@ -23,7 +23,7 @@ shrt.connection.on("error", function(err){
 function getMessage( req, res )
 {
 	var message_id = req.params.message_id;
-	console.log("message_id",message_id);
+	console.log("fetching path for message_id:",message_id);
 	
 	shrt.retrieve(message_id).then( onGetKeySuccess, onGetKeyFailure );
 	
@@ -58,6 +58,7 @@ function submitMessage( req, res )
 			
 			var messageFile = req.files.file.path;
 			console.log("messageFile",messageFile);
+			
 			fs.readFile(messageFile, function (err, data) 
 			{
 				var message_id = req.body.message_id;
@@ -82,10 +83,12 @@ function submitMessage( req, res )
 						function onShortenSuccess(mongoDoc)
 						{
 							shrt.retrieve(mongoDoc.hash).then( onGetKeySuccess, onGetKeyFailure );
+							res.send(200,"successfully shortened url");
 						}
 						function onShortenFailure(err)
 						{
 							throw new Error(err);
+							res.send(500,"failed to shorten url");
 						}
 						
 						function onGetKeySuccess(result)
