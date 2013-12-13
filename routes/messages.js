@@ -92,7 +92,7 @@ function submitMessage( req, res )
 						{
 							var new_key = result.hash;
 							// res.send(200,{ status:"OK", messageURL: ("http://"+os.hostname()+":"+server_hostname.port+"/messages/"+new_key), recipient: recipient_id, sender:sender_id });
-							res.send(200,[{ status:"OK", key: new_key, recipient: recipient_id, sender:sender_id }]);
+							res.send(200,[{ status:"OK", url: ("chatwala://message/"+new_key), recipient: recipient_id, sender:sender_id }]);
 						}
 						function onGetKeyFailure(err)
 						{
