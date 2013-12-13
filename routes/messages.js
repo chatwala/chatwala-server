@@ -50,8 +50,13 @@ function submitMessage( req, res )
         // continue
         if(req.hasOwnProperty("files"))
         {
-        	console.log("files found",req.files);
-			var messageFile = req.files.userPhoto.path;
+
+
+			// console.log("file:"+req.files.file);
+			// console.log("path:"+req.files.file.path);
+			
+			
+			var messageFile = req.files.file.path;
 			console.log("messageFile",messageFile);
 			fs.readFile(messageFile, function (err, data) 
 			{
