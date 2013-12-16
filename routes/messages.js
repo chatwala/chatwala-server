@@ -145,7 +145,20 @@ function submitMessageMetadata__( req, res )
 
 function uploadMessage( req, res )
 {
+	var message_id = req.params.message_id;
+	var messageFile = req.files.file.path;
+	fs.readFile(messageFile, function (err, data) 
+	{
+		var recipient_id = req.body.recipient_id;
+		var sender_id = req.body.sender_id;
 	
+		var new_dir = __dirname + "/uploads/"+message_id;
+		var newPath = new_dir+"/chat.wala";
+		console.log("newPath",newPath);
+	 	fs.writeFile(newPath, data, function (err) {
+			res.send(200,[{ status:"OK"}]);
+	  	});
+	});
 }
 
 function setHostname(hostname)
