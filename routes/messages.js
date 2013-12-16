@@ -11,14 +11,13 @@ var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5U
 var host = "chatwala";
 
 // var blobService = azure.createBlobService(account,access_key);
-var blobService = azure.createBlobService();
-blobService.createContainerIfNotExists("messages", function(error){
-    if(!error){
-        // Container exists and is private
-		console.log("messages table ready!");
-    }
-	
-});
+// blobService.createContainerIfNotExists("messages", function(error){
+//     if(!error){
+//         // Container exists and is private
+// 		console.log("messages table ready!");
+//     }
+// 	
+// });
 
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
@@ -38,23 +37,23 @@ function getMessage( req, res )
 	console.log("fetching path for message_id:",message_id);
 	var temp_file_name = GUIDUtil.GUID();
 	var newPath = __dirname + "/temp/"+temp_file_name;
-	blobService.getBlobToFile("messages", message_id, newPath, function(error){
-		if(!error)
-		{
-
-			res.sendfile( newPath, function(err){
-				if(err) throw err;
-				fs.unlink(newPath, function (err) {
-				  if (err) throw err;
-				  console.log('successfully deleted',newPath);
-				});
-			});
-			
-			
-		}else{
-			console.log("failed to retrieve file");
-		}
-	});
+	// blobService.getBlobToFile("messages", message_id, newPath, function(error){
+	// 		if(!error)
+	// 		{
+	// 
+	// 			res.sendfile( newPath, function(err){
+	// 				if(err) throw err;
+	// 				fs.unlink(newPath, function (err) {
+	// 				  if (err) throw err;
+	// 				  console.log('successfully deleted',newPath);
+	// 				});
+	// 			});
+	// 			
+	// 			
+	// 		}else{
+	// 			console.log("failed to retrieve file");
+	// 		}
+	// 	});
 	
 	
 	// res.sendfile( __dirname + "/uploads/"+message_id+"/chat.wala");
@@ -109,14 +108,14 @@ function uploadMessage( req, res )
 	
 	fs.readFile(messageFile, function (err, data) 
 	{
-		blobService.createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
-			if(!error){
-				console.log("message stored!");
-				res.send(200,[{ status:"OK"}]);
-			}else{
-				console.log("error",error);
-			}
-		});
+		// blobService.createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
+		// 			if(!error){
+		// 				console.log("message stored!");
+		// 				res.send(200,[{ status:"OK"}]);
+		// 			}else{
+		// 				console.log("error",error);
+		// 			}
+		// 		});
 	});
 }
 
