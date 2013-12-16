@@ -35,7 +35,28 @@ function getMessage( req, res )
 {
 	var message_id = req.params.message_id;
 	console.log("fetching path for message_id:",message_id);
-	res.sendfile( __dirname + "/uploads/"+message_id+"/chat.wala");
+	var temp_file_name = GUIDUtil.GUID();
+	var newPath = __dirname + "/temp/"+temp_file_name;
+	blobService.getBlobToFile("messages", message_id, newPath, function(error){
+		if(!error)
+		{
+
+			res.sendfile( newPath, function(err){
+				if(err) throw err;
+				fs.unlink(newPath, function (err) {
+				  if (err) throw err;
+				  console.log('successfully deleted',newPath);
+				});
+			});
+			
+			
+		}else{
+			console.log("failed to retrieve file");
+		}
+	});
+	
+	
+	// res.sendfile( __dirname + "/uploads/"+message_id+"/chat.wala");
 	
 	
 	// shrt.retrieve(message_id).then( onGetKeySuccess, onGetKeyFailure );
