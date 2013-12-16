@@ -5,8 +5,9 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
 var messages = require('./routes/messages');
+var users = require('./routes/users');
+
 
 var http = require('http');
 var path = require('path');
@@ -39,7 +40,7 @@ if ('development' == app.get('env')) {
 
 // routing
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/register', users.registerNewUser);
 
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
