@@ -84,7 +84,11 @@ function submitMessageMetadata( req, res )
 		var new_dir = __dirname + "/uploads/"+message_id;
 		fs.mkdir(new_dir, function(err){
 			if(err)throw err;
-			res.send(200, {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)});
+			console.log("recieved metadata!");
+			
+			var results = {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)};
+			
+			res.send(200, JSON.stringify(results) );
 		});
 	}else{
 		console.log(NO_BODY);
