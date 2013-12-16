@@ -76,6 +76,7 @@ function getMessage( req, res )
 
 function submitMessageMetadata( req, res )
 {
+	console.log("submitMessageMetadata");
 	if(req.hasOwnProperty("body"))
 	{
 		var recipient_id = req.body.recipient_id;
@@ -87,8 +88,8 @@ function submitMessageMetadata( req, res )
 			console.log("recieved metadata!");
 			
 			var results = {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)};
-			
-			res.send(200, JSON.stringify(results) );
+			console.log("sending response: ",results);
+			res.send(200, results);
 		});
 	}else{
 		console.log(NO_BODY);
