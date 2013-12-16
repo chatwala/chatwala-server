@@ -42,8 +42,8 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 
 app.get('/messages/:message_id', messages.getMessage );
-app.post('/messages', messages.submitMessage );
-
+app.post('/messages', messages.submitMessageMetadata );
+app.put('/messages/:message_id', messages.uploadMessage)
 
 
 

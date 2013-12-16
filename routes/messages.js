@@ -42,9 +42,25 @@ function getMessage( req, res )
 	// 	}
 }
 
+function submitMessageMetadata( req, res )
+{
+	if(req.hasOwnProperty("body"))
+	{
+		var recipient_id = req.body.recipient_id;
+		var sender_id = req.body.sender_id;
+		var message_id = GUIDUtil.GUID();
+		var new_dir = __dirname + "/uploads/"+message_id;
+		fs.mkdir(new_dir, function(err){
+			if(err)throw err;
+			res.send(200, {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)});
+		});
+	}else{
+		console.log(NO_BODY);
+        res.send(400,{status:"FAIL", message:NO_BODY});
+	}
+}
 
-
-function submitMessage( req, res )
+function submitMessageMetadata__( req, res )
 {
 	if(req.hasOwnProperty("body"))
 	{
@@ -127,6 +143,10 @@ function submitMessage( req, res )
 	}
 }
 
+function uploadMessage( req, res )
+{
+	
+}
 
 function setHostname(hostname)
 {
@@ -137,6 +157,7 @@ function setHostname(hostname)
 
 
 
-exports.submitMessage = submitMessage;
+exports.submitMessageMetadata = submitMessageMetadata;
+exports.uploadMessage = uploadMessage;
 exports.getMessage = getMessage;
 exports.setHostname = setHostname;
