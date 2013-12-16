@@ -10,7 +10,8 @@ var account = "chatwala";
 var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==";
 var host = "chatwala";
 
-var blobService = azure.createBlobService(account,access_key);
+// var blobService = azure.createBlobService(account,access_key);
+var blobService = azure.createBlobService();
 blobService.createContainerIfNotExists("messages", function(error){
     if(!error){
         // Container exists and is private
