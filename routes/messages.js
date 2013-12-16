@@ -10,14 +10,27 @@ var account = "chatwala";
 var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==";
 var host = "chatwala";
 
-var blobService = azure.createBlobService(account,access_key);
-blobService.createContainerIfNotExists("messages", function(error){
-    if(!error){
-        // Container exists and is private
-		console.log("messages table ready!");
-    }
-	
-});
+var blobService = null;
+
+function getBlobService()
+{
+	if(blobService == null)
+	{
+		blobService = azure.createBlobService(account,access_key);
+		blobService.createContainerIfNotExists("messages", function(error){
+		    if(!error){
+		        // Container exists and is private
+				console.log("messages table ready!");
+		    }
+
+		});
+	}
+	return blobService;
+}
+
+
+
+
 
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
@@ -37,7 +50,7 @@ function getMessage( req, res )
 	console.log("fetching path for message_id:",message_id);
 	var temp_file_name = GUIDUtil.GUID();
 	var newPath = __dirname + "/temp/"+temp_file_name;
-	blobService.getBlobToFile("messages", message_id, newPath, function(error){
+	getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
 		if(!error)
 		{
 
@@ -103,7 +116,7 @@ function uploadMessage( req, res )
 	
 	fs.readFile(messageFile, function (err, data) 
 	{
-		blobService.createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
+		getBlobService().createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
 			if(!error){
 				console.log("message stored!");
 				res.send(200,[{ status:"OK"}]);
