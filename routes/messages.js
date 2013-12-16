@@ -1,3 +1,4 @@
+var azure = require("azure");
 var fs = require("fs");
 var GUIDUtil = require('GUIDUtil');
 var shortURLPromise;
@@ -5,8 +6,18 @@ var shortURLPromise;
 var os = require("os");
 // var MongoClient = require('mongodb').MongoClient
 // var format = require('util').format;
+var account = "chatwala";
+var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==";
+var host = "chatwala";
 
-
+var blobService = azure.createBlobService(account,access_key);
+blobService.createContainerIfNotExists("messages", function(error){
+    if(!error){
+        // Container exists and is private
+		console.log("messages table ready!");
+    }
+	
+});
 
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
@@ -62,19 +73,23 @@ function submitMessageMetadata( req, res )
 
 function uploadMessage( req, res )
 {
+	console.log("uploadMessage");
+	
 	var message_id = req.params.message_id;
 	var messageFile = req.files.file.path;
+	var recipient_id = req.body.recipient_id;
+	var sender_id = req.body.sender_id;
+	
 	fs.readFile(messageFile, function (err, data) 
 	{
-		var recipient_id = req.body.recipient_id;
-		var sender_id = req.body.sender_id;
-	
-		var new_dir = __dirname + "/uploads/"+message_id;
-		var newPath = new_dir+"/chat.wala";
-		console.log("newPath",newPath);
-	 	fs.writeFile(newPath, data, function (err) {
-			res.send(200,[{ status:"OK"}]);
-	  	});
+		blobService.createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
+			if(!error){
+				console.log("message stored!");
+				res.send(200,[{ status:"OK"}]);
+			}else{
+				console.log("error",error);
+			}
+		});
 	});
 }
 
