@@ -89,6 +89,7 @@ function getMessage( req, res )
 
 function submitMessageMetadata( req, res )
 {
+	console.log("submitMessageMetadata");
 	if(req.hasOwnProperty("body"))
 	{
 		var recipient_id = req.body.recipient_id;
@@ -97,7 +98,11 @@ function submitMessageMetadata( req, res )
 		var new_dir = __dirname + "/uploads/"+message_id;
 		fs.mkdir(new_dir, function(err){
 			if(err)throw err;
-			res.send(200, {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)});
+			console.log("recieved metadata!");
+			
+			var results = {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)};
+			console.log("sending response: ",results);
+			res.send(200, results);
 		});
 	}else{
 		console.log(NO_BODY);
