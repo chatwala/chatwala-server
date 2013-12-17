@@ -122,19 +122,31 @@ function saveOutGoingMessage( message_metadata, message_id, callback )
 	{
 		if(err)throw err;
 		var collection = db.collection('users');
-		var sender_id = message_metadata.sender_id[0];
-		console.log("locating user: ",sender_id);
+		var sender_id = message_metadata.sender_id;
+		var recipient_id = message_metadata.recipient_id;
 		
-		collection.findAndModify({"user_id":sender_id},[['_id','asc']],{$push:{"sent":message_metadata}},{},function(err,object){
-			if(!err)
-			{
-				console.log("updated",object);
-				callback(null);
-			}else{
-				callback(err);
-			}
-			db.close();
-		});
+		console.log("locating user: ",recipient_id);
+		
+		if(message_metadata.recipient_id == "unknown_recipient")
+		{
+			// unknown recipient
+			callback(null);
+		}else{
+			// known recipient
+			collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{$push:{"inbox":message_metadata}},{},function(err,object){
+				if(!err)
+				{
+					console.log("updated inbox:",object);
+					callback(null);
+				}else{
+					callback(err);
+				}
+				db.close();
+			});
+		}
+		
+		
+		
 	
 	});
 }
