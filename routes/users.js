@@ -23,6 +23,7 @@ function saveNewUser(user_id, callback)
 		collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
 			if(!err)
 			{
+				console.log("new user saved:",docs)
 				callback(null,docs);
 				db.close();
 			}else{
