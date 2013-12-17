@@ -1,15 +1,13 @@
 var azure = require("azure");
 var fs = require("fs");
-var azure = require('azure'),
-	uuid = require('node-uuid'),
-	nconf = require('nconf');
-	
+var azure = require('azure');
+var uuid = require('node-uuid');
+var nconf = require('nconf');
 var GUIDUtil = require('GUIDUtil');
 var shortURLPromise;
-// var shrt = require('short');
 var os = require("os");
-// var MongoClient = require('mongodb').MongoClient
-// var format = require('util').format;
+var MongoClient = require('mongodb').MongoClient
+var format = require('util').format;
 var account = "chatwala";
 var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==";
 var host = "chatwala";
@@ -39,13 +37,8 @@ function getBlobService()
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
 
-// var mongo_url = "mongodb://chatwala_mongo:CbvTA5.gkm.N9DJhYtWgKy1HRQZRGB_4mAftidt4wkA-@ds035787.mongolab.com:35787/chatwala_mongo";
+var mongo_url = "mongodb://chatwala_mongo:CbvTA5.gkm.N9DJhYtWgKy1HRQZRGB_4mAftidt4wkA-@ds035787.mongolab.com:35787/chatwala_mongo";
 var server_hostname;
-// 
-// shrt.connect(mongo_url);
-// shrt.connection.on("error", function(err){
-// 	throw new Error(err);
-// });
 
 
 
@@ -64,6 +57,7 @@ function getUserMessages( req, res )
 	    }
 	});
 }
+
 
 
 
@@ -92,6 +86,7 @@ function getMessage( req, res )
 	});
 }
 
+
 function submitMessageMetadata( req, res )
 {
 	console.log("submitMessageMetadata");
@@ -104,16 +99,46 @@ function submitMessageMetadata( req, res )
 		fs.mkdir(new_dir, function(err){
 			if(err)throw err;
 			console.log("recieved metadata!");
+			saveOutGoingMessage(req.body,message_id, function(err){
+				if(err)throw err;
+				var results = {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)};
+				console.log("sending response: ",results);
+				res.send(200, results);
+			});
 			
-			var results = {status:"OK", message_id:message_id, url: ("chatwala://message/" + message_id)};
-			console.log("sending response: ",results);
-			res.send(200, results);
+			
 		});
 	}else{
 		console.log(NO_BODY);
         res.send(400,{status:"FAIL", message:NO_BODY});
 	}
 }
+
+
+
+function saveOutGoingMessage( message_metadata, message_id, callback )
+{
+	MongoClient.connect(mongo_url, function(err, db)
+	{
+		if(err)throw err;
+		var collection = db.collection('users');
+		var sender_id = message_metadata.sender_id[0];
+		console.log("locating user: ",sender_id);
+		
+		collection.findAndModify({"user_id":sender_id},[['_id','asc']],{$push:{"sent":message_metadata}},{},function(err,object){
+			if(!err)
+			{
+				console.log("updated",object);
+				callback(null);
+			}else{
+				callback(err);
+			}
+			db.close();
+		});
+	
+	});
+}
+
 
 function uploadMessage( req, res )
 {
