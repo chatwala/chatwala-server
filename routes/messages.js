@@ -49,10 +49,11 @@ var server_hostname;
 
 
 
-function getMessages( req, res )
+function getUserMessages( req, res )
 {
 	console.log("fetching messages");
-	var results = {"messages":[]};
+	var user_id = req.params.user_id;
+	var results = { "user":user_id ,"messages":[]};
 	getBlobService().listBlobs("messages", function(error, blobs){
 	    if(!error){
 	        for(var index in blobs){
@@ -148,5 +149,5 @@ function setHostname(hostname)
 exports.submitMessageMetadata = submitMessageMetadata;
 exports.uploadMessage = uploadMessage;
 exports.getMessage = getMessage;
-exports.getMessages = getMessages;
+exports.getUserMessages = getUserMessages;
 exports.setHostname = setHostname;
