@@ -48,6 +48,24 @@ var server_hostname;
 // });
 
 
+
+function getMessages( req, res )
+{
+	console.log("fetching messages");
+	var results = {"messages":[]};
+	getBlobService().listBlobs("messages", function(error, blobs){
+	    if(!error){
+	        for(var index in blobs){
+	            console.log(blobs[index].name);
+				results.messages.push(blobs[index].name);
+	        }
+			res.send(200,results);
+	    }
+	});
+}
+
+
+
 function getMessage( req, res )
 {
 	var message_id = req.params.message_id;
@@ -71,24 +89,6 @@ function getMessage( req, res )
 			console.log("failed to retrieve file");
 		}
 	});
-	
-	
-	// res.sendfile( __dirname + "/uploads/"+message_id+"/chat.wala");
-	
-	
-	// shrt.retrieve(message_id).then( onGetKeySuccess, onGetKeyFailure );
-	
-	// function onGetKeySuccess(result)
-	// 	{
-	// 		// var new_key = result.hash;
-	// 		console.log("onGetKeySuccess",result);
-	// 		
-	// 		res.sendfile( __dirname + "/uploads/"+message_id+"/chat.wala");
-	// 	}
-	// 	function onGetKeyFailure(err)
-	// 	{
-	// 		res.send("onGetKeyFailure",500,err);
-	// 	}
 }
 
 function submitMessageMetadata( req, res )
@@ -148,4 +148,5 @@ function setHostname(hostname)
 exports.submitMessageMetadata = submitMessageMetadata;
 exports.uploadMessage = uploadMessage;
 exports.getMessage = getMessage;
+exports.getMessages = getMessages;
 exports.setHostname = setHostname;

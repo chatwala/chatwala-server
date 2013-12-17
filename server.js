@@ -41,7 +41,7 @@ if ('development' == app.get('env')) {
 // routing
 app.get('/', routes.index);
 app.get('/register', users.registerNewUser);
-
+app.get('/messages', messages.getMessages );
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.post('/messages/:message_id', messages.uploadMessage)
