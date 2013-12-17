@@ -46,16 +46,46 @@ function getUserMessages( req, res )
 {
 	console.log("fetching messages");
 	var user_id = req.params.user_id;
-	var results = { "user":user_id ,"messages":[]};
-	getBlobService().listBlobs("messages", function(error, blobs){
-	    if(!error){
-	        for(var index in blobs){
-	            console.log(blobs[index].name);
-				results.messages.push(blobs[index].name);
-	        }
-			res.send(200,results);
-	    }
+	
+	
+	MongoClient.connect(mongo_url, function(err, db)
+	{
+		if(err)throw err;
+		var collection = db.collection('users');
+		collection.find({"user_id":user_id}).toArray(function(err,objects){
+			if(!err)
+			{
+				console.log(objects);
+				if(objects.length)
+				{
+					var user = objects[0];
+					var results = { "user":user_id ,"messages":user.inbox};
+					res.send(200,results)
+				}else{
+					// user not found
+					res.send(500,{"status":"user not found"});
+				}
+				
+				
+			}else{
+				res.send(500,err);
+			}
+			db.close();
+		});
 	});
+	
+	
+	
+	
+	// getBlobService().listBlobs("messages", function(error, blobs){
+	// 	    if(!error){
+	// 	        for(var index in blobs){
+	// 	            console.log(blobs[index].name);
+	// 				results.messages.push(blobs[index].name);
+	// 	        }
+	// 			res.send(200,results);
+	// 	    }
+	// 	});
 }
 
 
