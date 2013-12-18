@@ -88,9 +88,6 @@ function getUserMessages( req, res )
 	// 	});
 }
 
-
-
-
 function getMessage( req, res )
 {
 	var message_id = req.params.message_id;
@@ -155,7 +152,7 @@ function saveOutGoingMessage( message_metadata, message_id, callback )
 		var sender_id = message_metadata.sender_id;
 		var recipient_id = message_metadata.recipient_id;
 		
-		console.log("locating user: ",recipient_id);
+		console.log("locating recipient: ",recipient_id);
 		
 		if(message_metadata.recipient_id == "unknown_recipient")
 		{
@@ -163,6 +160,7 @@ function saveOutGoingMessage( message_metadata, message_id, callback )
 			callback(null);
 		}else{
 			// known recipient
+			console.log("saving message: ", message_metadata );
 			collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{$push:{"inbox":message_metadata}},{},function(err,object){
 				if(!err)
 				{
@@ -184,16 +182,22 @@ function saveOutGoingMessage( message_metadata, message_id, callback )
 
 function uploadMessage( req, res )
 {
-	console.log("uploadMessage");
-	
 	var message_id = req.params.message_id;
-	var messageFile = req.files.file.path;
 	var recipient_id = req.body.recipient_id;
 	var sender_id = req.body.sender_id;
+	var boddarr = [];
+	var message;
+	console.log("BODY",req.body);
 	
-	fs.readFile(messageFile, function (err, data) 
-	{
-		getBlobService().createBlockBlobFromFile("messages" , message_id, messageFile, function(error){
+	console.log("storing message blob with ID:",message_id);
+	
+	req.on( "data",function( chunk ){
+		boddarr.push( chunk );
+	});
+	req.on("end",function(){
+		message = boddarr.join();
+		
+		getBlobService().createBlockBlobFromText("messages" , message_id, message, function(error){
 			if(!error){
 				console.log("message stored!");
 				res.send(200,[{ status:"OK"}]);
@@ -203,6 +207,7 @@ function uploadMessage( req, res )
 		});
 	});
 }
+
 
 function setHostname(hostname)
 {
