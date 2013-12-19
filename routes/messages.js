@@ -8,13 +8,17 @@ var shortURLPromise;
 var os = require("os");
 var MongoClient = require('mongodb').MongoClient
 var format = require('util').format;
-var account = "chatwala";
-var access_key = "mEJKFMneQXAaYh3lbUKaoWUeMZR9t+5uqJbvcaRJ0+KRbiZiNaaUg1t3jUsM5UWMf8RhEQXCo5BzcCOANZjkEA==";
-var host = "chatwala";
+
+var config = require('../config.json');
+var account = config["STORAGE_NAME"];
+var access_key = config["STORAGE_KEY"];
+var host = config["PARTITION_KEY"];
+var mongo_url = config["MONGO_DB"];
+
 var blobService = null;
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
-var mongo_url = "mongodb://chatwala_mongo:CbvTA5.gkm.N9DJhYtWgKy1HRQZRGB_4mAftidt4wkA-@ds035787.mongolab.com:35787/chatwala_mongo";
+
 
 
 

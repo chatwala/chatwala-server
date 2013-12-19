@@ -1,8 +1,8 @@
 var MongoClient = require('mongodb').MongoClient
 var format = require('util').format;
 var GUIDUtil = require('GUIDUtil');
-var mongo_url = "mongodb://chatwala_mongo:CbvTA5.gkm.N9DJhYtWgKy1HRQZRGB_4mAftidt4wkA-@ds035787.mongolab.com:35787/chatwala_mongo";
-
+var config = require('../config.json');
+var mongo_url = config["MONGO_DB"];
 
 
 function registerNewUser( req, res )
