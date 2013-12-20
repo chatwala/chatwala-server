@@ -46,7 +46,13 @@ function getBlobService()
 
 
 
-
+function compareMessageMetadata(a,b) {
+  if (a.timestamp < b.timestamp)
+     return 1;
+  if (a.timestamp > b.timestamp)
+    return -1;
+  return 0;
+}
 
 
 
@@ -58,19 +64,14 @@ function getUserMessages( req, res )
 	{
 		if(err)throw err;
 		var collection = db.collection('users');
-		collection.find({"user_id":user_id}).toArray(function(err,objects){
+		collection.findOne({"user_id":user_id}, function(err,user){
 			if(!err)
 			{
-				console.log(JSON.stringify(objects,undefined,4));
-				if(objects.length)
-				{
-					var user = objects[0];
-					var results = { "user":user_id ,"messages":user.inbox};
-					res.send(200,results)
-				}else{
-					// user not found
-					res.send(500,{"status":"user not found"});
-				}
+				var messages = user.inbox.sort(compareMessageMetadata);
+				console.log("before", user.inbox);
+				console.log("after", messages);
+				var results = { "user":user_id ,"messages":messages};
+				res.send(200,results)
 			}else{
 				res.send(500,err);
 			}
@@ -123,7 +124,7 @@ function submitMessageMetadata( req, res )
 		
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
-		
+		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
 			var results = {status:"OK", message_id:message_metadata.message_id, url: ("chatwala://message/" + message_metadata.message_id)};
@@ -156,7 +157,9 @@ function saveOutGoingMessage( message_metadata, callback )
 		}else{
 			// known recipient
 			console.log("saving message: ", message_metadata );
-			collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{$push:{"inbox":message_metadata}},{},function(err,object){
+			
+			
+			collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
 				if(!err)
 				{
 					console.log("updated inbox:",object);
