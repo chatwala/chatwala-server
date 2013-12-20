@@ -127,7 +127,7 @@ function submitMessageMetadata( req, res )
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
-			var results = {status:"OK", message_id:message_metadata.message_id, url: ("chatwala://message/" + message_metadata.message_id)};
+			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/?" + message_metadata.message_id)};
 			console.log("sending response: ",results);
 			res.send(200, results);
 		});
