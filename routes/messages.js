@@ -125,6 +125,7 @@ function submitMessageMetadata( req, res )
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
+		message_metadata.thumbnail = "http://chatwala-prod.azurewebsites.net/images/message_thumb.png";
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
 			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/?" + message_metadata.message_id)};
