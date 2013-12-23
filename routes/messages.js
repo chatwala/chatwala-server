@@ -54,7 +54,11 @@ function compareMessageMetadata(a,b) {
   return 0;
 }
 
+/**
 
+Returns List of User's Messages
+
+**/
 
 function getUserMessages( req, res )
 {
@@ -68,8 +72,7 @@ function getUserMessages( req, res )
 			if(!err)
 			{
 				var messages = user.inbox.sort(compareMessageMetadata);
-				console.log("before", user.inbox);
-				console.log("after", messages);
+				console.log("user messsages fetched: ", messages);
 				var results = { "user":user_id ,"messages":messages};
 				res.send(200,results)
 			}else{
@@ -126,6 +129,8 @@ function submitMessageMetadata( req, res )
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
 		message_metadata.thumbnail = "http://chatwala-prod.azurewebsites.net/images/message_thumb.png";
+		
+		
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
 			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/?" + message_metadata.message_id)};
@@ -175,7 +180,7 @@ function saveOutGoingMessage( message_metadata, callback )
 }
 
 /**
- Endpoint Handler for Chatwala File
+ Endpoint Handler for Chatwala File (PUT)
 **/
 function uploadMessage( req, res )
 {
