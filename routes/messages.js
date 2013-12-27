@@ -110,7 +110,7 @@ function getMessage( req, res )
 			
 		}else{
 			console.log("failed to retrieve file");
-			res.send(200,{"status":"message not found", "message_id":message_id});
+			res.send(404,{"status":"message not found", "message_id":message_id});
 		}
 	});
 }
