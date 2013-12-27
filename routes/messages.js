@@ -76,7 +76,7 @@ function getUserMessages( req, res )
 				var results = { "user":user_id ,"messages":messages};
 				res.send(200,results)
 			}else{
-				res.send(200,{"status":"user not found!"});
+				res.send(404,{"status":"user not found"});
 			}
 			db.close();
 		});
