@@ -35,7 +35,4 @@ function saveNewUser(user_id, callback)
 	});
 }
 
-
-
-
 exports.registerNewUser = registerNewUser;

@@ -12,6 +12,7 @@
 	"azure":"*",
 	"node-uuid":"*",
 	"mongodb":"*",
+	"mongoose": "3.8.3",
 	
 	"mocha": "1.16.2",
 	"supertest": "0.8.2",

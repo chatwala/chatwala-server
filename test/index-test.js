@@ -3,11 +3,11 @@ var request = require('supertest');
 
 var target = require('../routes/index.js');
 
-describe('Routing', function() {
+describe('Index', function() {
     var request;
     var response;
 
-    before(function(done) {
+    before(function() {
 	request = {};
 	response = {
 	    viewName: "",
@@ -17,23 +17,19 @@ describe('Routing', function() {
 		this.data = viewData;
 	    }
 	};
-	done();
     });
 
-    describe('Default Route', function() {
-	before(function(done) {
+    describe('index', function() {
+	before(function() {
 	    target.index(request, response);
-	    done();
 	});
 
-        it('should provide index view name', function(done) {
+        it('should provide index view name', function() {
             response.viewName.should.equal("index");
-	    done();
 	});
 
-	it('should provide default view data', function(done) {
+	it('should provide default view data', function() {
 	    response.data['title'].should.equal('chatwala');
-	    done();
 	});
     });
 });
