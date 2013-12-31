@@ -64,7 +64,7 @@ function getProfile( req, res )
 			
 		}else{
 			console.log("failed to retrieve file");
-			res.send(404,{"status":"message not found", "user_id":user_id});
+			res.send(404,{"status":"user not found", "user_id":user_id});
 		}
 	});
 }
@@ -83,7 +83,7 @@ function updateProfile( req, res )
 	var fileSize = req.headers['content-length'];
 	var uploadedSize = 0;
 	
-	console.log("storing message blob with ID:",user_id);
+	console.log("storing user blob with ID:",user_id);
 
 	// handle data events
 	req.on( "data",function( chunk ){
@@ -108,7 +108,7 @@ function updateProfile( req, res )
 		//first agrument is the container it should prob be "profilePicture"
 		utility.getBlobService().createBlockBlobFromFile("messages" , user_id, tempFilePath, function(error){
 			if(!error){
-				console.log("image stored!");
+				console.log("profile image stored!");
 				res.send(200,[{ status:"OK"}]);
 			}else{
 				console.log("blob error",error);

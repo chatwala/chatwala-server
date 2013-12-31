@@ -105,7 +105,7 @@ function submitMessageMetadata( req, res )
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
-		message_metadata.thumbnail = "http://chatwala-prod.azurewebsites.net/users/"+sender_id+"/profile";
+		message_metadata.thumbnail = "http://" + req.headers.host + "/users/"+sender_id+"/profile";
 		
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
@@ -130,6 +130,7 @@ function saveOutGoingMessage( message_metadata, callback )
 		var sender_id = message_metadata.sender_id;
 		var recipient_id = message_metadata.recipient_id;
 		
+		console.log("sender: ", sender_id);
 		console.log("locating recipient: ",recipient_id);
 		
 		if(message_metadata.recipient_id == "unknown_recipient")
