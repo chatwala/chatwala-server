@@ -15,9 +15,6 @@ var path = require('path');
 var app = express();
 
 
-
-
-
 // all environments
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
@@ -46,6 +43,7 @@ app.get('/users/:user_id/messages', messages.getUserMessages );
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
+app.get('/users/:user_id/profile', users.getProfile)
 app.put('/users/:user_id/profile', users.updateProfile)
 
 

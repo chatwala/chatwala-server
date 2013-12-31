@@ -37,10 +37,43 @@ function saveNewUser(user_id, callback)
 	});
 }
 
+
+/**
+	Endpoint Handler for retrieving message file
+**/
+function getProfile( req, res )
+{
+	var user_id = req.params.user_id;
+	
+	console.log("fetching path for user_id:",user_id);
+	
+	var newPath = utility.createTempFilePath();
+	
+	utility.getBlobService().getBlobToFile("messages", user_id, newPath, function(error){
+		if(!error)
+		{
+			console.log("send file: ",newPath);
+			res.sendfile(newPath, function(err){
+				if(err) throw err;
+				fs.unlink(newPath, function (err) {
+				  if (err) throw err;
+				  console.log('successfully deleted',newPath);
+				});
+			});
+			
+			
+		}else{
+			console.log("failed to retrieve file");
+			res.send(404,{"status":"message not found", "user_id":user_id});
+		}
+	});
+}
+
+
 function updateProfile( req, res )
 {
 	
-	// get message_id parameter
+	// get user_id parameter
 	var user_id = req.params.user_id;
 	// create a temp file
 	var tempFilePath = utility.createTempFilePath();
@@ -69,7 +102,7 @@ function updateProfile( req, res )
 	
 	// handle end event
 	req.on("end",function(){
-		// save data to blob service with message_id
+		// save data to blob service with user_id
 		console.log("userid", user_id)
 		console.log("file", tempFilePath)
 		//first agrument is the container it should prob be "profilePicture"
@@ -90,4 +123,5 @@ function updateProfile( req, res )
 }
 
 exports.updateProfile = updateProfile;
+exports.getProfile = getProfile;
 exports.registerNewUser = registerNewUser;
