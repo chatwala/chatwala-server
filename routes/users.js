@@ -3,7 +3,9 @@ var format = require('util').format;
 var GUIDUtil = require('GUIDUtil');
 var config = require('../config.json');
 var mongo_url = config["MONGO_DB"];
-
+var utility = require('../utility');
+var fs = require("fs");
+var azure = require('azure');
 
 function registerNewUser( req, res )
 {
@@ -39,16 +41,16 @@ function updateProfile( req, res )
 {
 	
 	// get message_id parameter
-	var user_id = req.params.message_id;
+	var user_id = req.params.user_id;
 	// create a temp file
-	var tempFilePath = createTempFilePath();
+	var tempFilePath = utility.createTempFilePath();
 	var file = fs.createWriteStream(tempFilePath);
 	
 
 	var fileSize = req.headers['content-length'];
 	var uploadedSize = 0;
 	
-	console.log("storing message blob with ID:",message_id);
+	console.log("storing message blob with ID:",user_id);
 
 	// handle data events
 	req.on( "data",function( chunk ){
@@ -62,16 +64,22 @@ function updateProfile( req, res )
 	file.on('drain', function() {
 	    req.resume();
 	});
+	console.log("userid", user_id)
+	console.log("file", tempFilePath)
 	
 	// handle end event
 	req.on("end",function(){
 		// save data to blob service with message_id
-		getBlobService().createBlockBlobFromFile("profilePicture" , user_id, tempFilePath, function(error){
+		console.log("userid", user_id)
+		console.log("file", tempFilePath)
+		//first agrument is the container it should prob be "profilePicture"
+		utility.getBlobService().createBlockBlobFromFile("messages" , user_id, tempFilePath, function(error){
 			if(!error){
 				console.log("image stored!");
 				res.send(200,[{ status:"OK"}]);
 			}else{
-				console.log("error",error);
+				console.log("blob error",error);
+				res.send(400,[{ error:"need image asset"}])
 			}
 			// delete the temp file
 			fs.unlink(tempFilePath,function(err){

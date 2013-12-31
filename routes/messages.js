@@ -10,38 +10,15 @@ var MongoClient = require('mongodb').MongoClient
 var format = require('util').format;
 
 var config = require('../config.json');
-var account = config["STORAGE_NAME"];
-var access_key = config["STORAGE_KEY"];
-var host = config["PARTITION_KEY"];
 var mongo_url = config["MONGO_DB"];
 
-var blobService = null;
+
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
 
 
+var utility = require('../utility')
 
-
-/**
- Lazy Creation of Blob Service
-
-**/
-function getBlobService()
-{
-	if(blobService == null)
-	{
-		blobService = azure.createBlobService(account,access_key);
-		blobService.createContainerIfNotExists("messages", function(error){
-		    if(!error){
-				console.log("messages table ready!");
-		    }else{
-				console.log("failed to connect to blob service!");
-				blobService = null;
-			}
-		});
-	}
-	return blobService;
-}
 
 
 
@@ -93,9 +70,9 @@ function getMessage( req, res )
 	
 	console.log("fetching path for message_id:",message_id);
 	
-	var newPath = createTempFilePath();
+	var newPath = utility.createTempFilePath();
 	
-	getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
+	utility.getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
 		if(!error)
 		{
 			console.log("send file: ",newPath);
@@ -189,7 +166,7 @@ function uploadMessage( req, res )
 	// get message_id parameter
 	var message_id = req.params.message_id;
 	// create a temp file
-	var tempFilePath = createTempFilePath();
+	var tempFilePath = utility.createTempFilePath();
 	var file = fs.createWriteStream(tempFilePath);
 	
 
@@ -214,7 +191,7 @@ function uploadMessage( req, res )
 	// handle end event
 	req.on("end",function(){
 		// save data to blob service with message_id
-		getBlobService().createBlockBlobFromFile("messages" , message_id, tempFilePath, function(error){
+		utility.getBlobService().createBlockBlobFromFile("messages" , message_id, tempFilePath, function(error){
 			if(!error){
 				console.log("message stored!");
 				res.send(200,[{ status:"OK"}]);
@@ -229,11 +206,6 @@ function uploadMessage( req, res )
 	});
 }
 
-function createTempFilePath()
-{
-	var tempFileName =  GUIDUtil.GUID();
-	return __dirname + "/temp/"+tempFileName;
-}
 
 
 
