@@ -35,7 +35,51 @@ function saveNewUser(user_id, callback)
 	});
 }
 
+function updateProfile( req, res )
+{
+	
+	// get message_id parameter
+	var user_id = req.params.message_id;
+	// create a temp file
+	var tempFilePath = createTempFilePath();
+	var file = fs.createWriteStream(tempFilePath);
+	
 
+	var fileSize = req.headers['content-length'];
+	var uploadedSize = 0;
+	
+	console.log("storing message blob with ID:",message_id);
 
+	// handle data events
+	req.on( "data",function( chunk ){
+		uploadedSize += chunk.length;
+		var bufferStore = file.write(chunk);
+		if(bufferStore == false)
+			req.pause();
+	});
+	
+	// handle drain events
+	file.on('drain', function() {
+	    req.resume();
+	});
+	
+	// handle end event
+	req.on("end",function(){
+		// save data to blob service with message_id
+		getBlobService().createBlockBlobFromFile("profilePicture" , user_id, tempFilePath, function(error){
+			if(!error){
+				console.log("image stored!");
+				res.send(200,[{ status:"OK"}]);
+			}else{
+				console.log("error",error);
+			}
+			// delete the temp file
+			fs.unlink(tempFilePath,function(err){
 
+			});
+		});
+	});
+}
+
+exports.updateProfile = updateProfile;
 exports.registerNewUser = registerNewUser;
