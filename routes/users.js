@@ -41,14 +41,14 @@ function saveNewUser(user_id, callback)
 /**
 	Endpoint Handler for retrieving message file
 **/
-function getProfile( req, res )
+function getProfilePicture( req, res )
 {
 	var user_id = req.params.user_id;
 	
 	console.log("fetching path for user_id:",user_id);
 	
 	var newPath = utility.createTempFilePath();
-	
+	//first agrument is the container it should prob be "profilePicture" instead of "messages"
 	utility.getBlobService().getBlobToFile("messages", user_id, newPath, function(error){
 		if(!error)
 		{
@@ -70,7 +70,7 @@ function getProfile( req, res )
 }
 
 
-function updateProfile( req, res )
+function updateProfilePicture( req, res )
 {
 	
 	// get user_id parameter
@@ -105,7 +105,7 @@ function updateProfile( req, res )
 		// save data to blob service with user_id
 		console.log("userid", user_id)
 		console.log("file", tempFilePath)
-		//first agrument is the container it should prob be "profilePicture"
+		//first agrument is the container it should prob be "profilePicture" instead of "messages"
 		utility.getBlobService().createBlockBlobFromFile("messages" , user_id, tempFilePath, function(error){
 			if(!error){
 				console.log("profile image stored!");
@@ -122,6 +122,6 @@ function updateProfile( req, res )
 	});
 }
 
-exports.updateProfile = updateProfile;
-exports.getProfile = getProfile;
+exports.updateProfilePicture = updateProfilePicture;
+exports.getProfilePicture = getProfilePicture;
 exports.registerNewUser = registerNewUser;
