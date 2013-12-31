@@ -105,7 +105,7 @@ function submitMessageMetadata( req, res )
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
-		message_metadata.thumbnail = "http://" + req.headers.host + "/users/"+sender_id+"/profile";
+		message_metadata.thumbnail = "http://" + req.headers.host + "/users/"+sender_id+"/picture";
 		
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
