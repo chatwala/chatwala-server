@@ -10,38 +10,15 @@ var MongoClient = require('mongodb').MongoClient
 var format = require('util').format;
 
 var config = require('../config.json');
-var account = config["STORAGE_NAME"];
-var access_key = config["STORAGE_KEY"];
-var host = config["PARTITION_KEY"];
 var mongo_url = config["MONGO_DB"];
 
-var blobService = null;
+
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
 
 
+var utility = require('../utility')
 
-
-/**
- Lazy Creation of Blob Service
-
-**/
-function getBlobService()
-{
-	if(blobService == null)
-	{
-		blobService = azure.createBlobService(account,access_key);
-		blobService.createContainerIfNotExists("messages", function(error){
-		    if(!error){
-				console.log("messages table ready!");
-		    }else{
-				console.log("failed to connect to blob service!");
-				blobService = null;
-			}
-		});
-	}
-	return blobService;
-}
 
 
 
@@ -76,7 +53,7 @@ function getUserMessages( req, res )
 				var results = { "user":user_id ,"messages":messages};
 				res.send(200,results)
 			}else{
-				res.send(200,{"status":"user not found!"});
+				res.send(404,{"status":"user not found"});
 			}
 			db.close();
 		});
@@ -93,9 +70,9 @@ function getMessage( req, res )
 	
 	console.log("fetching path for message_id:",message_id);
 	
-	var newPath = createTempFilePath();
+	var newPath = utility.createTempFilePath();
 	
-	getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
+	utility.getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
 		if(!error)
 		{
 			console.log("send file: ",newPath);
@@ -110,7 +87,7 @@ function getMessage( req, res )
 			
 		}else{
 			console.log("failed to retrieve file");
-			res.send(200,{"status":"message not found", "message_id":message_id});
+			res.send(404,{"status":"message not found", "message_id":message_id});
 		}
 	});
 }
@@ -128,12 +105,11 @@ function submitMessageMetadata( req, res )
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
-		message_metadata.thumbnail = "http://chatwala-prod.azurewebsites.net/images/message_thumb.png";
-		
+		message_metadata.thumbnail = "http://" + req.headers.host + "/users/"+sender_id+"/picture";
 		
 		saveOutGoingMessage(message_metadata, function(err){
 			if(err)throw err;
-			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/?" + message_metadata.message_id)};
+			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/#" + message_metadata.message_id)};
 			console.log("sending response: ",results);
 			res.send(200, results);
 		});
@@ -154,6 +130,7 @@ function saveOutGoingMessage( message_metadata, callback )
 		var sender_id = message_metadata.sender_id;
 		var recipient_id = message_metadata.recipient_id;
 		
+		console.log("sender: ", sender_id);
 		console.log("locating recipient: ",recipient_id);
 		
 		if(message_metadata.recipient_id == "unknown_recipient")
@@ -189,7 +166,7 @@ function uploadMessage( req, res )
 	// get message_id parameter
 	var message_id = req.params.message_id;
 	// create a temp file
-	var tempFilePath = createTempFilePath();
+	var tempFilePath = utility.createTempFilePath();
 	var file = fs.createWriteStream(tempFilePath);
 	
 
@@ -214,7 +191,7 @@ function uploadMessage( req, res )
 	// handle end event
 	req.on("end",function(){
 		// save data to blob service with message_id
-		getBlobService().createBlockBlobFromFile("messages" , message_id, tempFilePath, function(error){
+		utility.getBlobService().createBlockBlobFromFile("messages" , message_id, tempFilePath, function(error){
 			if(!error){
 				console.log("message stored!");
 				res.send(200,[{ status:"OK"}]);
@@ -229,11 +206,6 @@ function uploadMessage( req, res )
 	});
 }
 
-function createTempFilePath()
-{
-	var tempFileName =  GUIDUtil.GUID();
-	return __dirname + "/temp/"+tempFileName;
-}
 
 
 

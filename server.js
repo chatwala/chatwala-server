@@ -60,6 +60,8 @@ app.get('/users/:user_id/messages', messages.getUserMessages );
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
+app.get('/users/:user_id/picture', users.getProfilePicture)
+app.put('/users/:user_id/picture', users.updateProfilePicture)
 
 /**
  * END - App Routing
