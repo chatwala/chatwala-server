@@ -11,6 +11,7 @@ var users = require('./routes/users');
 
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
 
 /**
  * BEGIN - App Configuration
@@ -52,8 +53,6 @@ app.configure('production', function() {
 /**
  * BEGIN - App Routing
  */
-
-var handlers = {
 
 app.get('/', routes.index);
 app.get('/register', users.registerNewUser);

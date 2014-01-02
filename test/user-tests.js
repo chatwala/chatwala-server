@@ -4,8 +4,9 @@ var config = require('../config-test');
 var User = require('../models/user');
 
 describe('User', function() {
-    before( function() {
-	mongoose.connect('mongodb://localhost/chatwala-test');
+    before(function(done) {
+       if (mongoose.connection.db) return done();
+       mongoose.connect('mongodb://localhost/chatwala-test', done);
     });
 
     describe('creation', function() {
@@ -17,7 +18,7 @@ describe('User', function() {
 
 	it('should be unique', function() {
 	    User.Model.find({ user_id: user['user__id'] }, function(err, users) {
-		users.count().should.eql(0);
+		users.length.should.eql(0);
 	    });
 	});
 
@@ -36,6 +37,6 @@ describe('User', function() {
 	it('should have an empty devices', function() {
 	    user['devices'].should.be.empty;
 	});
-   });
+    });
 });
 
