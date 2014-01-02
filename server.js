@@ -7,7 +7,6 @@ var app = express();
 
 var config = require('./config')(process, app);
 
-var routes = require('./routes');
 var messages = require('./routes/messages');
 var users = require('./routes/users');
 
