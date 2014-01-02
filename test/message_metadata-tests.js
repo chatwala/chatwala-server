@@ -40,7 +40,16 @@ describe('MessageMetadata', function() {
    });
 
     describe('validation', function() {
-	var message_metadata = new MessageMetadata.Model();
+	var message_metadata;
+
+	before( function(done) { 
+	    message_metadata = new MessageMetadata.Model();
+	    message_metadata['thread_id']       = GUIDUtil.GUID();
+	    message_metadata['thread_index']    = 1;
+	    message_metadata['start_recording'] = 0.0;
+
+	    done();
+	});
 
 	it('should require a sender_id', function(done) {
 	    message_metadata.validate( function(err) {
