@@ -9,8 +9,8 @@ var os = require("os");
 var MongoClient = require('mongodb').MongoClient
 var format = require('util').format;
 
-var config = require('../config.json');
-var mongo_url = config["MONGO_DB"];
+var old_config = require('../config/prod.json');
+var mongo_url = old_config["MONGO_DB"];
 
 
 var NO_BODY = "files not found";

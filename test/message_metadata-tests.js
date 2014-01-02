@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var GUIDUtil = require('GUIDUtil');
-var config = require('../config-test');
+var config = require('../config')();
 
 var User = require('../models/user');
 var MessageMetadata = require('../models/message_metadata');
@@ -20,6 +20,11 @@ describe('MessageMetadata', function() {
 	recipient = new User.Model();
 	recipient.save();
 
+	done();
+    });
+
+    after(function(done) {
+	mongoose.disconnect();
 	done();
     });
 

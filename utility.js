@@ -10,11 +10,12 @@ var format = require('util').format;
 
 
 var blobService = null;
-var config = require('./config.json');
-var account = config["STORAGE_NAME"];
-var access_key = config["STORAGE_KEY"];
-var host = config["PARTITION_KEY"];
-var mongo_url = config["MONGO_DB"];
+var old_config = require('./config/prod.json');
+var account = old_config["STORAGE_NAME"];
+var access_key = old_config["STORAGE_KEY"];
+var host = old_config["PARTITION_KEY"];
+var mongo_url = old_config["MONGO_DB"];
+
 /**
  Lazy Creation of Blob Service
 

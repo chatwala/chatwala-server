@@ -1,12 +1,17 @@
 var mongoose = require('mongoose');
-var config = require('../config-test');
+var config = require('../config')();
 
 var User = require('../models/user');
 
 describe('User', function() {
     before(function(done) {
        if (mongoose.connection.db) return done();
-       mongoose.connect('mongodb://localhost/chatwala-test', done);
+//       mongoose.connect('mongodb://localhost/chatwala-test', done);
+       mongoose.connect(config.db.mongodb, done);
+    });
+
+    after(function(done) {
+	mongoose.disconnect(done);
     });
 
     describe('creation', function() {

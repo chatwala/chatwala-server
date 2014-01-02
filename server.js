@@ -5,6 +5,8 @@
 var express = require('express');
 var app = express();
 
+var config = require('./config')(process, app);
+
 var routes = require('./routes');
 var messages = require('./routes/messages');
 var users = require('./routes/users');
@@ -55,13 +57,17 @@ app.configure('production', function() {
  */
 
 app.get('/', routes.index);
-app.get('/register', users.registerNewUser);
+app.get ('/register', users.registerNewUser);
+app.post('/register', users.registerNewUser);
+
 app.get('/users/:user_id/messages', messages.getUserMessages );
+app.get('/users/:user_id/picture', users.getProfilePicture)
+app.put('/users/:user_id/picture', users.updateProfilePicture)
+
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
-app.get('/users/:user_id/picture', users.getProfilePicture)
-app.put('/users/:user_id/picture', users.updateProfilePicture)
+
 
 /**
  * END - App Routing
