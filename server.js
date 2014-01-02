@@ -7,6 +7,7 @@ var app = express();
 
 var config = require('./config')(process, app);
 
+var index = require('./routes/index');
 var messages = require('./routes/messages');
 var users = require('./routes/users');
 
@@ -55,7 +56,7 @@ app.configure('production', function() {
  * BEGIN - App Routing
  */
 
-app.get('/', routes.index);
+app.get('/', index.index);
 app.get ('/register', users.registerNewUser);
 app.post('/register', users.registerNewUser);
 
@@ -67,9 +68,37 @@ app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
 
-
 /**
  * END - App Routing
+ */
+
+
+/**
+ * BEGIN - Other initialization/configuration
+ */
+
+// Azure Blob Service initialization
+var azure = require('azure');
+var BlobService = require('./blob_service');
+BlobService.initializeBlobService(azure);
+
+// Azure Blob Service Container initialization
+BlobService.initializeContainer("messages", function(error) {
+    if (error) {
+	console.log(error);
+	process.exit(-1);
+    }
+});
+
+BlobService.initializeContainer("pictures", function(error) {
+    if (error) {
+	console.log(error);
+	process.exit(-1);
+    }
+});
+
+/**
+ * END - Other initialization/configuration
  */
 
 var server = http.createServer(app);

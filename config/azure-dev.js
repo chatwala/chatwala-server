@@ -4,8 +4,8 @@ module.exports = {
     },
     "azure": { 
 	"storage_name": "chatwaladev",
-	"storage_key": "V8Z4XKOcA6LOT+WWV8L1RWjCBeRS7fE790BoR0qeI3s53fRc3Qzv57PFHm3oWMCFUfZRNy+8b/IzeTD+i8++5Q=="
-	"partition_key": "chatwaladev",
+	"storage_key": "V8Z4XKOcA6LOT+WWV8L1RWjCBeRS7fE790BoR0qeI3s53fRc3Qzv57PFHm3oWMCFUfZRNy+8b/IzeTD+i8++5Q==",
+	"partition_key": "chatwaladev"
     },
     "logger": {
         "api": "logs/api.log",
