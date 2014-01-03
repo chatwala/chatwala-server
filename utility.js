@@ -27,12 +27,9 @@ function getBlobService()
 	{
 		blobService = azure.createBlobService(account,access_key);
 		blobService.createContainerIfNotExists("messages", function(error){
-		    if(!error){
-				console.log("messages table ready!");
-		    }else{
-				console.log("failed to connect to blob service!");
-				blobService = null;
-			}
+		    if (error) {
+			blobService = null;
+		    }
 		});
 	}
 	return blobService;

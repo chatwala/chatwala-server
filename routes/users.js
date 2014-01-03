@@ -5,10 +5,10 @@ var fs = require("fs");
 var azure = require('azure');
 
 var MongoClient = require('mongodb').MongoClient
-var old_config = require('../config/prod.json');
-var mongo_url = old_config["MONGO_DB"];
-
 var config = require('../config')();
+var mongo_url = config.db.mongodb;
+
+var BlobService = require('../blob_service');
 
 /**
  * GET  /register
@@ -44,79 +44,93 @@ function saveNewUser(user_id, callback)
 }
 
 
+function _validateUser(uid, callback) {
+    MongoClient.connect(config.db.mongodb, function(err,db){
+	if(err) throw err;
+	var collection = db.collection('users');
+        collection.count({ user_id: uid }, function(err, count) {
+	    callback(err, (count == 1));
+	});
+    });
+}
+
+
 /**
  * GET /users/1/picture
  **/
 function getProfilePicture( req, res )
 {
     var uid = req.params.user_id;
-
-    // check if user exists
-    MongoClient.connect(config.db.mongodb, function(err,db){
-	if(err) throw err;
-	var collection = db.collection('users');
-        collection.count({ user_id: uid }, function(err, count) {
-	    if (err) throw err;
-	    if (count == 0) {
-		res.send(404, { "status": "user not found", "user_id": uid });
+    _validateUser(uid, function(err, exists) {
+	if (err) throw err;
+	if (!exists) {
+	    res.send(404, { "status": "user not found", "user_id": uid });
+	    return;
+	}
+    
+	var newPath = utility.createTempFilePath() + ".png";
+	//first agrument is the container it should prob be "profilePicture" instead of "messages"
+	BlobService.getBlobService().getBlobToStream('messages', uid, res, function(err) {
+	    if (err) {
+		res.send(404, { "status": "profile picture not found", "user_id": uid });
 		return;
 	    }
-    
-	    var newPath = utility.createTempFilePath();
-	    //first agrument is the container it should prob be "profilePicture" instead of "messages"
-	    utility.getBlobService().getBlobToFile("messages", uid, newPath, function(error) {
-		if (!error) {
-		    res.sendfile(newPath, function(err) {
-			if (err) throw err;
-			fs.unlink(newPath, function (err) {
-			    if (err) throw err;
-			});
-		    });
-		}
-		else {
-		    res.send(404, { "status": "profile picture not found", "user_id": uid });
-		}
-	    });
+	    res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+	    res.end();
 	});
     });
 }
 
 function updateProfilePicture(req, res) {
     // get user_id parameter
-    var user_id = req.params.user_id;
-    // create a temp file
-    var tempFilePath = utility.createTempFilePath();
-    var file = fs.createWriteStream(tempFilePath);
+    var uid = req.params.user_id;
+    _validateUser(uid, function(err, exists) {
+	if (err) throw err;
+	if (!exists) {
+	    res.send(404, { "status": "user not found", "user_id": uid });
+	    return;
+	}
 
-    var fileSize = req.headers['content-length'];
-    var uploadedSize = 0;
+	// create a temp file
+	var tempFilePath = utility.createTempFilePath();
+	var file = fs.createWriteStream(tempFilePath);
+
+	var fileSize = req.headers['content-length'];
+	var uploadedSize = 0;
     
-    // handle data events
-    req.on( "data",function( chunk ){
-	uploadedSize += chunk.length;
-	var bufferStore = file.write(chunk);
-	if(bufferStore == false)
-	    req.pause();
-    });
+	// handle data events
+	req.on('data', function(chunk) {
+	    uploadedSize += chunk.length;
+	    var bufferStore = file.write(chunk);
+	    if (bufferStore == false)
+		req.pause();
+	});
     
-    // handle drain events
-    file.on('drain', function() {
-	req.resume();
-    });
+	// handle drain events
+	file.on('drain', function() {
+	    req.resume();
+	});
     
-    // handle end event
-    req.on("end", function() {
-	// save data to blob service with user_id
-	//first agrument is the container it should prob be "profilePicture" instead of "messages"
-	utility.getBlobService().createBlockBlobFromFile("messages" , user_id, tempFilePath, function(error){
-	    if (!error) {
-		res.send(200,[{ status:"OK"}]);
-	    } else {
-		res.send(400,[{ error:"need image asset"}])
+	// handle end event
+	req.on('end', function() {
+	    // save data to blob service with user_id
+	    // make sure the uploadedSize == fileSize
+	    if (fileSize != uploadedSize) {
+		res.send(404, { error: "upload error" });
+		return;
 	    }
-	    // delete the temp file
-	    fs.unlink(tempFilePath,function(err){
-
+		
+	    //first agrument is the container it should prob be "profilePicture" instead of "messages"
+	    BlobService.getBlobService().createBlockBlobFromFile('messages', uid, tempFilePath, function(err) {
+		if (err) {
+		    res.send(404, { error: "error saving profile image" });
+		    return;
+		}
+		res.send(200, { status: "OK" });
+	    	// delete the temp file
+	    	fs.unlink(tempFilePath, function(err) {
+		    if (err) { console.log(err); }
+		});
 	    });
 	});
     });

@@ -78,7 +78,13 @@ app.put('/messages/:message_id', messages.uploadMessage);
  */
 
 // Azure Blob Service initialization
-var azure = require('azure');
+var azure;
+if (process.env.NODE_ENV = 'test') {
+    azure = require('./test/azure-mock');
+}
+else {
+    azure = require('azure');
+}
 var BlobService = require('./blob_service');
 BlobService.initializeBlobService(azure);
 
