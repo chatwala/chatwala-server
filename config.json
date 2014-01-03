@@ -1,7 +1,7 @@
 {
-    "STORAGE_NAME": "chatwaladev”,
+    "STORAGE_NAME": "chatwaladev",
     "STORAGE_KEY": "V8Z4XKOcA6LOT+WWV8L1RWjCBeRS7fE790BoR0qeI3s53fRc3Qzv57PFHm3oWMCFUfZRNy+8b/IzeTD+i8++5Q==",
-    "PARTITION_KEY": "chatwaladev”,
+    "PARTITION_KEY": "chatwaladev",
     "TABLE_NAME": "messages",
 	"MONGO_DB":"mongodb://chatwala-dev:OFXd6OICqM8vr.ME3OCbh.l2T9GjAuXFF.7Hp9gDXNE-@ds030607.mongolab.com:30607/chatwala-dev"
 }
