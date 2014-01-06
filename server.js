@@ -2,12 +2,14 @@
 /**
  * Module dependencies.
  */
-
+"use strict";
 var express = require('express');
 var routes = require('./routes');
 var messages = require('./routes/messages');
 var users = require('./routes/users');
 
+var clientID = "123456789";
+var clientSecret = "qwertyuiop";
 
 var http = require('http');
 var path = require('path');
@@ -25,6 +27,43 @@ app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+
+
+
+app.use(function (req, res, next) {
+	
+	console.log('Received request - authenticating');
+	var authHeaderValue = "";
+	var idHeaderValue = "";
+	
+	for(var item in req.headers) {
+		console.log(item + ":" + req.headers[item]);
+		if (item == "x-chatwala") {
+			// Validate			
+			authHeaderValue = req.headers[item];
+		}
+		else if (item == "x-id") {
+			idHeaderValue = req.headers[item];
+		}
+  	}
+	
+	if (!authHeaderValue || authHeaderValue === "") {
+		console.log ("Header is empty");
+		res.send(401);
+		return;
+	}
+	
+	var expectedToken = clientID + ":" + clientSecret;
+	if (expectedToken != authHeaderValue) {
+		res.send(401);
+		return;
+	}
+	
+	
+    console.log ("Request authenticated!");
+	next();
+});
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.multipart());
@@ -34,6 +73,7 @@ app.use(express.multipart());
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
 
 // routing
 app.get('/', routes.index);
