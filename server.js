@@ -16,7 +16,6 @@ var path = require('path');
 
 var app = express();
 
-
 // all environments
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
@@ -28,8 +27,6 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 
-
-
 app.use(function (req, res, next) {
 	
 	console.log('Received request - authenticating');
@@ -37,7 +34,7 @@ app.use(function (req, res, next) {
 	var idHeaderValue = "";
 	
 	for(var item in req.headers) {
-		console.log(item + ":" + req.headers[item]);
+	
 		if (item == "x-chatwala") {
 			// Validate			
 			authHeaderValue = req.headers[item];
@@ -48,17 +45,18 @@ app.use(function (req, res, next) {
   	}
 	
 	if (!authHeaderValue || authHeaderValue === "") {
-		console.log ("Header is empty");
-		res.send(401);
+		console.log ("Authorization header is empty or not found");
+		res.send(401, {error:"Not Authorized: missing headers"});
 		return;
 	}
-	
-	var expectedToken = clientID + ":" + clientSecret;
-	if (expectedToken != authHeaderValue) {
-		res.send(401);
-		return;
+	else {
+		var expectedToken = clientID + ":" + clientSecret;
+		
+		if (expectedToken != authHeaderValue) {
+			res.send(401, {error:"Not Authorized"});
+			return;
+		}
 	}
-	
 	
     console.log ("Request authenticated!");
 	next();
