@@ -8,8 +8,8 @@ var routes = require('./routes');
 var messages = require('./routes/messages');
 var users = require('./routes/users');
 
-var clientID = "123456789";
-var clientSecret = "qwertyuiop";
+var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
+var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
 
 var http = require('http');
 var path = require('path');
