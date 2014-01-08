@@ -1,7 +1,7 @@
 {
-    "STORAGE_NAME": "chatwaladev",
-    "STORAGE_KEY": "V8Z4XKOcA6LOT+WWV8L1RWjCBeRS7fE790BoR0qeI3s53fRc3Qzv57PFHm3oWMCFUfZRNy+8b/IzeTD+i8++5Q==",
-    "PARTITION_KEY": "chatwaladev",
+    "STORAGE_NAME": "chatwalaprod",
+    "STORAGE_KEY": "/IF7b5QfBEFlzYhkHWodelQBUnsx4/anmEuCzSobXjwlcfacFZYbqutQ0SO1M6mR2n6wFDtynCYN6n2MKfJzsw==",
+    "PARTITION_KEY": "chatwalaprod",
     "TABLE_NAME": "messages",
-	"MONGO_DB":"mongodb://chatwala-dev:OFXd6OICqM8vr.ME3OCbh.l2T9GjAuXFF.7Hp9gDXNE-@ds030607.mongolab.com:30607/chatwala-dev"
+	"MONGO_DB": "mongodb://MongoLab:KMVJmLeJWPrOr4q64Z__AyRDmPwj4mR_Z90dPkeqFd4-@ds030917-a0.mongolab.com:30917,ds030917-a1.mongolab.com:30916/MongoLab"
 }
