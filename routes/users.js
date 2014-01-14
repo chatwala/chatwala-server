@@ -7,6 +7,17 @@ var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
 
+var collection;
+MongoClient.connect(mongo_url, function(err,db) {
+	if(err) {
+		db.close();
+		throw err;
+	}
+	else {
+		collection = db.collection('users');
+	}
+});
+
 function registerNewUser( req, res )
 {
 	var user_id = GUIDUtil.GUID();
@@ -14,29 +25,20 @@ function registerNewUser( req, res )
 		if(err) throw err;
 		res.send(200,results);
 	});
-	
 }
 
-function saveNewUser(user_id, callback)
-{
-	MongoClient.connect(mongo_url, function(err,db){
-		if(err) throw err;
-		var collection = db.collection('users');
-		collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
-			if(!err)
-			{
-				console.log("new user saved:",docs)
-				callback(null,docs);
-				db.close();
-			}else{
-				// error
-				callback(err);
-				db.close();
-			}		
-		});
+function saveNewUser(user_id, callback) {
+	collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
+		if(!err) {
+			console.log("new user saved:",docs)
+			callback(null,docs);
+			//db.close();
+		}else {
+			callback(err);
+			//db.close();
+		}		
 	});
 }
-
 
 /**
 	Endpoint Handler for retrieving message file
