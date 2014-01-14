@@ -49,7 +49,10 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 
 app.use(function (req, res, next) {
-	if (mongoClient.isConnected()) { next(); }
+	if (mongoClient.isConnected()) { 
+		console.log("Connected");
+		next(); 
+	}
 	else {
 		console.log("Database not connected yet, queuing request");
    		queue.push({ req : req, res : res, next : next});
