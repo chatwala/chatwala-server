@@ -19,7 +19,7 @@ var http = require('http');
 var path = require('path');
 
 var app = express();
-
+var queue = [];
 // all environments
 app.use(function (request, response, next) {
 	console.log("Connecting to mongo database");
