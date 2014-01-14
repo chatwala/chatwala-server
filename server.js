@@ -21,24 +21,24 @@ var path = require('path');
 var app = express();
 var queue = [];
 // all environments
-app.use(function () {
 
-	mongoClient.getConnection(function (err, db) {
-		if (err) {
-			console.log("Unable to connect to mongo DB."); 
-			queue.forEach(function (object) {
-				object.res.send(500);
-			});
-		} else {
-			console.log("Launching queued requests"); 
-			queue.forEach(function (object) {
-				object.next();
-			});
-		}
-		
-		queue = [];
-	});
+
+mongoClient.getConnection(function (err, db) {
+	if (err) {
+		console.log("Unable to connect to mongo DB."); 
+		queue.forEach(function (object) {
+			object.res.send(500);
+		});
+	} else {
+		console.log("Launching queued requests"); 
+		queue.forEach(function (object) {
+			object.next();
+		});
+	}
+	
+	queue = [];
 });
+
 
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
