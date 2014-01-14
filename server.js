@@ -10,6 +10,7 @@ var express = require('express');
 var users = require('./routes/users');
 var messages = require('./routes/messages');
 var routes = require('./routes');
+var mongoClient = require('./cw_mongo.js');
 
 var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
 var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
@@ -20,6 +21,24 @@ var path = require('path');
 var app = express();
 
 // all environments
+app.use(function (request, response, next) {
+	console.log("Connecting to mongo database");
+	mongoClient.getConnection(function (err, db) {
+		if (err) {
+			console.log("Unable to connect to mongo DB."); 
+			queue.forEach(function (object) {
+				object.res.send(500);
+			});
+		} else {
+			queue.forEach(function (object) {
+				object.res.next();
+			});
+		}
+		
+		queue = [];
+	});
+});
+
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -29,6 +48,13 @@ app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+
+app.use(function (request, response, next) {
+	if (mongoClient.isConnected()) { next(); }
+	else {
+   		queue.push({ req : req, res : res, next : next});
+	}
+});
 
 app.use(function (req, res, next) {
 	var authHeaderValue = "";

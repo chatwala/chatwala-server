@@ -1,4 +1,4 @@
-var MongoClient = require('mongodb').MongoClient
+var CWMongoClient = require('../cw_mongo.js');
 var format = require('util').format;
 var GUIDUtil = require('GUIDUtil');
 var config = require('../config.json');
@@ -7,7 +7,7 @@ var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
 
-var collection;
+/*var collection;
 MongoClient.connect(mongo_url, function(err,db) {
 	if(err) {
 		db.close();
@@ -17,7 +17,7 @@ MongoClient.connect(mongo_url, function(err,db) {
 		console.log("Mongo client connected to user collection.");
 		collection = db.collection('users');
 	}
-});
+});*/
 
 function registerNewUser( req, res )
 {
@@ -36,7 +36,27 @@ function registerNewUser( req, res )
 
 function saveNewUser(user_id, callback) {
 	
-	if (!collection) {			
+	CWMongoClient.getConnection (function (err, db) {
+	
+		if (err) { 
+			callback(error); 
+		} else {
+			var collection = db.collection('users');
+			
+			collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
+				if(!err) {
+					console.log("new user saved:",docs)
+					callback(null,docs);
+					//db.close();
+				}else {
+					callback(err);
+					//db.close();
+				}		
+			});	
+		}		
+	});
+	
+	/*if (!collection) {			
 		callback("Error occurred");
 	}
 	else {
@@ -50,7 +70,7 @@ function saveNewUser(user_id, callback) {
 				//db.close();
 			}		
 		});
-	}
+	}*/
 }
 
 /**
