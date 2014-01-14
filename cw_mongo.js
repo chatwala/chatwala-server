@@ -16,6 +16,7 @@ function getConnection(callback) {
 				callback(err, null);
 			}
 			else {
+				console.log("Connected to Mongo database.");
 				mongoDatabase = db;
 				callback(null, mongoDatabase);
 			}

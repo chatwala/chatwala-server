@@ -21,8 +21,8 @@ var path = require('path');
 var app = express();
 var queue = [];
 // all environments
-app.use(function (request, response, next) {
-	console.log("Connecting to mongo database");
+app.use(function () {
+
 	mongoClient.getConnection(function (err, db) {
 		if (err) {
 			console.log("Unable to connect to mongo DB."); 
@@ -32,7 +32,7 @@ app.use(function (request, response, next) {
 		} else {
 			console.log("Launching queued requests"); 
 			queue.forEach(function (object) {
-				object.res.next();
+				object.next();
 			});
 		}
 		
