@@ -22,7 +22,6 @@ var app = express();
 var queue = [];
 // all environments
 
-
 mongoClient.getConnection(function (err, db) {
 	if (err) {
 		console.log("Unable to connect to mongo DB."); 
@@ -39,7 +38,6 @@ mongoClient.getConnection(function (err, db) {
 	queue = [];
 });
 
-
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -50,7 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 
-app.use(function (request, response, next) {
+app.use(function (req, res, next) {
 	if (mongoClient.isConnected()) { next(); }
 	else {
 		console.log("Database not connected yet, queuing request");
