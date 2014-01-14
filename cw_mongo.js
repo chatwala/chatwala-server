@@ -1,11 +1,13 @@
 var MongoClient = require('mongodb').MongoClient;
 var config = require('./config.json');
+var mongo_url = config["MONGO_DB"];
 var azure = null;
 var mongoDatabase;
 
 function getConnection(callback) {
+	console.log("Get Connection.");
 	
-	if (mongoDatabase === undefined) {
+	if (mongoDatabase) {
 		callback(null,mongoDatabase);
 	}
 	else {

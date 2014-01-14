@@ -2,7 +2,6 @@ var CWMongoClient = require('../cw_mongo.js');
 var format = require('util').format;
 var GUIDUtil = require('GUIDUtil');
 var config = require('../config.json');
-var mongo_url = config["MONGO_DB"];
 var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
