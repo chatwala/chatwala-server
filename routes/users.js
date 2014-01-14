@@ -14,30 +14,43 @@ MongoClient.connect(mongo_url, function(err,db) {
 		throw err;
 	}
 	else {
+		console.log("Mongo client connected to user collection.");
 		collection = db.collection('users');
 	}
 });
 
 function registerNewUser( req, res )
 {
+	console.log("Creating new user.");
+	
 	var user_id = GUIDUtil.GUID();
 	saveNewUser(user_id, function(err,results){
-		if(err) throw err;
-		res.send(200,results);
+		if(err) {
+			console.log(err);
+			res.send(500);
+		} else {
+			res.send(200,results);
+		}
 	});
 }
 
 function saveNewUser(user_id, callback) {
-	collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
-		if(!err) {
-			console.log("new user saved:",docs)
-			callback(null,docs);
-			//db.close();
-		}else {
-			callback(err);
-			//db.close();
-		}		
-	});
+	
+	if (!collection) {			
+		callback("Error occurred");
+	}
+	else {
+		collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
+			if(!err) {
+				console.log("new user saved:",docs)
+				callback(null,docs);
+				//db.close();
+			}else {
+				callback(err);
+				//db.close();
+			}		
+		});
+	}
 }
 
 /**

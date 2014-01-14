@@ -7,9 +7,10 @@ console.log("Initializing node: " + new Date());
 
 "use strict";
 var express = require('express');
-var routes = require('./routes');
-var messages = require('./routes/messages');
 var users = require('./routes/users');
+var messages = require('./routes/messages');
+var routes = require('./routes');
+
 
 var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
 var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
@@ -31,8 +32,6 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 
 app.use(function (req, res, next) {
-	
-	console.log('Received request - authenticating');
 	var authHeaderValue = "";
 	var idHeaderValue = "";
 	
@@ -60,8 +59,7 @@ app.use(function (req, res, next) {
 			return;
 		}
 	}
-	
-    console.log ("Request authenticated!");
+
 	next();
 });
 

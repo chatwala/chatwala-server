@@ -1,13 +1,9 @@
-var azure = require("azure");
 var fs = require("fs");
-var azure = require('azure');
-var uuid = require('node-uuid');
-var nconf = require('nconf');
+
 var GUIDUtil = require('GUIDUtil');
 var shortURLPromise;
 var os = require("os");
 var MongoClient = require('mongodb').MongoClient
-var format = require('util').format;
 
 var config = require('../config.json');
 var mongo_url = config["MONGO_DB"];
@@ -15,7 +11,6 @@ var mongo_url = config["MONGO_DB"];
 
 var NO_BODY = "files not found";
 var NO_FILES = "body not found";
-
 
 var utility = require('../utility')
 
