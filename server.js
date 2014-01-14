@@ -3,7 +3,7 @@
  * Module dependencies.
  */
  
-console.log("Started node: " + new Date()); 
+console.log("Initializing node: " + new Date()); 
 
 "use strict";
 var express = require('express');
@@ -95,7 +95,8 @@ var server = http.createServer(app);
 
 
 server.listen(app.get('port'), function(){
-  console.log('listening on port ' + app.get('port') + " started:  " +  "Completed Node: " + new Date());
+  console.log('listening on port ' + app.get('port') + " started:  ");
+  console.log("Completed Node initialization: " + new Date());
 });
 // var serveraddress = server.address();
 // console.log("serveraddress",serveraddress);
