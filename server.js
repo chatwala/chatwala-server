@@ -30,6 +30,7 @@ app.use(function (request, response, next) {
 				object.res.send(500);
 			});
 		} else {
+			console.log("Launching queued requests"); 
 			queue.forEach(function (object) {
 				object.res.next();
 			});
@@ -52,6 +53,7 @@ app.use(express.methodOverride());
 app.use(function (request, response, next) {
 	if (mongoClient.isConnected()) { next(); }
 	else {
+		console.log("Database not connected yet, queuing request");
    		queue.push({ req : req, res : res, next : next});
 	}
 });
