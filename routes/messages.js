@@ -32,6 +32,7 @@ function getUserMessages( req, res ) {
 		if (err) { 
 			res.send(500,{"error":"unable to fetch messages - database error: " + err});
 		} else {
+			var collection = db.collection('users');
 			collection.findOne({"user_id":user_id}, function(err,user){
 				if(!err) {
 					var messages = user.inbox.sort(compareMessageMetadata);
