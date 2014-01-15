@@ -7,9 +7,7 @@ var fs = require("fs");
 var azure = require('azure');
 
 function registerNewUser( req, res )
-{
-	console.log("Creating new user.");
-	
+{	
 	var user_id = GUIDUtil.GUID();
 	saveNewUser(user_id, function(err,results){
 		if(err) {
@@ -32,7 +30,7 @@ function saveNewUser(user_id, callback) {
 			
 			collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
 				if(!err) {
-					console.log("new user saved:",docs)
+					console.log("new user saved in database: " + user_id);
 					callback(null,docs);
 				}else {
 					console.log("unable to save user to database: ", err);
@@ -50,17 +48,14 @@ function saveNewUser(user_id, callback) {
 function getProfilePicture( req, res )
 {
 	var user_id = req.params.user_id;
-	
-	console.log("fetching path for user_id:",user_id);
-	
 	var newPath = utility.createTempFilePath();
-	//first agrument is the container it should prob be "profilePicture" instead of "messages"
-	utility.getBlobService().getBlobToFile("messages", user_id, newPath, function(error){
+	
+	utility.getBlobService().getBlobToFile("pictures", user_id, newPath, function(error){
 		if(!error)
 		{
-			console.log("send file: ",newPath);
 			res.sendfile(newPath, function(err){
 				if(err) throw err;
+				console.log("sent picture: " + newPath + " for userId: " + user_id);
 				fs.unlink(newPath, function (err) {
 				  if (err) throw err;
 				  console.log('successfully deleted',newPath);
@@ -69,12 +64,11 @@ function getProfilePicture( req, res )
 			
 			
 		}else{
-			console.log("failed to retrieve file");
+			console.log("failed to retrieve picture: " + error);
 			res.send(404,{"status":"user not found", "user_id":user_id});
 		}
 	});
 }
-
 
 function updateProfilePicture( req, res )
 {
@@ -84,12 +78,9 @@ function updateProfilePicture( req, res )
 	// create a temp file
 	var tempFilePath = utility.createTempFilePath();
 	var file = fs.createWriteStream(tempFilePath);
-	
 
 	var fileSize = req.headers['content-length'];
 	var uploadedSize = 0;
-	
-	console.log("storing user blob with ID:",user_id);
 
 	// handle data events
 	req.on( "data",function( chunk ){
@@ -103,21 +94,18 @@ function updateProfilePicture( req, res )
 	file.on('drain', function() {
 	    req.resume();
 	});
-	console.log("userid", user_id)
-	console.log("file", tempFilePath)
 	
 	// handle end event
 	req.on("end",function(){
 		// save data to blob service with user_id
-		console.log("userid", user_id)
-		console.log("file", tempFilePath)
+		console.log("saving picture for userid", user_id)
 		//first agrument is the container it should prob be "profilePicture" instead of "messages"
-		utility.getBlobService().createBlockBlobFromFile("messages" , user_id, tempFilePath, function(error){
+		utility.getBlobService().createBlockBlobFromFile("pictures" , user_id, tempFilePath, function(error){
 			if(!error){
-				console.log("profile image stored!");
+				console.log("profile picture stored!");
 				res.send(200,[{ status:"OK"}]);
 			}else{
-				console.log("blob error",error);
+				console.log("profile picture upload blob error",error);
 				res.send(400,[{ error:"need image asset"}])
 			}
 			// delete the temp file

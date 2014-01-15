@@ -1,6 +1,5 @@
 var azure = require("azure");
 var fs = require("fs");
-var azure = require('azure');
 var uuid = require('node-uuid');
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
@@ -18,14 +17,23 @@ var mongo_url = config["MONGO_DB"];
 
 function getBlobService()
 {
-	if(blobService == null)
-	{
+	if(blobService == null) {
+
 		blobService = azure.createBlobService(account,access_key);
-		blobService.createContainerIfNotExists("messages", function(error){
-		    if(!error){
-				console.log("messages table ready!");
-		    }else{
-				console.log("failed to connect to blob service!");
+		blobService.createContainerIfNotExists("messages", function(error) {
+		    if(!error) {
+		    }
+		    else{
+				console.log("failed to connect to blob service: " + error);
+				blobService = null;
+			}
+		});
+		
+		blobService.createContainerIfNotExists("pictures", function(error) {
+		    if(!error) {
+		    }
+		    else {
+				console.log("failed to connect to blob service: " + error);
 				blobService = null;
 			}
 		});

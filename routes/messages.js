@@ -7,7 +7,7 @@ var CWMongoClient = require('../cw_mongo.js');
 var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";
 
-var utility = require('../utility')
+var utility = require('../utility');
 
 function compareMessageMetadata(a,b) {
   if (a.timestamp < b.timestamp)
@@ -24,7 +24,6 @@ Returns List of User's Messages
 **/
 
 function getUserMessages( req, res ) {
-	console.log("fetching messages");
 	var user_id = req.params.user_id;
 	
 	CWMongoClient.getConnection(function (err, db) {
@@ -46,24 +45,6 @@ function getUserMessages( req, res ) {
 			});	
 		}
 	});	
-	
-	/*MongoClient.connect(mongo_url, function(err, db)
-	{
-		if(err)throw err;
-		var collection = db.collection('users');
-		collection.findOne({"user_id":user_id}, function(err,user){
-			if(!err)
-			{
-				var messages = user.inbox.sort(compareMessageMetadata);
-				console.log("user messsages fetched: ", messages);
-				var results = { "user":user_id ,"messages":messages};
-				res.send(200,results)
-			}else{
-				res.send(404,{"status":"user not found"});
-			}
-			db.close();
-		});
-	});*/
 }
 
 
@@ -73,9 +54,6 @@ function getUserMessages( req, res ) {
 function getMessage( req, res )
 {
 	var message_id = req.params.message_id;
-	
-	console.log("fetching path for message_id:",message_id);
-	
 	var newPath = utility.createTempFilePath();
 	
 	utility.getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
@@ -90,9 +68,8 @@ function getMessage( req, res )
 				});
 			});
 			
-			
 		}else{
-			console.log("failed to retrieve file");
+			console.log("failed to retrieve wala file: " + error);
 			res.send(404,{"status":"message not found", "message_id":message_id});
 		}
 	});
