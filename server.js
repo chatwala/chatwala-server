@@ -50,7 +50,6 @@ app.use(express.methodOverride());
 
 app.use(function (req, res, next) {
 	if (mongoClient.isConnected()) { 
-		console.log("Connected");
 		next(); 
 	}
 	else {

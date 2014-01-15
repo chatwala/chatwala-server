@@ -36,7 +36,7 @@ function getUserMessages( req, res ) {
 			collection.findOne({"user_id":user_id}, function(err,user){
 				if(!err) {
 					var messages = user.inbox.sort(compareMessageMetadata);
-					console.log("user messsages fetched: ", messages);
+					console.log("user messages fetched for user: " + user_id);
 					var results = { "user":user_id ,"messages":messages};
 					res.send(200,results)
 				} else{
@@ -150,7 +150,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 				collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
 					if(!err)
 					{
-						console.log("updated inbox:",object);
+						console.log("updated inbox for recipient: " + recipient_id);
 						callback(null);
 					}else{
 						callback("unable to save outbound message - cannot find recipient: ", recipient_id);
