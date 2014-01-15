@@ -1,22 +1,13 @@
 var fs = require("fs");
 
 var GUIDUtil = require('GUIDUtil');
-var shortURLPromise;
 var os = require("os");
-var MongoClient = require('mongodb').MongoClient
+var CWMongoClient = require('../cw_mongo.js');
 
-var config = require('../config.json');
-var mongo_url = config["MONGO_DB"];
-
-
-var NO_BODY = "files not found";
-var NO_FILES = "body not found";
+var NO_FILES = "files not found";
+var NO_BODY = "no post information found for POST /messages";
 
 var utility = require('../utility')
-
-
-
-
 
 function compareMessageMetadata(a,b) {
   if (a.timestamp < b.timestamp)
@@ -32,11 +23,30 @@ Returns List of User's Messages
 
 **/
 
-function getUserMessages( req, res )
-{
+function getUserMessages( req, res ) {
 	console.log("fetching messages");
 	var user_id = req.params.user_id;
-	MongoClient.connect(mongo_url, function(err, db)
+	
+	CWMongoClient.getConnection(function (err, db) {
+	
+		if (err) { 
+			res.send(500,{"error":"unable to fetch messages - database error: " + err});
+		} else {
+			collection.findOne({"user_id":user_id}, function(err,user){
+				if(!err) {
+					var messages = user.inbox.sort(compareMessageMetadata);
+					console.log("user messsages fetched: ", messages);
+					var results = { "user":user_id ,"messages":messages};
+					res.send(200,results)
+				} else{
+					console.log("unable to fetch message for user - not found userId: ", user_id);
+					res.send(404,{"status":"user not found"});
+				}		
+			});	
+		}
+	});	
+	
+	/*MongoClient.connect(mongo_url, function(err, db)
 	{
 		if(err)throw err;
 		var collection = db.collection('users');
@@ -52,7 +62,7 @@ function getUserMessages( req, res )
 			}
 			db.close();
 		});
-	});
+	});*/
 }
 
 
@@ -91,34 +101,65 @@ function getMessage( req, res )
 function submitMessageMetadata( req, res )
 {
 	console.log("submitMessageMetadata");
-	if(req.hasOwnProperty("body"))
-	{
+	if(req.hasOwnProperty("body")) {
+	
 		var recipient_id = req.body.recipient_id;
 		var sender_id = req.body.sender_id;
-		console.log("recieved metadata!");
 		
 		var message_metadata =  req.body;
 		message_metadata.message_id = GUIDUtil.GUID();
 		message_metadata.timestamp = Math.round((new Date()).getTime() / 1000);
-		message_metadata.thumbnail = "http://" + req.headers.host + "/users/"+sender_id+"/picture";
+		message_metadata.thumbnail = "http://" + req.headers.host + "/users/" + sender_id + "/picture";
 		
-		saveOutGoingMessage(message_metadata, function(err){
+		saveOutGoingMessage(message_metadata, function(err) {
 			if(err)throw err;
 			var results = {status:"OK", message_id:message_metadata.message_id, url: ("http://chatwala.com/?" + message_metadata.message_id)};
-			console.log("sending response: ",results);
+			console.log("sending response: ", results);
 			res.send(200, results);
 		});
-	}else{
+	}
+	else {
 		console.log(NO_BODY);
         res.send(400,{status:"FAIL", message:NO_BODY});
 	}
 }
 
 
+function saveOutGoingMessage( message_metadata, callback ) {
+	CWMongoClient.getConnection(function (err, db) {
+	
+		if (err) { 
+			res.send(500,{"error":"unable to fetch messages - database error: " + err});
+		}
+		else {
+			var collection = db.collection('users');
+			var sender_id = message_metadata.sender_id;
+			var recipient_id = message_metadata.recipient_id;
+		
+			console.log("sender: ", sender_id);
+			console.log("locating recipient: ",recipient_id);
+		
+			if(message_metadata.recipient_id == "unknown_recipient") {
+				// unknown recipient
+				callback(null);
+			} else{
+				// known recipient
+				console.log("saving message: ", message_metadata );
+			
+				collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
+					if(!err)
+					{
+						console.log("updated inbox:",object);
+						callback(null);
+					}else{
+						callback("unable to save outbound message - cannot find recipient: ", recipient_id);
+					}
+				});
+			}
+		}
+	});
 
-function saveOutGoingMessage( message_metadata, callback )
-{
-	MongoClient.connect(mongo_url, function(err, db)
+	/*MongoClient.connect(mongo_url, function(err, db)
 	{
 		if(err)throw err;
 		var collection = db.collection('users');
@@ -148,16 +189,14 @@ function saveOutGoingMessage( message_metadata, callback )
 				db.close();
 			});
 		}
-	});
+	});*/
 }
 
 /**
  Endpoint Handler for Chatwala File (PUT)
 **/
-function uploadMessage( req, res )
-{
-	
-	
+function uploadMessage( req, res ) {
+
 	// get message_id parameter
 	var message_id = req.params.message_id;
 	// create a temp file
@@ -200,9 +239,6 @@ function uploadMessage( req, res )
 		});
 	});
 }
-
-
-
 
 exports.submitMessageMetadata = submitMessageMetadata;
 exports.uploadMessage = uploadMessage;

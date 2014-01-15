@@ -6,18 +6,6 @@ var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
 
-/*var collection;
-MongoClient.connect(mongo_url, function(err,db) {
-	if(err) {
-		db.close();
-		throw err;
-	}
-	else {
-		console.log("Mongo client connected to user collection.");
-		collection = db.collection('users');
-	}
-});*/
-
 function registerNewUser( req, res )
 {
 	console.log("Creating new user.");
@@ -35,7 +23,7 @@ function registerNewUser( req, res )
 
 function saveNewUser(user_id, callback) {
 	
-	CWMongoClient.getConnection (function (err, db) {
+	CWMongoClient.getConnection(function (err, db) {
 	
 		if (err) { 
 			callback(error); 
@@ -46,30 +34,14 @@ function saveNewUser(user_id, callback) {
 				if(!err) {
 					console.log("new user saved:",docs)
 					callback(null,docs);
-					//db.close();
 				}else {
+					console.log("unable to save user to database: ", err);
 					callback(err);
-					//db.close();
+
 				}		
 			});	
 		}		
 	});
-	
-	/*if (!collection) {			
-		callback("Error occurred");
-	}
-	else {
-		collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
-			if(!err) {
-				console.log("new user saved:",docs)
-				callback(null,docs);
-				//db.close();
-			}else {
-				callback(err);
-				//db.close();
-			}		
-		});
-	}*/
 }
 
 /**

@@ -2,12 +2,8 @@ var azure = require("azure");
 var fs = require("fs");
 var azure = require('azure');
 var uuid = require('node-uuid');
-var nconf = require('nconf');
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
-var MongoClient = require('mongodb').MongoClient
-var format = require('util').format;
-
 
 var blobService = null;
 var config = require('./config.json');

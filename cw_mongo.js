@@ -5,7 +5,6 @@ var azure = null;
 var mongoDatabase;
 
 function getConnection(callback) {
-	console.log("Get Connection.");
 	
 	if (mongoDatabase) {
 		callback(null,mongoDatabase);
