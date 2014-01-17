@@ -48,7 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 
-app.get('/monitor', function(res, req){
+app.get('/monitor', function(req, res) {
 	console.log("Reached monitor endpoint");
 	res.send(200);
 });
