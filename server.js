@@ -65,6 +65,7 @@ app.use(function (req, res, next) {
 	if (req.url === "/monitor") {
 		// The one exception to the authorization logic
 		next();
+		return;
 	}
 	
 	for(var item in req.headers) {
@@ -109,8 +110,7 @@ if ('development' == app.get('env')) {
 // routing
 app.get('/monitor', function(req, res) {
 	// Always return success - used for monitoring
-	setTimeout(res.send(200), 2000);
-	res.send(200);
+	setTimeout(function () { res.send(200); }, 3000);
 });
 
 app.get('/', routes.index);
@@ -122,8 +122,6 @@ app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
 app.get('/users/:user_id/picture', users.getProfilePicture)
 app.put('/users/:user_id/picture', users.updateProfilePicture)
-
-
 
 
 
