@@ -61,11 +61,8 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
 	var authHeaderValue = "";
 	var idHeaderValue = "";
-		
-	
 	
 	if (req.url === "/monitor") {
-
 		// The one exception to the authorization logic
 		next();
 	}
@@ -111,7 +108,7 @@ if ('development' == app.get('env')) {
 
 // routing
 app.get('/monitor', function(req, res) {
-	console.log("Reached monitor endpoint");
+	// Always return success - used for monitoring
 	res.send(200);
 });
 
