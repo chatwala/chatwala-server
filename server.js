@@ -62,7 +62,7 @@ app.use(function (req, res, next) {
 	var authHeaderValue = "";
 	var idHeaderValue = "";
 	
-	if (req.params.name === "monitor") {
+	if (req.route.path === "/monitor") {
 		// The one exception to the authorization logic
 		next();
 	}
