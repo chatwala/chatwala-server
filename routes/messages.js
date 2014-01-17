@@ -54,8 +54,9 @@ function getUserMessages( req, res ) {
 function getMessage( req, res )
 {
 	console.log("Redirecting to static blog");
+	var message_id = req.params.message_id;
 	res.writeHead(302, {
-		'Location': 'http://chatwaladeveast.blob.core.windows.net/messages/026d46c0-2ed2-fd73-3aa2-dd4be4ee55e8'
+		'Location': 'http://chatwaladeveast.blob.core.windows.net/messages/' + message_id
 	});
 	
 	res.end();
