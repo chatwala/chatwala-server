@@ -48,6 +48,11 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 
+app.get('/monitor', function(res, req){
+	console.log("Reached monitor endpoint");
+	res.send(200);
+});
+
 app.use(function (req, res, next) {
 	if (mongoClient.isConnected()) { 
 		next(); 
