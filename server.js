@@ -48,11 +48,6 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 
-app.get('/monitor', function(req, res) {
-	console.log("Reached monitor endpoint");
-	res.send(200);
-});
-
 app.use(function (req, res, next) {
 	if (mongoClient.isConnected()) { 
 		next(); 
@@ -66,6 +61,11 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
 	var authHeaderValue = "";
 	var idHeaderValue = "";
+	
+	if (req.params.name === "monitor") {
+		// The one exception to the authorization logic
+		next();
+	}
 	
 	for(var item in req.headers) {
 	
@@ -107,6 +107,11 @@ if ('development' == app.get('env')) {
 
 
 // routing
+app.get('/monitor', function(req, res) {
+	console.log("Reached monitor endpoint");
+	res.send(200);
+});
+
 app.get('/', routes.index);
 app.get('/register', users.registerNewUser);
 app.get('/users/:user_id/messages', messages.getUserMessages );
