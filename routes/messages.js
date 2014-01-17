@@ -58,7 +58,7 @@ function getMessage( req, res )
 		'Location': 'http://chatwaladeveast.blob.core.windows.net/messages/026d46c0-2ed2-fd73-3aa2-dd4be4ee55e8'
 	});
 	
-	response.end();
+	res.end();
 	
 	return;
 	/*var message_id = req.params.message_id;
