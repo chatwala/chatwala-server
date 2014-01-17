@@ -53,7 +53,15 @@ function getUserMessages( req, res ) {
 **/
 function getMessage( req, res )
 {
-	var message_id = req.params.message_id;
+	console.log("Redirecting to static blog");
+	res.writeHead(302, {
+		'Location': 'http://chatwaladeveast.blob.core.windows.net/messages/026d46c0-2ed2-fd73-3aa2-dd4be4ee55e8'
+	});
+	
+	response.end();
+	
+	return;
+	/*var message_id = req.params.message_id;
 	var newPath = utility.createTempFilePath();
 	
 	utility.getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
@@ -72,7 +80,7 @@ function getMessage( req, res )
 			console.log("failed to retrieve wala file: " + error);
 			res.send(404,{"status":"message not found", "message_id":message_id});
 		}
-	});
+	});*/
 }
 
 
