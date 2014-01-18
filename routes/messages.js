@@ -1,5 +1,5 @@
 var fs = require("fs");
-
+var azure = require("azure");
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 var CWMongoClient = require('../cw_mongo.js');
@@ -53,14 +53,29 @@ function getUserMessages( req, res ) {
 **/
 function getMessage( req, res )
 {
-	console.log("Redirecting to static blog");
 	var message_id = req.params.message_id;
-	res.writeHead(302, {
-		'Location': 'http://chatwaladeveast.blob.core.windows.net/messages/' + message_id
-	});
-	
-	res.end();
-	
+
+	//create a SAS that expires in an hour
+	var sharedAccessPolicy = {
+		AccessPolicy: {
+			Expiry: azure.date.minutesFromNow(60)
+		}
+	};
+
+	var sasUrl = utility.getBlobService().getBlobUrl("messages", blobName, sharedAccessPolicy);
+
+	if (sasUrl) {
+		console.log("Fetched url for blog, redirecting to: " + sasUrl);
+		res.writeHead(302, {
+			'Location': sasUrl
+		});
+		res.end();
+	}
+	else {
+		console.log("Unable to retrieve url for blob");
+		res.send(404);
+	}
+
 	return;
 	/*var message_id = req.params.message_id;
 	var newPath = utility.createTempFilePath();
