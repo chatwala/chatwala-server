@@ -70,28 +70,6 @@ function getProfilePicture( req, res )
 		console.log("Unable to retrieve shared access picture url for user: " + user_id);
 		res.send(404);
 	}
-	
-	/*
-	var newPath = utility.createTempFilePath();
-	
-	utility.getBlobService().getBlobToFile("pictures", user_id, newPath, function(error){
-		if(!error)
-		{
-			res.sendfile(newPath, function(err){
-				if(err) throw err;
-				console.log("sent picture: " + newPath + " for userId: " + user_id);
-				fs.unlink(newPath, function (err) {
-				  if (err) throw err;
-				  console.log('successfully deleted',newPath);
-				});
-			});
-			
-			
-		}else{
-			console.log("failed to retrieve picture: " + error);
-			res.send(404,{"status":"user not found", "user_id":user_id});
-		}
-	});*/
 }
 
 function updateProfilePicture( req, res )

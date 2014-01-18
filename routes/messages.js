@@ -76,34 +76,11 @@ function getMessage( req, res )
 		console.log("Unable to retrieve shared access url for message: " + message_id);
 		res.send(404);
 	}
-
-	return;
-	/*var message_id = req.params.message_id;
-	var newPath = utility.createTempFilePath();
-	
-	utility.getBlobService().getBlobToFile("messages", message_id, newPath, function(error){
-		if(!error)
-		{
-			console.log("send file: ",newPath);
-			res.sendfile(newPath, function(err){
-				if(err) throw err;
-				fs.unlink(newPath, function (err) {
-				  if (err) throw err;
-				  console.log('successfully deleted',newPath);
-				});
-			});
-			
-		}else{
-			console.log("failed to retrieve wala file: " + error);
-			res.send(404,{"status":"message not found", "message_id":message_id});
-		}
-	});*/
 }
 
 
 function submitMessageMetadata( req, res )
 {
-	console.log("submitMessageMetadata");
 	if(req.hasOwnProperty("body")) {
 	
 		var recipient_id = req.body.recipient_id;
@@ -161,38 +138,6 @@ function saveOutGoingMessage( message_metadata, callback ) {
 			}
 		}
 	});
-
-	/*MongoClient.connect(mongo_url, function(err, db)
-	{
-		if(err)throw err;
-		var collection = db.collection('users');
-		var sender_id = message_metadata.sender_id;
-		var recipient_id = message_metadata.recipient_id;
-		
-		console.log("sender: ", sender_id);
-		console.log("locating recipient: ",recipient_id);
-		
-		if(message_metadata.recipient_id == "unknown_recipient")
-		{
-			// unknown recipient
-			callback(null);
-		}else{
-			// known recipient
-			console.log("saving message: ", message_metadata );
-			
-			
-			collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
-				if(!err)
-				{
-					console.log("updated inbox:",object);
-					callback(null);
-				}else{
-					callback(err);
-				}
-				db.close();
-			});
-		}
-	});*/
 }
 
 /**
