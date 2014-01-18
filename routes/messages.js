@@ -62,7 +62,7 @@ function getMessage( req, res )
 		}
 	};
 
-	var sasUrl = utility.getBlobService().getBlobUrl("messages", blobName, sharedAccessPolicy);
+	var sasUrl = utility.getBlobService().getBlobUrl("messages", message_id, sharedAccessPolicy);
 
 	if (sasUrl) {
 		console.log("Fetched url for blog, redirecting to: " + sasUrl);
