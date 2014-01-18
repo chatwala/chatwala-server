@@ -66,14 +66,14 @@ function getMessage( req, res )
 	var sasUrl = utility.getBlobService().getBlobUrl("messages", message_id, sharedAccessPolicy);
 
 	if (sasUrl) {
-		console.log("Fetched url for blog, redirecting to: " + sasUrl);
+		console.log("Fetched shared access message url for blob - redirecting");
 		res.writeHead(302, {
 			'Location': sasUrl
 		});
 		res.end();
 	}
 	else {
-		console.log("Unable to retrieve url for blob");
+		console.log("Unable to retrieve shared access url for message: " + message_id);
 		res.send(404);
 	}
 

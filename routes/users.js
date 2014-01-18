@@ -48,6 +48,30 @@ function saveNewUser(user_id, callback) {
 function getProfilePicture( req, res )
 {
 	var user_id = req.params.user_id;
+	
+	//create a SAS that expires in an hour
+	var sharedAccessPolicy = {
+		AccessPolicy: {
+			Permissions: 'r',
+			Expiry: azure.date.minutesFromNow(60)
+		}
+	};
+
+	var sasUrl = utility.getBlobService().getBlobUrl("pictures", user_id, sharedAccessPolicy);
+
+	if (sasUrl) {
+		console.log("Fetched shared access url for picture blob - redirecting");
+		res.writeHead(302, {
+			'Location': sasUrl
+		});
+		res.end();
+	}
+	else {
+		console.log("Unable to retrieve shared access picture url for user: " + user_id);
+		res.send(404);
+	}
+	
+	/*
 	var newPath = utility.createTempFilePath();
 	
 	utility.getBlobService().getBlobToFile("pictures", user_id, newPath, function(error){
@@ -67,7 +91,7 @@ function getProfilePicture( req, res )
 			console.log("failed to retrieve picture: " + error);
 			res.send(404,{"status":"user not found", "user_id":user_id});
 		}
-	});
+	});*/
 }
 
 function updateProfilePicture( req, res )
