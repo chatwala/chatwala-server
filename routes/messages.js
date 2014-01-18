@@ -58,6 +58,7 @@ function getMessage( req, res )
 	//create a SAS that expires in an hour
 	var sharedAccessPolicy = {
 		AccessPolicy: {
+			Permissions: 'r',
 			Expiry: azure.date.minutesFromNow(60)
 		}
 	};
