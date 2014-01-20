@@ -33,7 +33,8 @@ function getUserMessages( req, res ) {
 		} else {
 			var collection = db.collection('users');
 			collection.findOne({"user_id":user_id}, function(err,user){
-				if(!err) {
+			
+				if(!err && user && user.inbox) {
 					var messages = user.inbox.sort(compareMessageMetadata);
 					console.log("user messages fetched for user: " + user_id);
 					var results = { "user":user_id ,"messages":messages};
@@ -46,7 +47,6 @@ function getUserMessages( req, res ) {
 		}
 	});	
 }
-
 
 /**
 	Endpoint Handler for retrieving message file
