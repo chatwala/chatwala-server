@@ -149,9 +149,14 @@ function uploadMessage( req, res ) {
 	var message_id = req.params.message_id;
 	var fileSize = req.headers['content-length'];
 	
+	console.log("Streaming message to blob...");
 	utility.getBlobService().createBlockBlobFromStream("messages", message_id, req, fileSize, [], function(err, arg1, arg2) {
-		if (err) return res.send(404, { error: "error uploading message" });
+		if (err) {
+			console.log("error uploading message file: " + err);
+			return res.send(404, { error: "error uploading message" });
+		}
 		else {
+			console.log("message stored!");
 			res.send(200, [{ status:"OK"}]);
 		}
 	});
