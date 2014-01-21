@@ -77,10 +77,11 @@ function updateProfilePicture( req, res ) {
 	var user_id = req.params.user_id;
 	var fileSize = req.headers['content-length'];
 	
-	console.log("Attempting to upload profile picture with content-length: " + fileSize);
+	console.log("Attempting to upload profile for user: " + user_id + " with content-length: " + fileSize);
 	utility.getBlobService().createBlockBlobFromStream("pictures", user_id, req, fileSize, [], function(err, arg1, arg2) {
 		if (err) return res.send(404, { error: "error saving profile image" });
 		else {
+			console.log("Profile picture stored!");
 			res.send(200, [{ status:"OK"}]);
 		}
 	});
