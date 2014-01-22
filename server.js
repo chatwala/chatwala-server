@@ -110,7 +110,7 @@ if ('development' == app.get('env')) {
 // routing
 app.get('/monitor', function(req, res) {
 	// Always return success - used for monitoring
-	setTimeout(function () { res.send(200); }, 3000);
+	setTimeout(function () { res.send(500); }, 3000);
 });
 
 app.get('/', routes.index);
