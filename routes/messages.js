@@ -147,18 +147,44 @@ function uploadMessage( req, res ) {
 
 	// get message_id parameter
 	var message_id = req.params.message_id;
-	var fileSize = req.headers['content-length'];
+	// create a temp file
+	var tempFilePath = utility.createTempFilePath();
+	var file = fs.createWriteStream(tempFilePath);
 	
-	console.log("Attempting to upload messageID: " + message_id + " with content-length: " + fileSize);
-	utility.getBlobService().createBlockBlobFromStream("messages", message_id, req, fileSize, [], function(err, arg1, arg2) {
-		if (err) {
-			console.log("error uploading message file: " + err);
-			return res.send(404, { error: "error uploading message" });
-		}
-		else {
-			console.log("message stored!");
-			res.send(200, [{ status:"OK"}]);
-		}
+
+	var fileSize = req.headers['content-length'];
+	var uploadedSize = 0;
+	
+	console.log("storing message blob with ID:",message_id);
+
+	// handle data events
+	req.on( "data",function( chunk ){
+		uploadedSize += chunk.length;
+		var bufferStore = file.write(chunk);
+		if(bufferStore == false)
+			req.pause();
+	});
+	
+	// handle drain events
+	file.on('drain', function() {
+	    req.resume();
+	});
+	
+	// handle end event
+	req.on("end",function(){
+		// save data to blob service with message_id
+		utility.getBlobService().createBlockBlobFromFile("messages" , message_id, tempFilePath, function(error){
+			if(!error){
+				console.log("message stored!");
+				res.send(200,[{ status:"OK"}]);
+			}else{
+				console.log("error",error);
+			}
+			// delete the temp file
+			fs.unlink(tempFilePath,function(err){
+
+			});
+		});
 	});
 }
 

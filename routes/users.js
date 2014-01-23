@@ -72,18 +72,49 @@ function getProfilePicture( req, res )
 	}
 }
 
-function updateProfilePicture( req, res ) {
-		// get user_id parameter
-	var user_id = req.params.user_id;
-	var fileSize = req.headers['content-length'];
+function updateProfilePicture( req, res )
+{
 	
-	console.log("Attempting to upload profile for user: " + user_id + " with content-length: " + fileSize);
-	utility.getBlobService().createBlockBlobFromStream("pictures", user_id, req, fileSize, [], function(err, arg1, arg2) {
-		if (err) return res.send(404, { error: "error saving profile image" });
-		else {
-			console.log("Profile picture stored!");
-			res.send(200, [{ status:"OK"}]);
-		}
+	// get user_id parameter
+	var user_id = req.params.user_id;
+	// create a temp file
+	var tempFilePath = utility.createTempFilePath();
+	var file = fs.createWriteStream(tempFilePath);
+
+	var fileSize = req.headers['content-length'];
+	var uploadedSize = 0;
+
+	// handle data events
+	req.on( "data",function( chunk ){
+		uploadedSize += chunk.length;
+		var bufferStore = file.write(chunk);
+		if(bufferStore == false)
+			req.pause();
+	});
+	
+	// handle drain events
+	file.on('drain', function() {
+	    req.resume();
+	});
+	
+	// handle end event
+	req.on("end",function(){
+		// save data to blob service with user_id
+		console.log("saving picture for userid", user_id)
+		//first agrument is the container it should prob be "profilePicture" instead of "messages"
+		utility.getBlobService().createBlockBlobFromFile("pictures" , user_id, tempFilePath, function(error){
+			if(!error){
+				console.log("profile picture stored!");
+				res.send(200,[{ status:"OK"}]);
+			}else{
+				console.log("profile picture upload blob error",error);
+				res.send(400,[{ error:"need image asset"}])
+			}
+			// delete the temp file
+			fs.unlink(tempFilePath,function(err){
+
+			});
+		});
 	});
 }
 
