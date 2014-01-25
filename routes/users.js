@@ -12,7 +12,10 @@ function registerNewUserWithPush( req, res){
 
 	if(req.hasOwnProperty('body')){
 		
-		if(req.body.platform_type && req.body.user_id && req.body.push_token){
+		if(typeof req.body.user_id === 'undefined') {
+			res.send(400,[{ error:"need user id"}]);
+		}
+		else if(req.body.platform_type && req.body.user_id && req.body.push_token){
 			
 			var platform_type = req.body.platform_type;
 			var user_id = req.body.user_id;
@@ -25,8 +28,8 @@ function registerNewUserWithPush( req, res){
 					console.log("Successfully registered user device for push notifications.");
 					res.send(200, registration);
 				} else {
-					console.log("Registration failed with error: ",error);
-					res.send(500);
+					console.log("Push notification registration failed with error: ", error);
+					res.send(200);
 				}
 			}
 			
@@ -46,7 +49,7 @@ function registerNewUserWithPush( req, res){
 								res.send(200, [{'status':'OK'}]);
 							}
 							else {
-								res.send(500, 'Unknown platform type.');
+								res.send(200, 'Unknown platform type.');
 							}
 							firstRegistration = false;
 						} else {
@@ -67,14 +70,13 @@ function registerNewUserWithPush( req, res){
 						res.send(200, [{'status':'OK'}]);
 					}
 					else {
-						res.send(500, 'Unknown client.');
+						res.send(200, 'Unknown client.');
 					}
 				}
 			});		
 		}
-		else{
-			console.log("error on registerNewUserWithPush: all body values not defined");
-			res.send(400,[{ error:"need body fields set"}]);
+		else {
+			res.send(200);
 		}
 
 	}
@@ -82,8 +84,6 @@ function registerNewUserWithPush( req, res){
 		console.log("Error on registerNewUserWithPush : no body");
 		res.send(400, [{ error:"need body"}]);
 	}
-
-
 }
 
 function addPushTokenToDB( user_id, token_id, callback){
