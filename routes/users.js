@@ -61,7 +61,7 @@ function registerNewUserWithPush( req, res){
 					// Create a new registration.
 					if (platform_type === 'ios') {
 						console.log("Starting APNS registration.");
-						var template = '{\"aps\":{\"alert\":\"$(message)\"}, \"content-available\":$(content_available)}';
+						var template = '{\"aps\":{\"alert\":\"$(message)\"}, \"content-available\":\"$(content_available)\"}';
 						hub.apns.createTemplateRegistration(push_token, 
 						[user_id], template, registrationComplete);
 					} 
