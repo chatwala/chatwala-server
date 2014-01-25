@@ -131,7 +131,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 					if(!err)
 					{
 						console.log("updated inbox for recipient: " + recipient_id);
-						var payload = {"alert": "You have a received a new Chatwala reply."};
+						var payload = {"content-available": 1,"alert": "You have a received a new Chatwala reply."};
 						
 						console.log("Sending notification, payload: ", payload);
 						console.log("Recipient ID as tag: ", recipient_id);								
