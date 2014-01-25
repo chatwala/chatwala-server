@@ -1,6 +1,6 @@
 {
     "STORAGE_NAME": "chatwalasandbox",
-    "STORAGE_KEY": "4f+HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
+    "STORAGE_KEY": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
     "PARTITION_KEY": "chatwalasandbox",
     "TABLE_NAME": "messages",
 	"MONGO_DB": "mongodb://chatwala-sandbox:RKjUdLzWpOWD1G1F0a2xgluwt6YJSc9uzACAmP9z5VQ-@ds031088.mongolab.com:31088/chatwala-sandbox"
