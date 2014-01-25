@@ -20,8 +20,8 @@ function registerNewUserWithPush( req, res){
 
 			if(platform_type === 'ios'){
 				console.log("Platform_type is equal to ios");
-				storePushCertToDB(user_id, push_token, function(err, user){
-					if(!err){
+				//storePushCertToDB(user_id, push_token, function(err, user){
+					//if(!err){
 						try{
 							var payload = {
 								alert: "Hello!"
@@ -44,11 +44,11 @@ function registerNewUserWithPush( req, res){
 							res.send(500, {"error": e})
 						}
 
-					}
+					/*}
 					else{
 						console.log("Error assigning user push_token");
 					}
-				})
+				})*/
 
 			}
 			else if(platform_type === 'android'){
