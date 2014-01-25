@@ -5,11 +5,11 @@ var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 
 var blobService = null;
-var config = require('./config.json');
-var account = config["STORAGE_NAME"];
-var access_key = config["STORAGE_KEY"];
-var host = config["PARTITION_KEY"];
-var mongo_url = config["MONGO_DB"];
+var config = require('./config.js')();
+var account = config.azure.storage_name; //config["STORAGE_NAME"];
+var access_key = config.azure.storage_key //config["STORAGE_KEY"];
+//var host = config["PARTITION_KEY"];
+//var mongo_url = config.db.mongodb // config["MONGO_DB"];
 /**
  Lazy Creation of Blob Service
 
