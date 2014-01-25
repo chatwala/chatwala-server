@@ -25,6 +25,7 @@ function registerNewUserWithPush( req, res){
 					console.log("Successfully registered user device for push notifications.");
 					res.send(200, registration);
 				} else {
+					console.log("Registration failed with error: ",error);
 					res.send(500, 'Registration failed!');
 				}
 			}
