@@ -28,7 +28,7 @@ function registerNewUserWithPush( req, res){
 							}
 
 							var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
-							hub.apns.send(null, payload, function(err){
+							hub.apns.send([push_token], payload, function(err){
 								if(err){
 									console.log("Error sending APNS payload to " + user_id);
 									console.log(err);
