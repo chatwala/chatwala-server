@@ -3,7 +3,8 @@ var azure = require("azure");
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 var CWMongoClient = require('../cw_mongo.js');
-var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
+var config = require('../config.json');
+var hub = azure.createNotificationHubService(config.HUB_NAME, config.SB_ENDPOINT,config.SB_KEYNAME,config.SB_KEY);
 
 var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";

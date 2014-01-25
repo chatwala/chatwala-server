@@ -5,7 +5,7 @@ var config = require('../config.json');
 var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
-var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
+var hub = azure.createNotificationHubService(config.HUB_NAME, config.SB_ENDPOINT,config.SB_KEYNAME,config.SB_KEY);
 
 
 function registerNewUserWithPush( req, res){
