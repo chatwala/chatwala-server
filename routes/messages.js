@@ -41,8 +41,8 @@ function getUserMessages( req, res ) {
 					var results = { "user":user_id ,"messages":messages};
 					res.send(200,results)
 				} else{
-					console.log("unable to fetch message for user - not found userId: ", user_id);
-					res.send(404,{"status":"user not found"});
+					console.log("unable to fetch message for user " + user_id + " error: ", err);
+					res.send(404);
 				}		
 			});	
 		}
@@ -135,22 +135,18 @@ function saveOutGoingMessage( message_metadata, callback ) {
 						
 						console.log("Sending notification, payload: ", payload);
 						console.log("Recipient ID as tag: ", recipient_id);								
-						hub.apns.send([recipient_id], payload, function(arg1,arg2,arg3){
-							
-							console.log("ARG1: ", arg1);
-							console.log("ARG2: ", arg2);
-							console.log("ARG2: ", arg3);
-							callback(null);
+						hub.apns.send(recipient_id, payload, function(err,result,responseObject){
 						
-							/*if(err){
+							if(err){
 								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
 								callback(err);
 							}
 							else{
 								console.log('successfully sent push notification to user: ' + recipient_id);
+								console.log('Results: ',result);
 								callback(null);
-							}*/
+							}
 						})
 
 					} else{
