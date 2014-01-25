@@ -28,14 +28,22 @@ function registerNewUserWithPush( req, res){
 							}
 
 							var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
-							hub.apns.send([push_token], payload, function(err){
-								if(err){
-									console.log("Error sending APNS payload to " + user_id);
-									console.log(err);
+							hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
+								if(error){
+									console.log(error);
 								}
 								else{
-									console.log('hitting registerNewUserWithPush for ios client');
-									res.send(200,{"status":"OK"});
+									console.log(registration);
+									hub.apns.send([user_id], payload, function(err){
+										if(err){
+											console.log("Error sending APNS payload to " + user_id);
+											console.log(err);
+										}
+										else{
+											console.log('hitting registerNewUserWithPush for ios client');
+											res.send(200,{"status":"OK"});
+										}
+									})
 								}
 							})
 						}catch(e){
