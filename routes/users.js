@@ -11,7 +11,7 @@ var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala
 function registerNewUserWithPush( req, res){
 
 	if(req.hasOwnProperty('body')){
-		console.log("getting into registerNewUserWithPush...");
+		
 		if(req.body.platform_type && req.body.user_id && req.body.push_token){
 
 			var platform_type = req.body.platform_type;
@@ -22,6 +22,7 @@ function registerNewUserWithPush( req, res){
 			var registrationComplete = function(error, registration) {
 				if (!error) {
 					// Return the registration.
+					console.log("Successfully registered user device for push notifications.");
 					res.send(200, registration);
 				} else {
 					res.send(500, 'Registration failed!');
@@ -44,7 +45,7 @@ function registerNewUserWithPush( req, res){
 								res.send(200, [{'status':'OK'}]);
 							}
 							else {
-								res.send(500, 'Unknown client.');
+								res.send(500, 'Unknown platform type.');
 							}
 							firstRegistration = false;
 						} else {
