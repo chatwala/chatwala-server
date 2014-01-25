@@ -105,7 +105,6 @@ function submitMessageMetadata( req, res )
 	}
 }
 
-
 function saveOutGoingMessage( message_metadata, callback ) {
 	CWMongoClient.getConnection(function (err, db) {
 	
@@ -128,15 +127,11 @@ function saveOutGoingMessage( message_metadata, callback ) {
 				console.log("saving message: ", message_metadata );
 			
 				collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
-					if(!err)
-					{
+					if(!err) {
 						console.log("updated inbox for recipient: " + recipient_id);
 						var payload = {"content-available": 1,"alert": "You have a received a new Chatwala reply."};
-						
-						console.log("Sending notification, payload: ", payload);
-						console.log("Recipient ID as tag: ", recipient_id);								
+
 						hub.apns.send(recipient_id, payload, function(err,result,responseObject){
-						
 							if(err){
 								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
@@ -144,12 +139,12 @@ function saveOutGoingMessage( message_metadata, callback ) {
 							}
 							else{
 								console.log('successfully sent push notification to user: ' + recipient_id);
-								console.log('Results: ',result);
 								callback(null);
 							}
 						})
 
-					} else{
+					} 
+					else{
 						callback("unable to save outbound message - cannot find recipient: ", recipient_id);
 					}
 				});
