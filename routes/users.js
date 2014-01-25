@@ -34,7 +34,7 @@ function registerNewUserWithPush( req, res){
 								}
 								else{
 									console.log(registration);
-									hub.apns.send([user_id], payload, function(err){
+									hub.apns.send(user_id, payload, function(err){
 										if(err){
 											console.log("Error sending APNS payload to " + user_id);
 											console.log(err);
