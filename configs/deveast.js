@@ -4,11 +4,11 @@ module.exports = {
     },
     "azure": { 
         "storage_name": "chatwaladeveast",
-        "storage_key": "V8Z4XKOcA6LOT+WWV8L1RWjCBeRS7fE790BoR0qeI3s53fRc3Qzv57PFHm3oWMCFUfZRNy+8b/IzeTD+i8++5Q==",
-        "partition_key": "chatwaladev"
-    },
-    "logger": {
-        "api": "logs/api.log",
-        "exception": "logs/exceptions.log"
+        "storage_key": "4f+gAOTgCVGswb1CUSe5N13Xo3bFW1LYwoNweBgeeVRdOpjoMzE69cpUPUVpEmxd0R+FHxxfLdF0fVfQNmil0A==",
+        "partition_key": "chatwaladeveast",
+        "hub_name" : "chatwala-dev-push",
+        "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
+        "hub_keyname" : "DefaultFullSharedAccessSignature",
+        "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
     }
 };
