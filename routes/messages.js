@@ -133,22 +133,23 @@ function saveOutGoingMessage( message_metadata, callback ) {
 						console.log("updated inbox for recipient: " + recipient_id);
 						var payload = {
 							"aps":{
-								"alert": "New Chatwala Message"
+								"alert": "You have a new reply."
 							}
 						}
+											
 						hub.apns.send(recipient_id, payload, function(err){
 							if(err){
-								console.log("Error sending APNS payload to " + user_id);
+								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
-								callback(err)
+								callback(null);
 							}
 							else{
-								console.log('hitting registerNewUserWithPush for ios client');
-								callback(null)
+								console.log('successfully sent push notification to user: ' + recipient_id);
+								callback(null);
 							}
 						})
 
-					}else{
+					} else{
 						callback("unable to save outbound message - cannot find recipient: ", recipient_id);
 					}
 				});

@@ -23,21 +23,18 @@ function registerNewUserWithPush( req, res){
 				//storePushCertToDB(user_id, push_token, function(err, user){
 					//if(!err){
 						try{
-							var payload = {
-								alert: "Hello!"
-							}
 							
 							hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
 								if(error){
 									console.log(error);
 								}
 								else{
-									console.log(registration);
+									console.log("Successfully registered device token for user: " + user_id);
 
 								}
 							})
 						}catch(e){
-							console.log("error trying to connet to Service Bus")
+							console.log("error trying to connet to notification service bus")
 							console.log(e);
 							res.send(500, {"error": e})
 						}
