@@ -100,8 +100,8 @@ function submitMessageMetadata( req, res )
 		});
 	}
 	else {
-		console.log(NO_BODY);
-        res.send(400,{status:"FAIL", message:NO_BODY});
+		console.log("NO_BODY");
+        res.send(400,{status:"FAIL", message:"NO_BODY"});
 	}
 }
 
