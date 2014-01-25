@@ -77,6 +77,7 @@ function storePushCertToDB( user_id, token_id, callback){
 		else {
 			var collection = db.collection('users');
 			collection.find({"user_id":user_id, "devices": token_id}, function(err, obj){
+				console.log(obj);
 				if(err){
 					callback(err);
 				}
