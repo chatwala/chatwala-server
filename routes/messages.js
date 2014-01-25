@@ -135,8 +135,14 @@ function saveOutGoingMessage( message_metadata, callback ) {
 						
 						console.log("Sending notification, payload: ", payload);
 						console.log("Recipient ID as tag: ", recipient_id);								
-						hub.apns.send([recipient_id], payload, function(err){
-							if(err){
+						hub.apns.send([recipient_id], payload, function(arg1,arg2,arg3){
+							
+							console.log("ARG1: " + arg1);
+							console.log("ARG2: " + arg2);
+							console.log("ARG2: " + arg3);
+							callback(null);
+						
+							/*if(err){
 								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
 								callback(err);
@@ -144,7 +150,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 							else{
 								console.log('successfully sent push notification to user: ' + recipient_id);
 								callback(null);
-							}
+							}*/
 						})
 
 					} else{
