@@ -13,12 +13,13 @@ function registerNewUserWithPush( req, res){
 	if(req.hasOwnProperty('body')){
 		console.log("getting into registerNewUserWithPush...");
 		if(req.body.platform_type && req.body.user_id && req.body.push_token){
-			console.log(req.body);
+
 			var platform_type = req.body.platform_type;
 			var user_id = req.body.user_id;
 			var push_token = req.body.push_token;
 
 			if(platform_type === 'ios'){
+				console.log("Platform_type is equal to ios");
 				storePushCertToDB(user_id, push_token, function(err, user){
 					if(!err){
 						try{
@@ -50,6 +51,8 @@ function registerNewUserWithPush( req, res){
 
 			}
 			else if(platform_type === 'android'){
+				console.log("platform_type is android");
+				res.send(200, [{'status':'OK'}]);
 			}
 		}
 		else{
