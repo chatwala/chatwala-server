@@ -29,9 +29,9 @@ function registerNewUserWithPush( req, res){
 			var registrationComplete = function(error, registration) {
 				if (!error) {
 					// Return the registration.
-					response.send(200, registration);
+					res.send(200, registration);
 				} else {
-					response.send(500, 'Registration failed!');
+					res.send(500, 'Registration failed!');
 				}
 			}
 			
@@ -46,7 +46,7 @@ function registerNewUserWithPush( req, res){
 									existingRegs[i].DeviceToken = push_token;
 									hub.updateRegistration(existingRegs[i], registrationComplete);
 								} else {
-									response.send(500, 'Unknown client.');
+									res.send(500, 'Unknown client.');
 								}
 								firstRegistration = false;
 							} else {
@@ -60,7 +60,7 @@ function registerNewUserWithPush( req, res){
 							hub.apns.createNativeRegistration(push_token, 
 							[user_id], registrationComplete);
 						} else {
-							response.send(500, 'Unknown client.');
+							res.send(500, 'Unknown client.');
 						}
 					}
 				});			
