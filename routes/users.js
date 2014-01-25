@@ -16,14 +16,7 @@ function registerNewUserWithPush( req, res){
 
 			var platform_type = req.body.platform_type;
 			var user_id = req.body.user_id;
-			var push_token = req.body.push_token;
-
-			if(platform_type === 'ios'){
-				//console.log("Platform_type is equal to ios");
-				//storePushCertToDB(user_id, push_token, function(err, user){
-					//if(!err){
-				//		try{
-			
+			var push_token = req.body.push_token;			
 			
 			// Function called when registration is completed.
 			var registrationComplete = function(error, registration) {
@@ -36,66 +29,44 @@ function registerNewUserWithPush( req, res){
 			}
 			
 			// Get existing registrations.
-				hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
-					var firstRegistration = true;
-					if (existingRegs.length > 0) {
-						 for (var i = 0; i < existingRegs.length; i++) {
-							if (firstRegistration) {
-								// Update an existing registration.
-								if (platform_type === 'ios') {
-									existingRegs[i].DeviceToken = push_token;
-									hub.updateRegistration(existingRegs[i], registrationComplete);
-								} else {
-									res.send(500, 'Unknown client.');
-								}
-								firstRegistration = false;
-							} else {
-								// We shouldn't have any extra registrations; delete if we do.
-								hub.deleteRegistration(existingRegs[i].RegistrationId, null);
+			hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
+				var firstRegistration = true;
+				if (existingRegs.length > 0) {
+					 for (var i = 0; i < existingRegs.length; i++) {
+						if (firstRegistration) {
+							// Update an existing registration.
+							if (platform_type === 'ios') {
+								existingRegs[i].DeviceToken = push_token;
+								hub.updateRegistration(existingRegs[i], registrationComplete);
+							} 
+							else if(platform_type === 'android'){
+								console.log("platform_type is android");
+								res.send(200, [{'status':'OK'}]);
 							}
-						}
-					} else {
-						// Create a new registration.
-						if (platform_type === 'ios') {
-							hub.apns.createNativeRegistration(push_token, 
-							[user_id], registrationComplete);
+							else {
+								res.send(500, 'Unknown client.');
+							}
+							firstRegistration = false;
 						} else {
-							res.send(500, 'Unknown client.');
+							// We shouldn't have any extra registrations; delete if we do.
+							hub.deleteRegistration(existingRegs[i].RegistrationId, null);
 						}
 					}
-				});			
-				
-				/*hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
-					if(error){
-						console.log(error);
+				} else {
+					// Create a new registration.
+					if (platform_type === 'ios') {
+						hub.apns.createNativeRegistration(push_token, 
+						[user_id], registrationComplete);
+					} 
+					else if(platform_type === 'android'){
+						console.log("platform_type is android");
+						res.send(200, [{'status':'OK'}]);
 					}
-					else{
-						console.log("Successfully registered device token for user: " + user_id);
-
+					else {
+						res.send(500, 'Unknown client.');
 					}
-				})*/
-				//}
-				
-				/*catch(e){
-					console.log("error trying to connet to notification service bus")
-					console.log(e);
-					res.send(500, {"error": e})
-				}*/
-
-			
-			
-			
-					/*}
-					else{
-						console.log("Error assigning user push_token");
-					}
-				})*/
-
-			}
-			else if(platform_type === 'android'){
-				console.log("platform_type is android");
-				res.send(200, [{'status':'OK'}]);
-			}
+				}
+			});		
 		}
 		else{
 			console.log("error on registerNewUserWithPush: all body values not defined");
@@ -111,7 +82,7 @@ function registerNewUserWithPush( req, res){
 
 }
 
-function storePushCertToDB( user_id, token_id, callback){
+function addPushTokenToDB( user_id, token_id, callback){
 	CWMongoClient.getConnection(function (err, db) {
 		if (err) { 
 			callback(error); 
