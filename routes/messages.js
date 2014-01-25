@@ -129,7 +129,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 				collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
 					if(!err) {
 						console.log("updated inbox for recipient: " + recipient_id);
-						var payload = {"content-available": 1,"message": "You have a received a new Chatwala reply."};
+						var payload = {"content_available": 1,"message": "You have a received a new Chatwala reply."};
 
 						hub.send(recipient_id, payload, function(err,result,responseObject){
 							if(err){
