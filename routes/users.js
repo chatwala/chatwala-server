@@ -56,8 +56,9 @@ function registerNewUserWithPush( req, res){
 				} else {
 					// Create a new registration.
 					if (platform_type === 'ios') {
-						hub.apns.createNativeRegistration(push_token, 
-						[user_id], registrationComplete);
+						var template = '{\"aps\":{\"alert\":\"$(message)\"}, \"content-available\":$(content-available)}';
+						hub.apns.createTemplateRegistration(push_token, 
+						[user_id], template, registrationComplete);
 					} 
 					else if(platform_type === 'android'){
 						console.log("platform_type is android");
@@ -180,8 +181,7 @@ function getProfilePicture( req, res )
         }
 }
 
-function updateProfilePicture( req, res )
-{
+function updateProfilePicture( req, res ) {
         
         // get user_id parameter
         var user_id = req.params.user_id;

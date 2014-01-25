@@ -129,9 +129,9 @@ function saveOutGoingMessage( message_metadata, callback ) {
 				collection.findAndModify({"user_id":recipient_id},[['_id','asc']],{ $push:{"inbox": message_metadata  }},{},function(err,object){
 					if(!err) {
 						console.log("updated inbox for recipient: " + recipient_id);
-						var payload = {"content-available": 1,"alert": "You have a received a new Chatwala reply."};
+						var payload = {"content-available": 1,"message": "You have a received a new Chatwala reply."};
 
-						hub.apns.send(recipient_id, payload, function(err,result,responseObject){
+						hub.send(recipient_id, payload, function(err,result,responseObject){
 							if(err){
 								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
