@@ -19,26 +19,72 @@ function registerNewUserWithPush( req, res){
 			var push_token = req.body.push_token;
 
 			if(platform_type === 'ios'){
-				console.log("Platform_type is equal to ios");
+				//console.log("Platform_type is equal to ios");
 				//storePushCertToDB(user_id, push_token, function(err, user){
 					//if(!err){
-						try{
-							
-							hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
-								if(error){
-									console.log(error);
+				//		try{
+			
+			
+			// Function called when registration is completed.
+			var registrationComplete = function(error, registration) {
+				if (!error) {
+					// Return the registration.
+					response.send(200, registration);
+				} else {
+					response.send(500, 'Registration failed!');
+				}
+			}
+			
+			// Get existing registrations.
+				hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
+					var firstRegistration = true;
+					if (existingRegs.length > 0) {
+						 for (var i = 0; i < existingRegs.length; i++) {
+							if (firstRegistration) {
+								// Update an existing registration.
+								if (platform_type === 'ios') {
+									existingRegs[i].DeviceToken = push_token;
+									hub.updateRegistration(existingRegs[i], registrationComplete);
+								} else {
+									response.send(500, 'Unknown client.');
 								}
-								else{
-									console.log("Successfully registered device token for user: " + user_id);
-
-								}
-							})
-						}catch(e){
-							console.log("error trying to connet to notification service bus")
-							console.log(e);
-							res.send(500, {"error": e})
+								firstRegistration = false;
+							} else {
+								// We shouldn't have any extra registrations; delete if we do.
+								hub.deleteRegistration(existingRegs[i].RegistrationId, null);
+							}
 						}
+					} else {
+						// Create a new registration.
+						if (platform_type === 'ios') {
+							hub.apns.createNativeRegistration(push_token, 
+							[userId], registrationComplete);
+						} else {
+							response.send(500, 'Unknown client.');
+						}
+					}
+				});			
+				
+				/*hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
+					if(error){
+						console.log(error);
+					}
+					else{
+						console.log("Successfully registered device token for user: " + user_id);
 
+					}
+				})*/
+				//}
+				
+				/*catch(e){
+					console.log("error trying to connet to notification service bus")
+					console.log(e);
+					res.send(500, {"error": e})
+				}*/
+
+			
+			
+			
 					/*}
 					else{
 						console.log("Error assigning user push_token");
