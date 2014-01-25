@@ -28,7 +28,7 @@ function registerNewUserWithPush( req, res){
 							}
 
 							var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
-							hub.apns.send(user.devices[0], payload, function(err){
+							hub.apns.send(null, payload, function(err){
 								if(err){
 									console.log("Error sending APNS payload to " + user_id);
 									console.log(err);
@@ -78,11 +78,12 @@ function storePushCertToDB( user_id, token_id, callback){
 		else {
 			var collection = db.collection('users');
 			collection.find({"user_id":user_id, "devices": token_id}, function(err, obj){
-				console.log(obj);
+				console.log("obj count");
+				console.log(obj.count());
 				if(err){
 					callback(err);
 				}
-				else if(obj.length === 0){
+				else if(obj.count() === 0){
 
 					collection.findAndModify({"user_id":user_id},{ $push:{"devices": token_id  }},{},function(err,object){
 						if(!err){
