@@ -115,6 +115,7 @@ app.get('/monitor', function(req, res) {
 
 app.get('/', routes.index);
 app.get('/register', users.registerNewUser);
+app.post('/register', users.registerNewUserWithPush);
 app.get('/users/:user_id/messages', messages.getUserMessages );
 //app.get('/users/:user_id/messages/:message_id', messages.getMessage );
 app.get('/messages/:message_id', messages.getMessage );
