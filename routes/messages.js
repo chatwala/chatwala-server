@@ -133,7 +133,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 						console.log("updated inbox for recipient: " + recipient_id);
 						var payload = {"aps":{"alert": "You have a new reply."}};
 											
-						hub.apns.send([recipient_id], payload, function(err){
+						hub.send([recipient_id], payload, function(err){
 							if(err){
 								console.log("Error sending APNS payload to " + recipient_id);
 								console.log(err);
