@@ -5,7 +5,7 @@ var config = require('../config.json');
 var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
-
+var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
 
 
 function registerNewUserWithPush( req, res){
@@ -26,24 +26,14 @@ function registerNewUserWithPush( req, res){
 							var payload = {
 								alert: "Hello!"
 							}
-
-							var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
+							
 							hub.apns.createNativeRegistration(push_token, [user_id], function(error, registration){
 								if(error){
 									console.log(error);
 								}
 								else{
 									console.log(registration);
-									hub.apns.send(user_id, payload, function(err){
-										if(err){
-											console.log("Error sending APNS payload to " + user_id);
-											console.log(err);
-										}
-										else{
-											console.log('hitting registerNewUserWithPush for ios client');
-											res.send(200,{"status":"OK"});
-										}
-									})
+
 								}
 							})
 						}catch(e){

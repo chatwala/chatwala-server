@@ -3,6 +3,7 @@ var azure = require("azure");
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 var CWMongoClient = require('../cw_mongo.js');
+var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
 
 var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";
@@ -130,7 +131,23 @@ function saveOutGoingMessage( message_metadata, callback ) {
 					if(!err)
 					{
 						console.log("updated inbox for recipient: " + recipient_id);
-						callback(null);
+						var payload = {
+							"aps":{
+								"alert": "New Chatwala Message"
+							}
+						}
+						hub.apns.send(recipient_id, payload, function(err){
+							if(err){
+								console.log("Error sending APNS payload to " + user_id);
+								console.log(err);
+								callback(err)
+							}
+							else{
+								console.log('hitting registerNewUserWithPush for ios client');
+								callback(null)
+							}
+						})
+
 					}else{
 						callback("unable to save outbound message - cannot find recipient: ", recipient_id);
 					}
