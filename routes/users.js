@@ -58,7 +58,7 @@ function registerNewUserWithPush( req, res){
 						// Create a new registration.
 						if (platform_type === 'ios') {
 							hub.apns.createNativeRegistration(push_token, 
-							[userId], registrationComplete);
+							[user_id], registrationComplete);
 						} else {
 							response.send(500, 'Unknown client.');
 						}
