@@ -1,11 +1,11 @@
 var CWMongoClient = require('../cw_mongo.js');
 var format = require('util').format;
 var GUIDUtil = require('GUIDUtil');
-var config = require('../config.json');
+var config = require('../config.js')();
 var utility = require('../utility');
 var fs = require("fs");
 var azure = require('azure');
-var hub = azure.createNotificationHubService(config.HUB_NAME, config.SB_ENDPOINT,config.SB_KEYNAME,config.SB_KEY);
+var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint,config.azure.hub_keyname,config.azure.hub_key);
 
 
 function registerNewUserWithPush( req, res){

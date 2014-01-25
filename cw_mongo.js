@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
-var config = require('./config.json');
-var mongo_url = config["MONGO_DB"];
+var config = require('./config.js')();
+var mongo_url = config.db.mongodb;
 var azure = null;
 var mongoDatabase;
 

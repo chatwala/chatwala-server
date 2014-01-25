@@ -3,8 +3,8 @@ var azure = require("azure");
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 var CWMongoClient = require('../cw_mongo.js');
-var config = require('../config.json');
-var hub = azure.createNotificationHubService(config.HUB_NAME, config.SB_ENDPOINT,config.SB_KEYNAME,config.SB_KEY);
+var config = require('../config.js')();
+var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint,config.azure.hub_keyname,config.azure.hub_key);
 
 var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";
