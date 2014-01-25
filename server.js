@@ -110,7 +110,7 @@ if ('development' == app.get('env')) {
 // routing
 app.get('/monitor', function(req, res) {
 	// Always return success - used for monitoring
-	setTimeout(function () { res.send(500); }, 3000);
+	res.send(200);
 });
 
 app.get('/', routes.index);
@@ -124,10 +124,7 @@ app.put('/messages/:message_id', messages.uploadMessage);
 app.get('/users/:user_id/picture', users.getProfilePicture)
 app.put('/users/:user_id/picture', users.updateProfilePicture)
 
-
-
 var server = http.createServer(app);
-
 
 server.listen(app.get('port'), function(){
   console.log('listening on port ' + app.get('port') + " started:  ");
