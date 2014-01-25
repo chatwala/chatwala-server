@@ -27,7 +27,7 @@ function registerNewUserWithPush( req, res){
 								alert: "Hello!"
 							}
 
-							var hub = azure.createNotificationHubService('chatwala-dev-push');
+							var hub = azure.createNotificationHubService('chatwala-dev-push', "sb://chatwala-dev-push-ns.servicebus.windows.net/","DefaultFullSharedAccessSignature", "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=");
 							hub.apns.send(user.devices[0], payload, function(err){
 								if(err){
 									console.log("Error sending APNS payload to " + user_id);
@@ -41,6 +41,7 @@ function registerNewUserWithPush( req, res){
 						}catch(e){
 							console.log("error trying to connet to Service Bus")
 							console.log(e);
+							res.send(500, {"error": e})
 						}
 
 					}
