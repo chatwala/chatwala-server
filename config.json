@@ -3,5 +3,5 @@
     "STORAGE_KEY": "4f+gAOTgCVGswb1CUSe5N13Xo3bFW1LYwoNweBgeeVRdOpjoMzE69cpUPUVpEmxd0R+FHxxfLdF0fVfQNmil0A==",
     "PARTITION_KEY": "chatwaladeveast",
     "TABLE_NAME": "messages",
-	"MONGO_DB": "mongodb://chatwala-dev:OFXd6OICqM8vr.ME3OCbh.l2T9GjAuXFF.7Hp9gDXNE-@ds030607.mongolab.com:30607/chatwala-dev"
+	"MONGO_DB": "mongodb://chatwala-sandbox:RKjUdLzWpOWD1G1F0a2xgluwt6YJSc9uzACAmP9z5VQ-@ds031088.mongolab.com:31088/chatwala-sandbox"
 }
