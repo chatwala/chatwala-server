@@ -137,9 +137,9 @@ function saveOutGoingMessage( message_metadata, callback ) {
 						console.log("Recipient ID as tag: ", recipient_id);								
 						hub.apns.send([recipient_id], payload, function(arg1,arg2,arg3){
 							
-							console.log("ARG1: " + arg1);
-							console.log("ARG2: " + arg2);
-							console.log("ARG2: " + arg3);
+							console.log("ARG1: ", arg1);
+							console.log("ARG2: ", arg2);
+							console.log("ARG2: ", arg3);
 							callback(null);
 						
 							/*if(err){
