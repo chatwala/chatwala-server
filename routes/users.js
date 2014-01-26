@@ -85,11 +85,11 @@ function registerNewUserWithPush( req, res){
 							else{
 								console.log("Successfully registered new user for push notifications");
 							}
-							res.send(200);
+							res.send(200,{});
 						})
 					}
 					else{
-						res.send(200);
+						res.send(200,{});
 					}
 				}
 			})
