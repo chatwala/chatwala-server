@@ -234,3 +234,4 @@ exports.submitMessageMetadata = submitMessageMetadata;
 exports.uploadMessage = uploadMessage;
 exports.getMessage = getMessage;
 exports.getUserMessages = getUserMessages;
+exports.getSASurl = getSASurl
