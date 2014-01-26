@@ -10,147 +10,147 @@ var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure
 
 function registerNewUserWithPush( req, res){
 
-	if(req.hasOwnProperty('body')){
-		
-		if(typeof req.body.user_id === 'undefined') {
-			res.send(400,[{ error:"need user id"}]);
-		}
-		else if(req.body.platform_type && req.body.user_id && req.body.push_token){
-			
-			var platform_type = req.body.platform_type;
-			var user_id = req.body.user_id;
-			var push_token = req.body.push_token;			
-			
-			// Function called when registration is completed.
-			var registrationComplete = function(error, registration) {
-				if (!error) {
-					// Return the registration.
-					console.log("Successfully registered user device for push notifications.");
-					res.send(200, registration);
-				} else {
-					console.log("Push notification registration failed with error: ", error);
-					res.send(200);
-				}
-			}
-			
-			// Get existing registrations.
-			hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
-				var firstRegistration = true;
-				if (existingRegs.length > 0) {
-					 for (var i = 0; i < existingRegs.length; i++) {
-						if (firstRegistration) {
-							// Update an existing registration.
-							if (platform_type === 'ios') {
-								existingRegs[i].DeviceToken = push_token;
-								hub.updateRegistration(existingRegs[i], registrationComplete);
-							} 
-							else if(platform_type === 'android'){
-								console.log("platform_type is android");
-								res.send(200, [{'status':'OK'}]);
-							}
-							else {
-								res.send(200, 'Unknown platform type.');
-							}
-							firstRegistration = false;
-						} else {
-							// We shouldn't have any extra registrations; delete if we do.
-							hub.deleteRegistration(existingRegs[i].RegistrationId, null);
-						}
-					}
-				} else {
-					// Create a new registration.
-					if (platform_type === 'ios') {
-						console.log("Starting APNS registration.");
-						var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
-						hub.apns.createTemplateRegistration(push_token, 
-						[user_id], template, registrationComplete);
-					} 
-					else if(platform_type === 'android'){
-						console.log("platform_type is android");
-						res.send(200, [{'status':'OK'}]);
-					}
-					else {
-						res.send(200, 'Unknown client.');
-					}
-				}
-			});		
-		}
-		else {
-			res.send(200);
-		}
+        if(req.hasOwnProperty('body')){
+                
+                if(typeof req.body.user_id === 'undefined') {
+                        res.send(400,[{ error:"need user id"}]);
+                }
+                else if(req.body.platform_type && req.body.user_id && req.body.push_token){
+                        
+                        var platform_type = req.body.platform_type;
+                        var user_id = req.body.user_id;
+                        var push_token = req.body.push_token;                        
+                        
+                        // Function called when registration is completed.
+                        var registrationComplete = function(error, registration) {
+                                if (!error) {
+                                        // Return the registration.
+                                        console.log("Successfully registered user device for push notifications.");
+                                        res.send(200, registration);
+                                } else {
+                                        console.log("Push notification registration failed with error: ", error);
+                                        res.send(200);
+                                }
+                        }
+                        
+                        // Get existing registrations.
+                        hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
+                                var firstRegistration = true;
+                                if (existingRegs.length > 0) {
+                                         for (var i = 0; i < existingRegs.length; i++) {
+                                                if (firstRegistration) {
+                                                        // Update an existing registration.
+                                                        if (platform_type === 'ios') {
+                                                                existingRegs[i].DeviceToken = push_token;
+                                                                hub.updateRegistration(existingRegs[i], registrationComplete);
+                                                        } 
+                                                        else if(platform_type === 'android'){
+                                                                console.log("platform_type is android");
+                                                                res.send(200, [{'status':'OK'}]);
+                                                        }
+                                                        else {
+                                                                res.send(200, 'Unknown platform type.');
+                                                        }
+                                                        firstRegistration = false;
+                                                } else {
+                                                        // We shouldn't have any extra registrations; delete if we do.
+                                                        hub.deleteRegistration(existingRegs[i].RegistrationId, null);
+                                                }
+                                        }
+                                } else {
+                                        // Create a new registration.
+                                        if (platform_type === 'ios') {
+                                                console.log("Starting APNS registration.");
+                                                var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
+                                                hub.apns.createTemplateRegistration(push_token, 
+                                                [user_id], template, registrationComplete);
+                                        } 
+                                        else if(platform_type === 'android'){
+                                                console.log("platform_type is android");
+                                                res.send(200, [{'status':'OK'}]);
+                                        }
+                                        else {
+                                                res.send(200, 'Unknown client.');
+                                        }
+                                }
+                        });                
+                }
+                else {
+                        res.send(200);
+                }
 
-	}
-	else{
-		console.log("Error on registerNewUserWithPush : no body");
-		res.send(400, [{ error:"need body"}]);
-	}
+        }
+        else{
+                console.log("Error on registerNewUserWithPush : no body");
+                res.send(400, [{ error:"need body"}]);
+        }
 }
 
 function addPushTokenToDB( user_id, token_id, callback){
-	CWMongoClient.getConnection(function (err, db) {
-		if (err) { 
-			callback(error); 
-		} 
-		else {
-			var collection = db.collection('users');
-			collection.find({"user_id":user_id, "devices": token_id}, function(err, obj){
-				console.log("obj count");
-				console.log(obj.count());
-				if(err){
-					callback(err);
-				}
-				else if(obj.count() === 0){
+        CWMongoClient.getConnection(function (err, db) {
+                if (err) { 
+                        callback(error); 
+                } 
+                else {
+                        var collection = db.collection('users');
+                        collection.find({"user_id":user_id, "devices": token_id}, function(err, obj){
+                                console.log("obj count");
+                                console.log(obj.count());
+                                if(err){
+                                        callback(err);
+                                }
+                                else if(obj.count() === 0){
 
-					collection.findAndModify({"user_id":user_id},{ $push:{"devices": token_id  }},{},function(err,object){
-						if(!err){
-							callback(null, object);
-						}
-						else{
-							callback(err);
-						}
-					})
-				}
-				else{
-					console.log("No need to update user's devices becauase token_id already exists");
-					callback(null);
-				}
+                                        collection.findAndModify({"user_id":user_id},{ $push:{"devices": token_id  }},{},function(err,object){
+                                                if(!err){
+                                                        callback(null, object);
+                                                }
+                                                else{
+                                                        callback(err);
+                                                }
+                                        })
+                                }
+                                else{
+                                        console.log("No need to update user's devices becauase token_id already exists");
+                                        callback(null);
+                                }
 
-			})
-		}
-	});
+                        })
+                }
+        });
 }
 
 function registerNewUser( req, res )
 {
-	var user_id = GUIDUtil.GUID();
-	saveNewUser(user_id, function(err,results){
-		if(err) {
-			console.log(err);
-			res.send(500);
-		} else {
-			res.send(200,results);
-		}
-	});
+        var user_id = GUIDUtil.GUID();
+        saveNewUser(user_id, function(err,results){
+                if(err) {
+                        console.log(err);
+                        res.send(500);
+                } else {
+                        res.send(200,results);
+                }
+        });
 }
 
 function saveNewUser(user_id, callback) {
-	CWMongoClient.getConnection(function (err, db) {
-		if (err) { 
-			callback(error); 
-		} else {
-			var collection = db.collection('users');
-			collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
-				if(!err) {
-					console.log("new user saved in database: " + user_id);
-					callback(null,docs);
-				}else {
-					console.log("unable to save user to database: ", err);
-					callback(err);
+        CWMongoClient.getConnection(function (err, db) {
+                if (err) { 
+                        callback(error); 
+                } else {
+                        var collection = db.collection('users');
+                        collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
+                                if(!err) {
+                                        console.log("new user saved in database: " + user_id);
+                                        callback(null,docs);
+                                }else {
+                                        console.log("unable to save user to database: ", err);
+                                        callback(err);
 
-				}
-			});
-		}
-	});
+                                }
+                        });
+                }
+        });
 }
 
 /**
