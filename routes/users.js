@@ -8,6 +8,58 @@ var azure = require('azure');
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint,config.azure.hub_keyname,config.azure.hub_key);
 
 
+function createGUID(){
+	return GUIDUtil.GUID();
+}
+
+function registerPush(user_id, platform_type, push_token, callback){
+
+	// Get existing registrations.
+	hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
+		var firstRegistration = true;
+		if (existingRegs.length > 0) {
+			 for (var i = 0; i < existingRegs.length; i++) {
+				if (firstRegistration) {
+					// Update an existing registration.
+					if (platform_type === 'ios') {
+						existingRegs[i].DeviceToken = push_token;
+						hub.updateRegistration(existingRegs[i], callback);
+					} 
+					else if(platform_type === 'android'){
+						console.log("platform_type is android");
+						callback("push notifcation update for android");
+					}
+					else {
+						callback("push notification update for another platform");
+					}
+					firstRegistration = false;
+				} else {
+					// We shouldn't have any extra registrations; delete if we do.
+					hub.deleteRegistration(existingRegs[i].RegistrationId, callback);
+				}
+			}
+		} 
+		else {
+			// Create a new registration.
+			if (platform_type === 'ios') {
+				
+				console.log("Starting APNS registration.");
+				var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
+				hub.apns.createTemplateRegistration(push_token, 
+				[user_id], template, callback);
+			} 
+			else if(platform_type === 'android'){
+				//insert android register push notification code here
+				callback("new registration for android")
+			}
+			else {
+				callback("new registration for different platform");
+			}
+		}
+	});		
+
+}
+
 function registerNewUserWithPush( req, res){
 
 	if(req.hasOwnProperty('body')){
@@ -21,59 +73,15 @@ function registerNewUserWithPush( req, res){
 			var user_id = req.body.user_id;
 			var push_token = req.body.push_token;			
 			
-			// Function called when registration is completed.
-			var registrationComplete = function(error, registration) {
-				if (!error) {
-					// Return the registration.
-					console.log("Successfully registered user device for push notifications.");
-					res.send(200, registration);
-				} else {
-					console.log("Push notification registration failed with error: ", error);
-					res.send(200);
+			registerPush(user_id, platform_type, push_token, function(err){
+				if(err){
+					console.log("Error registering new user for push notifications");
 				}
-			}
-			
-			// Get existing registrations.
-			hub.listRegistrationsByTag(user_id, function(error, existingRegs) {
-				var firstRegistration = true;
-				if (existingRegs.length > 0) {
-					 for (var i = 0; i < existingRegs.length; i++) {
-						if (firstRegistration) {
-							// Update an existing registration.
-							if (platform_type === 'ios') {
-								existingRegs[i].DeviceToken = push_token;
-								hub.updateRegistration(existingRegs[i], registrationComplete);
-							} 
-							else if(platform_type === 'android'){
-								console.log("platform_type is android");
-								res.send(200, [{'status':'OK'}]);
-							}
-							else {
-								res.send(200, 'Unknown platform type.');
-							}
-							firstRegistration = false;
-						} else {
-							// We shouldn't have any extra registrations; delete if we do.
-							hub.deleteRegistration(existingRegs[i].RegistrationId, null);
-						}
-					}
-				} else {
-					// Create a new registration.
-					if (platform_type === 'ios') {
-						console.log("Starting APNS registration.");
-						var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
-						hub.apns.createTemplateRegistration(push_token, 
-						[user_id], template, registrationComplete);
-					} 
-					else if(platform_type === 'android'){
-						console.log("platform_type is android");
-						res.send(200, [{'status':'OK'}]);
-					}
-					else {
-						res.send(200, 'Unknown client.');
-					}
+				else{
+					console.log("Successfully registered new user for push notifications");
 				}
-			});		
+				res.send(200);
+			})
 		}
 		else {
 			res.send(200);
@@ -84,40 +92,6 @@ function registerNewUserWithPush( req, res){
 		console.log("Error on registerNewUserWithPush : no body");
 		res.send(400, [{ error:"need body"}]);
 	}
-}
-
-function addPushTokenToDB( user_id, token_id, callback){
-	CWMongoClient.getConnection(function (err, db) {
-		if (err) { 
-			callback(error); 
-		} 
-		else {
-			var collection = db.collection('users');
-			collection.find({"user_id":user_id, "devices": token_id}, function(err, obj){
-				console.log("obj count");
-				console.log(obj.count());
-				if(err){
-					callback(err);
-				}
-				else if(obj.count() === 0){
-
-					collection.findAndModify({"user_id":user_id},{ $push:{"devices": token_id  }},{},function(err,object){
-						if(!err){
-							callback(null, object);
-						}
-						else{
-							callback(err);
-						}
-					})
-				}
-				else{
-					console.log("No need to update user's devices becauase token_id already exists");
-					callback(null);
-				}
-
-			})
-		}
-	});
 }
 
 function registerNewUser( req, res )
