@@ -164,7 +164,7 @@ function saveOutGoingMessage( message_metadata, callback ) {
 			
 							if(!err && user && user.inbox) {
 								var messages = user.inbox.sort(compareMessageMetadata);
-								console.log("inbox for recipient: " + user.inbox);
+								console.log("inbox for recipient: ",user.inbox);
 								
 							} else{
 								console.log("unable to fetch inbox for recipient " + recipient_id + " error: ", err);
