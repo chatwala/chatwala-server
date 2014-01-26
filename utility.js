@@ -1,13 +1,8 @@
 var azure = require("azure");
 var fs = require("fs");
-var azure = require('azure');
 var uuid = require('node-uuid');
-var nconf = require('nconf');
 var GUIDUtil = require('GUIDUtil');
 var os = require("os");
-var MongoClient = require('mongodb').MongoClient
-var format = require('util').format;
-
 
 var blobService = null;
 var old_config = require('./config/prod.json');
@@ -16,6 +11,12 @@ var access_key = old_config["STORAGE_KEY"];
 var host = old_config["PARTITION_KEY"];
 var mongo_url = old_config["MONGO_DB"];
 
+var config = require('./config.js')();
+var account = config.azure.storage_name; //config["STORAGE_NAME"];
+var access_key = config.azure.storage_key //config["STORAGE_KEY"];
+//var host = config["PARTITION_KEY"];
+//var mongo_url = config.db.mongodb // config["MONGO_DB"];
+
 /**
  Lazy Creation of Blob Service
 
@@ -23,13 +24,27 @@ var mongo_url = old_config["MONGO_DB"];
 
 function getBlobService()
 {
-	if(blobService == null)
-	{
+	if(blobService == null) {
+
 		blobService = azure.createBlobService(account,access_key);
-		blobService.createContainerIfNotExists("messages", function(error){
-		    if (error) {
-			blobService = null;
+
+		blobService.createContainerIfNotExists("messages", function(error) {
+		    if(!error) {
 		    }
+		    else{
+				console.log("failed to connect to blob service: " + error);
+				blobService = null;
+			}
+		});
+		
+		blobService.createContainerIfNotExists("pictures", function(error) {
+		    if(!error) {
+		    }
+		    else {
+				console.log("failed to connect to blob service: " + error);
+				blobService = null;
+			}
+
 		});
 	}
 	return blobService;

@@ -1,113 +1,139 @@
+
 /**
  * Module dependencies.
  */
+ 
+console.log("Initializing node: " + new Date()); 
 
+"use strict";
 var express = require('express');
-var app = express();
-
-var config = require('./config')(process, app);
-
-var index = require('./routes/index');
-var messages = require('./routes/messages');
 var users = require('./routes/users');
+var messages = require('./routes/messages');
+var routes = require('./routes');
+var mongoClient = require('./cw_mongo.js');
+
+var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
+var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
 
 var http = require('http');
 var path = require('path');
-var fs = require('fs');
 
-/**
- * BEGIN - App Configuration
- */
+var app = express();
+var queue = [];
+// all environments
 
-// Global Configuration
-app.configure( function() {
-    app.set('port', process.env.PORT || 1337);
-    app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'jade');
-    app.use(express.favicon());
-    app.use(express.bodyParser());
-    app.use(express.json());
-    app.use(express.urlencoded());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
-    app.use(express.multipart());
+mongoClient.getConnection(function (err, db) {
+	if (err) {
+		console.log("Unable to connect to mongo DB."); 
+		queue.forEach(function (object) {
+			object.res.send(500);
+		});
+	} else {
+		console.log("Launching queued requests"); 
+		queue.forEach(function (object) {
+			object.next();
+		});
+	}
+	
+	queue = [];
 });
 
-// Development
-app.configure('development', function() {
-    var expressLogFile = fs.createWriteStream('./logs/express.log', {flags: 'a'});
-    app.use(express.logger({stream: expressLogFile}));
-    app.use(express.errorHandler({ dumpExceptions:true, showStack: true}));
+app.set('port', process.env.PORT || 1337);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+
+app.use(function (req, res, next) {
+	if (mongoClient.isConnected()) { 
+		next(); 
+	}
+	else {
+		console.log("Database not connected yet, queuing request");
+   		queue.push({ req : req, res : res, next : next});
+	}
 });
 
-// Production
-app.configure('production', function() {
-    app.use(express.errorHandler());
-    app.use(express.logger());
+app.use(function (req, res, next) {
+	var authHeaderValue = "";
+	var idHeaderValue = "";
+	
+	if (req.url === "/monitor") {
+		// The one exception to the authorization logic
+		next();
+		return;
+	}
+	
+	for(var item in req.headers) {
+	
+		if (item == "x-chatwala") {
+			// Validate			
+			authHeaderValue = req.headers[item];
+		}
+		else if (item == "x-id") {
+			idHeaderValue = req.headers[item];
+		}
+  	}
+	
+	if (!authHeaderValue || authHeaderValue === "") {
+		console.log ("Authorization header is empty or not found");
+		res.send(401, {error:"Not Authorized: missing headers"});
+		return;
+	}
+	else {
+		var expectedToken = clientID + ":" + clientSecret;
+		
+		if (expectedToken != authHeaderValue) {
+			res.send(401, {error:"Not Authorized"});
+			return;
+		}
+	}
+
+	next();
 });
 
-/**
- * END - App Configuration
- */
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.multipart());
 
 
-/**
- * BEGIN - App Routing
- */
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
 
-app.get('/', index.index);
-app.get ('/register', users.registerNewUser);
-app.post('/register', users.registerNewUser);
 
+// routing
+app.get('/monitor', function(req, res) {
+	// Always return success - used for monitoring
+	setTimeout(function () { res.send(500); }, 3000);
+});
+
+app.get('/', routes.index);
+app.get('/register', users.registerNewUser);
 app.get('/users/:user_id/messages', messages.getUserMessages );
-app.get('/users/:user_id/picture', users.getProfilePicture)
-app.put('/users/:user_id/picture', users.updateProfilePicture)
-
+//app.get('/users/:user_id/messages/:message_id', messages.getMessage );
 app.get('/messages/:message_id', messages.getMessage );
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
+app.get('/users/:user_id/picture', users.getProfilePicture)
+app.put('/users/:user_id/picture', users.updateProfilePicture)
 
-/**
- * END - App Routing
- */
-
-
-/**
- * BEGIN - Other initialization/configuration
- */
-
-// Azure Blob Service initialization
-var azure;
-if (process.env.NODE_ENV = 'test') {
-    azure = require('./test/azure-mock');
-}
-else {
-    azure = require('azure');
-}
-var BlobService = require('./blob_service');
-BlobService.initializeBlobService(azure);
-
-// Azure Blob Service Container initialization
-BlobService.initializeContainer("messages", function(error) {
-    if (error) {
-	console.log(error);
-	process.exit(-1);
-    }
-});
-
-BlobService.initializeContainer("pictures", function(error) {
-    if (error) {
-	console.log(error);
-	process.exit(-1);
-    }
-});
-
-/**
- * END - Other initialization/configuration
- */
+// New routes
+app.post('/register', users.registerNewUserWithPush);
+app.post('/messages/:message_id', messages.getSASurl);
 
 var server = http.createServer(app);
+
+
 server.listen(app.get('port'), function(){
-  console.log('listening on port ' + app.get('port'));
+  console.log('listening on port ' + app.get('port') + " started:  ");
+  console.log("Completed Node initialization: " + new Date());
 });
+// var serveraddress = server.address();
+// console.log("serveraddress",serveraddress);
+// messages.setHostname(serveraddress);
