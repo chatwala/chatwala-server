@@ -7,6 +7,10 @@ var fs = require("fs");
 var azure = require('azure');
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint,config.azure.hub_keyname,config.azure.hub_key);
 
+function createGUID(){
+	return GUIDUtil.GUID();
+}
+
 function registerPush(user_id, platform_type, push_token, callback){
 
 	// Get existing registrations.
