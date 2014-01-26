@@ -23,19 +23,19 @@ var queue = [];
 // all environments
 
 mongoClient.getConnection(function (err, db) {
-	if (err) {
-		console.log("Unable to connect to mongo DB."); 
-		queue.forEach(function (object) {
-			object.res.send(500);
-		});
-	} else {
-		console.log("Launching queued requests"); 
-		queue.forEach(function (object) {
-			object.next();
-		});
-	}
-	
-	queue = [];
+        if (err) {
+                console.log("Unable to connect to mongo DB."); 
+                queue.forEach(function (object) {
+                        object.res.send(500);
+                });
+        } else {
+                console.log("Launching queued requests"); 
+                queue.forEach(function (object) {
+                        object.next();
+                });
+        }
+        
+        queue = [];
 });
 
 app.set('port', process.env.PORT || 1337);
@@ -49,51 +49,51 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 
 app.use(function (req, res, next) {
-	if (mongoClient.isConnected()) { 
-		next(); 
-	}
-	else {
-		console.log("Database not connected yet, queuing request");
-   		queue.push({ req : req, res : res, next : next});
-	}
+        if (mongoClient.isConnected()) { 
+                next(); 
+        }
+        else {
+                console.log("Database not connected yet, queuing request");
+                   queue.push({ req : req, res : res, next : next});
+        }
 });
 
 app.use(function (req, res, next) {
-	var authHeaderValue = "";
-	var idHeaderValue = "";
-	
-	if (req.url === "/monitor") {
-		// The one exception to the authorization logic
-		next();
-		return;
-	}
-	
-	for(var item in req.headers) {
-	
-		if (item == "x-chatwala") {
-			// Validate			
-			authHeaderValue = req.headers[item];
-		}
-		else if (item == "x-id") {
-			idHeaderValue = req.headers[item];
-		}
-  	}
-	
-	if (!authHeaderValue || authHeaderValue === "") {
-		console.log ("Authorization header is empty or not found");
-		res.send(401, {error:"Not Authorized: missing headers"});
-		return;
-	}
-	else {
-		var expectedToken = clientID + ":" + clientSecret;
-		
-		if (expectedToken != authHeaderValue) {
-			res.send(401, {error:"Not Authorized"});
-			return;
-		}
-	}
+        var authHeaderValue = "";
+        var idHeaderValue = "";
+        
+        if (req.url === "/monitor") {
+                // The one exception to the authorization logic
+                next();
+                return;
+        }
+        
+        for(var item in req.headers) {
+        
+                if (item == "x-chatwala") {
+                        // Validate                        
+                        authHeaderValue = req.headers[item];
+                }
+                else if (item == "x-id") {
+                        idHeaderValue = req.headers[item];
+                }
+          }
+        
+        if (!authHeaderValue || authHeaderValue === "") {
+                console.log ("Authorization header is empty or not found");
+                res.send(401, {error:"Not Authorized: missing headers"});
+                return;
+        }
+        else {
+                var expectedToken = clientID + ":" + clientSecret;
+                
+                if (expectedToken != authHeaderValue) {
+                        res.send(401, {error:"Not Authorized"});
+                        return;
+                }
+        }
 
-	next();
+        next();
 });
 
 app.use(app.router);
@@ -109,23 +109,23 @@ if ('development' == app.get('env')) {
 
 // routing
 app.get('/monitor', function(req, res) {
-	// Always return success - used for monitoring
-	setTimeout(function () { res.send(500); }, 3000);
+        // Always return success - used for monitoring
+        setTimeout(function () { res.send(500); }, 3000);
 });
 
 app.get('/', routes.index);
 app.get('/register', users.registerNewUser);
+app.post('/register', users.registerNewUserWithPush);
 app.get('/users/:user_id/messages', messages.getUserMessages );
 //app.get('/users/:user_id/messages/:message_id', messages.getMessage );
 app.get('/messages/:message_id', messages.getMessage );
+app.post('/messages/:message_id', messages.getSASurl)
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
 app.get('/users/:user_id/picture', users.getProfilePicture)
 app.put('/users/:user_id/picture', users.updateProfilePicture)
 
-// New routes
-app.post('/register', users.registerNewUserWithPush);
-app.post('/messages/:message_id', messages.getSASurl);
+
 
 var server = http.createServer(app);
 
