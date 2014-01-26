@@ -5,18 +5,11 @@ var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 
 var blobService = null;
-var old_config = require('./config/prod.json');
-var account = old_config["STORAGE_NAME"];
-var access_key = old_config["STORAGE_KEY"];
-var host = old_config["PARTITION_KEY"];
-var mongo_url = old_config["MONGO_DB"];
-
 var config = require('./config.js')();
 var account = config.azure.storage_name; //config["STORAGE_NAME"];
 var access_key = config.azure.storage_key //config["STORAGE_KEY"];
 //var host = config["PARTITION_KEY"];
 //var mongo_url = config.db.mongodb // config["MONGO_DB"];
-
 /**
  Lazy Creation of Blob Service
 
@@ -24,36 +17,34 @@ var access_key = config.azure.storage_key //config["STORAGE_KEY"];
 
 function getBlobService()
 {
-	if(blobService == null) {
+        if(blobService == null) {
 
-		blobService = azure.createBlobService(account,access_key);
-
-		blobService.createContainerIfNotExists("messages", function(error) {
-		    if(!error) {
-		    }
-		    else{
-				console.log("failed to connect to blob service: " + error);
-				blobService = null;
-			}
-		});
-		
-		blobService.createContainerIfNotExists("pictures", function(error) {
-		    if(!error) {
-		    }
-		    else {
-				console.log("failed to connect to blob service: " + error);
-				blobService = null;
-			}
-
-		});
-	}
-	return blobService;
+                blobService = azure.createBlobService(account,access_key);
+                blobService.createContainerIfNotExists("messages", function(error) {
+                    if(!error) {
+                    }
+                    else{
+                                console.log("failed to connect to blob service: " + error);
+                                blobService = null;
+                        }
+                });
+                
+                blobService.createContainerIfNotExists("pictures", function(error) {
+                    if(!error) {
+                    }
+                    else {
+                                console.log("failed to connect to blob service: " + error);
+                                blobService = null;
+                        }
+                });
+        }
+        return blobService;
 }
 
 function createTempFilePath()
 {
-	var tempFileName =  GUIDUtil.GUID();
-	return __dirname + "/temp/"+tempFileName;
+        var tempFileName =  GUIDUtil.GUID();
+        return __dirname + "/temp/"+tempFileName;
 }
 
 exports.createTempFilePath = createTempFilePath;
