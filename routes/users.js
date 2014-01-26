@@ -128,7 +128,7 @@ function saveNewUser(user_id, callback) {
 			var collection = db.collection('users');
 			collection.insert( {"user_id":user_id, inbox:[], sent:[], emails:[], devices:[] }, function(err, docs ){
 				if(!err) {
-					console.log("new user saved in database: " + user_id);
+					console.log("new user saved in database: " + user_id + " server docs: ", docs);
 					callback(null,docs);
 				}else {
 					console.log("unable to save user to database: ", err);
