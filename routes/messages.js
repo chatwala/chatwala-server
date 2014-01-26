@@ -50,6 +50,34 @@ function getUserMessages( req, res ) {
 	});	
 }
 
+
+/**
+	Endpoint Handler for retrieving SAS Url for file upload
+**/
+function getSASurl( req, res )
+{
+	var message_id = req.params.message_id;
+
+	//create a SAS that expires in an hour
+	var sharedAccessPolicy = {
+		AccessPolicy: {
+			Permissions: 'w',
+			Expiry: azure.date.minutesFromNow(10)
+		}
+	};
+
+	var sasUrl = utility.getBlobService().getBlobUrl("messages", message_id, sharedAccessPolicy);
+
+	if (sasUrl) {
+		console.log("Fetched shared access message url for blob - redirecting");
+		res.send(200, {'url': sasUrl});
+	}
+	else {
+		console.log("Unable to retrieve shared access url for message: " + message_id);
+		res.send(404);
+	}
+}
+
 /**
 	Endpoint Handler for retrieving message file
 **/
