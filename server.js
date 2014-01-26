@@ -119,7 +119,6 @@ app.post('/register', users.registerNewUserWithPush);
 app.get('/users/:user_id/messages', messages.getUserMessages );
 //app.get('/users/:user_id/messages/:message_id', messages.getMessage );
 app.get('/messages/:message_id', messages.getMessage );
-app.post('/messages/:messageid', messages.getSASurl)
 app.post('/messages', messages.submitMessageMetadata );
 app.put('/messages/:message_id', messages.uploadMessage);
 app.get('/users/:user_id/picture', users.getProfilePicture)
