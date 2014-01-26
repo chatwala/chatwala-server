@@ -64,26 +64,33 @@ function registerNewUserWithPush( req, res){
 		if(typeof req.body.user_id === 'undefined') {
 			res.send(400,[{ 'status':"need user id"}]);
 		}
-		else if(req.body.platform_type && req.body.user_id && req.body.push_token){
+		else if(req.body.user_id){			
 			
-			var platform_type = req.body.platform_type;
 			var user_id = req.body.user_id;
-			var push_token = req.body.push_token;			
 			
 			saveNewUser(user_id, function(err){
 				if(err){
 					res.send(400, [{'status':'unable to store user in the db'}])
 				}
 				else{
-					registerPush(user_id, platform_type, push_token, function(err){
-						if(err){
-							console.log("Error registering new user for push notifications");
-						}
-						else{
-							console.log("Successfully registered new user for push notifications");
-						}
+					
+					if(req.body.platform_type && req.body.push_token){
+						var platform_type = req.body.platform_type;
+						var push_token = req.body.push_token;					
+						
+						registerPush(user_id, platform_type, push_token, function(err){
+							if(err){
+								console.log("Error registering new user for push notifications");
+							}
+							else{
+								console.log("Successfully registered new user for push notifications");
+							}
+							res.send(200);
+						})
+					}
+					else{
 						res.send(200);
-					})
+					}
 				}
 			})
 
