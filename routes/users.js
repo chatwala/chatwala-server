@@ -7,11 +7,6 @@ var fs = require("fs");
 var azure = require('azure');
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint,config.azure.hub_keyname,config.azure.hub_key);
 
-
-function createGUID(){
-	return GUIDUtil.GUID();
-}
-
 function registerPush(user_id, platform_type, push_token, callback){
 
 	// Get existing registrations.
@@ -65,7 +60,7 @@ function registerNewUserWithPush( req, res){
 	if(req.hasOwnProperty('body')){
 		
 		if(typeof req.body.user_id === 'undefined') {
-			res.send(400,[{ error:"need user id"}]);
+			res.send(400,[{ 'status':"need user id"}]);
 		}
 		else if(req.body.platform_type && req.body.user_id && req.body.push_token){
 			
@@ -73,24 +68,33 @@ function registerNewUserWithPush( req, res){
 			var user_id = req.body.user_id;
 			var push_token = req.body.push_token;			
 			
-			registerPush(user_id, platform_type, push_token, function(err){
+			saveNewUser(user_id, function(err){
 				if(err){
-					console.log("Error registering new user for push notifications");
+					res.send(400, [{'status':'unable to store user in the db'}])
 				}
 				else{
-					console.log("Successfully registered new user for push notifications");
+					registerPush(user_id, platform_type, push_token, function(err){
+					 if(err){
+						console.log("Error registering new user for push notifications");
+					 }
+					 else{
+						console.log("Successfully registered new user for push notifications");
+					 }
+					 
+					 res.send(200);
+				     })
 				}
-				res.send(200);
+				//res.send(200);
 			})
 		}
-		else {
-			res.send(200);
+		else{
+			console.log("Error on registerNewUserWithPush");
+			res.send(400, [{'status':'correct parameters not sent'}]);
 		}
-
 	}
 	else{
 		console.log("Error on registerNewUserWithPush : no body");
-		res.send(400, [{ error:"need body"}]);
+		res.send(400, [{ 'status':"need body"}]);
 	}
 }
 
