@@ -1,5 +1,4 @@
 function config() {
-
     var environment = (process.env.NODE_ENV ? process.env.NODE_ENV : 'rahul');
     var config_file = './configs/' + environment + '.js';
     var config_data;
