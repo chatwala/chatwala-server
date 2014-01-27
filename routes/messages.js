@@ -60,7 +60,7 @@ function getSASurl( req, res )
   //create a SAS that expires in an hour
   var sharedAccessPolicy = {
     AccessPolicy: {
-      Permissions: 'w',
+      Permissions: 'rw',
       Expiry: azure.date.minutesFromNow(10)
     }
   };
