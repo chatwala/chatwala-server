@@ -66,8 +66,10 @@ function registerNewUserWithPush( req, res){
                                                 [user_id], template, registrationComplete);
                                         } 
                                         else if(platform_type === 'android'){
-                                                console.log("platform_type is android");
-                                                res.send(200, [{'status':'OK'}]);
+		                                        console.log("Starting GCM registration.");
+                                                var template = '{\"message\":\"$(message)\"}';
+                                                hub.gcm.createTemplateRegistration(push_token, 
+                                                [user_id], template, registrationComplete);
                                         }
                                         else {
                                                 res.send(200, 'Unknown client.');
