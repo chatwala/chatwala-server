@@ -17,34 +17,34 @@ var access_key = config.azure.storage_key //config["STORAGE_KEY"];
 
 function getBlobService()
 {
-	if(blobService == null) {
+        if(blobService == null) {
 
-		blobService = azure.createBlobService(account,access_key);
-		blobService.createContainerIfNotExists("messages", function(error) {
-		    if(!error) {
-		    }
-		    else{
-				console.log("failed to connect to blob service: " + error);
-				blobService = null;
-			}
-		});
-		
-		blobService.createContainerIfNotExists("pictures", function(error) {
-		    if(!error) {
-		    }
-		    else {
-				console.log("failed to connect to blob service: " + error);
-				blobService = null;
-			}
-		});
-	}
-	return blobService;
+                blobService = azure.createBlobService(account,access_key);
+                blobService.createContainerIfNotExists("messages", function(error) {
+                    if(!error) {
+                    }
+                    else{
+                                console.log("failed to connect to blob service: " + error);
+                                blobService = null;
+                        }
+                });
+                
+                blobService.createContainerIfNotExists("pictures", function(error) {
+                    if(!error) {
+                    }
+                    else {
+                                console.log("failed to connect to blob service: " + error);
+                                blobService = null;
+                        }
+                });
+        }
+        return blobService;
 }
 
 function createTempFilePath()
 {
-	var tempFileName =  GUIDUtil.GUID();
-	return __dirname + "/temp/"+tempFileName;
+        var tempFileName =  GUIDUtil.GUID();
+        return __dirname + "/temp/"+tempFileName;
 }
 
 exports.createTempFilePath = createTempFilePath;
