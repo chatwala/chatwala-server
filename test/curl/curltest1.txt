@@ -1,0 +1,124 @@
+----REGISTER PUSH TOKEN TEST----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"platform_type":"ios", "user_id":"b11111111-11111-1111-1111-111111111111","push_token": "BBBBBBBB XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX"}' \
+"http://localhost:1337/registerPushToken";
+
+
+
+
+----MESSAGE GET DOWNLOAD URL----
+curl -i \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111";
+
+response:
+HTTP/1.1 302 Moved Temporarily
+X-Powered-By: Express
+Location: https://chatwalasandbox.blob.core.windows.net:443/messages/m11111111-11111-1111-1111-111111111111?se=2014-01-28T22%3A40%3A05Z&sp=r&sr=b&sv=2012-02-12&sig=BDMFACzdUk8rTOYRH2qDa1eSrsLOxFr47z%2F%2BBLfOl18%3D
+Date: Tue, 28 Jan 2014 21:40:05 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+
+
+
+
+----MESSAGE GET UPLOAD URL----
+curl -i \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111/uploadURL";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 230
+ETag: "-59796695"
+Date: Tue, 28 Jan 2014 21:49:40 GMT
+Connection: keep-alive
+
+{"status":"OK","sasUrl":"https://chatwalasandbox.blob.core.windows.net:443/messages/m11111111-11111-1111-1111-111111111111?se=2014-01-28T21%3A59%3A40Z&sp=rw&sr=b&sv=2012-02-12&sig=8a7BbgGxiD5iwSaXdM8RY5RfQcxbnesdOXs6t6X4%2FbI%3D"}
+
+
+
+
+----PROFILE PICTURE GET UPLOAD URL----
+curl -i \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/users/b11111111-11111-1111-1111-111111111111/pictureUploadURL";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 230
+ETag: "-139795331"
+Date: Wed, 29 Jan 2014 01:14:30 GMT
+Connection: keep-alive
+
+{"status":"OK","sasUrl":"https://chatwalasandbox.blob.core.windows.net:443/pictures/b11111111-11111-1111-1111-111111111111?se=2014-01-29T01%3A24%3A30Z&sp=rw&sr=b&sv=2012-02-12&sig=9VQiwIFAiTF9CVHhdtFBFymsv4VGbPs%2BaVX06YZPiqs%3D"}
+
+
+
+
+----PROFILE PICTURE GET READ URL----
+curl -i \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/users/b11111111-11111-1111-1111-111111111111/picture";
+
+response:
+HTTP/1.1 302 Moved Temporarily
+X-Powered-By: Express
+Location: https://chatwalasandbox.blob.core.windows.net:443/pictures/b11111111-11111-1111-1111-111111111111?se=2014-01-29T02%3A14%3A52Z&sp=r&sr=b&sv=2012-02-12&sig=h8lpILB2SZ3xiN%2FcX7%2B7eKREhbjdtesEeywJ1S4Y3Xw%3D
+Date: Wed, 29 Jan 2014 01:14:52 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+
+
+
+
+----MESSAGEMETADATA POST TEST----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"recipient_id":"a11111111-11111-1111-1111-111111111111", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 304
+Date: Tue, 28 Jan 2014 21:30:09 GMT
+Connection: keep-alive
+
+{"status":"OK","url":"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111","sasUrl":"https://chatwalasandbox.blob.core.windows.net:443/messages/m11111111-11111-1111-1111-111111111111?se=2014-01-28T21%3A40%3A09Z&sp=rw&sr=b&sv=2012-02-12&sig=sBp%2BUh10181MKT6Apm4%2B043Z%2BU1qxJQ1jFIpC%2BI8NRU%3D"}
+
+
+
+
+----FINALIZE POST TEST----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"recipient_id":"a11111111-11111-1111-1111-111111111111", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111/finalize";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+Date: Tue, 28 Jan 2014 21:31:45 GMT
+Connection: keep-alive
+
+{"status":"OK","message":"finalize successfully completed"}
+
+
+
+
+
