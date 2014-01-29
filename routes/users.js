@@ -60,7 +60,7 @@ function postPushToken(req, res) {
         }
         else {
             console.log("Push notification registration failed with error: ", error);
-            res.send(200);
+            res.send(500,[{ "error": error}]);
         }
     };
 
