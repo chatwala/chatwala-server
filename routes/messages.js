@@ -213,8 +213,12 @@ function storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, cal
     };
 
     saveOutGoingMessage(message_metadata, function (err) {
-        callback(err, ("http://" + host +"/messages/" + message_metadata.message_id));
+        callback(err, createChatwalaRedirectURL(message_metadata.message_id));
     });
+}
+
+function createChatwalaRedirectURL(message_id) {
+    return "http://chatwala.com/?" + message_id;
 }
 
 /*Deprecated*/
