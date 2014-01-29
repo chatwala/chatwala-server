@@ -157,26 +157,29 @@ function saveOutGoingMessage(message_metadata, callback) {
                     if (!err) {
                         console.log("updated inbox for recipient: " + recipient_id);
                         setTimeout(function() {
-                            var payload = {"content_available": 1, "message": "You have a received a new Chatwala reply."};
-
-                            hub.send(recipient_id, payload, function (err, result, responseObject) {
-                                if (err) {
-                                    console.log("Error sending APNS payload to " + recipient_id);
-                                    console.log(err);
-                                    callback(err);
-                                }
-                                else {
-                                    console.log('successfully sent push notification to user: ' + recipient_id);
-                                    callback(null);
-                                }
-                            });
+                            sendPushNotification(recipient_id);
                         }, 2000*60);
+                        callback(null);
                     }
                     else {
                         callback("unable to save outbound message - cannot find recipient: ", recipient_id);
                     }
                 });
             }
+        }
+    });
+}
+
+function sendPushNotification(recipient_id) {
+    var payload = {"content_available": 1, "message": "You have a received a new Chatwala reply."};
+
+    hub.send(recipient_id, payload, function (err, result, responseObject) {
+        if (err) {
+            console.log("Error sending APNS payload to " + recipient_id);
+            console.log(err);
+        }
+        else {
+            console.log('successfully sent push notification to user: ' + recipient_id);
         }
     });
 }
