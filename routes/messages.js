@@ -40,7 +40,7 @@ function getUserMessages(req, res) {
                     res.send(200, results)
                 } else {
                     console.log("unable to fetch message for user " + user_id + " error: ", err);
-                    res.send(404, [{ error: "user does not exist - create new one"});
+                    res.send(404, [{ error: "user does not exist - create new one"}]);
                 }
             });
         }
