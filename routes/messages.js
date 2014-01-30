@@ -24,11 +24,12 @@ function compareMessageMetadata(a, b) {
  **/
 function getUserMessages(req, res) {
     var user_id = req.params.user_id;
+    var localRes = res;
 
     CWMongoClient.getConnection(function (err, db) {
 
         if (err) {
-            res.send(500, {"error": "unable to fetch messages - database error: " + err});
+            localRes.send(500, {"error": "unable to fetch messages - database error: " + err});
         } else {
             var collection = db.collection('users');
             collection.findOne({"user_id": user_id}, function (err, user) {
@@ -37,10 +38,10 @@ function getUserMessages(req, res) {
                     var messages = user.inbox.sort(compareMessageMetadata);
                     console.log("user messages fetched for user: " + user_id);
                     var results = { "user": user_id, "messages": messages};
-                    res.send(200, results)
+                    localRes.send(200, results)
                 } else {
                     console.log("unable to fetch message for user " + user_id + " error: ", err);
-                    res.send(404, [{ error: "user does not exist - create new one"}]);
+                    localRes.send(404, [{ error: "user does not exist - create new one"}]);
                 }
             });
         }
