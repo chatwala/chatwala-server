@@ -7,7 +7,7 @@ var config = require('../config.js')();
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint, config.azure.hub_keyname, config.azure.hub_key);
 
 var NO_FILES = "files not found";
-var NO_BODY = "no post information found for POST /messages";
+var NO_BODY = "no post information found for POST /messages"; 
 
 var utility = require('../utility');
 
