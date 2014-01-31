@@ -40,8 +40,8 @@ function getUserMessages(req, res) {
                     var results = { "user": user_id, "messages": messages};
                     localRes.send(200, results)
                 } else {
-                    console.log("unable to fetch message for user " + user_id + " error: ", err);
-                    localRes.send(404, [{ error: "user does not exist - create new one"}]);
+                    console.log("user does not exist, creating empty inbox");
+                    localRes.send(200, { "user": user_id, "messages": []});
                 }
             });
         }
