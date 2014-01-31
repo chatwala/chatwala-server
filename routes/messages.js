@@ -151,20 +151,23 @@ function saveOutGoingMessage(message_metadata, callback) {
                 // known recipient
                 console.log("saving message: ", message_metadata);
 
-                collection.findAndModify({"user_id": recipient_id}, [
-                    ['_id', 'asc']
-                ], { $push: {"inbox": message_metadata  }}, {}, function (err, object) {
-                    if (!err) {
-                        console.log("updated inbox for recipient: " + recipient_id);
-                        setTimeout(function() {
-                            sendPushNotification(recipient_id);
-                        }, 2000*60);
-                        callback(null);
+                collection.update(
+                    { "user_id": recipient_id},
+                    { $push: {"inbox": message_metadata  }},
+                    { "upsert": true },
+                    function (err, object) {
+                        if (!err) {
+                            console.log("updated inbox for recipient: " + recipient_id);
+                            setTimeout(function() {
+                                sendPushNotification(recipient_id);
+                            }, 2000*60);
+                            callback(null);
+                        }
+                        else {
+                            callback("unable to save outbound message - cannot find recipient: ", recipient_id);
+                        }
                     }
-                    else {
-                        callback("unable to save outbound message - cannot find recipient: ", recipient_id);
-                    }
-                });
+                );
             }
         }
     });
