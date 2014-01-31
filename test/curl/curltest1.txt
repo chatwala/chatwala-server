@@ -1,4 +1,18 @@
-----REGISTER PUSH TOKEN TEST----
+-----REGISTER USER------
+curl -i \
+-X GET
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/register";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+{"user_id":"XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"}
+
+
+
+----REGISTER PUSH TOKEN----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
@@ -6,6 +20,20 @@ curl -i \
 -d '{"platform_type":"ios", "user_id":"b11111111-11111-1111-1111-111111111111","push_token": "BBBBBBBB XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX"}' \
 "http://localhost:1337/registerPushToken";
 
+
+----SUBMIT MESSAGE METADATA-----
+curl -i \
+-X POST
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d "{\"recipient_id\" : \"unknown_recipient\", \"sender_id\" : \"unknown_sender\"}" \
+"http://localhost/messages"
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+{"message_id" : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",url : "http://chatwala.com/#someMessageID23nio25idf8g9"}
 
 
 
@@ -100,7 +128,7 @@ Connection: keep-alive
 
 
 
-----FINALIZE POST TEST----
+----FINALIZE POST----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
