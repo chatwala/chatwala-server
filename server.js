@@ -121,6 +121,9 @@ app.get('/', routes.index);
 app.get('/register', users.registerNewUser);
 
 //Registers a push token for a user
+app.post('/register', users.postPushToken);
+
+//Registers a push token for a user
 app.post('/registerPushToken', users.postPushToken);
 
 app.get('/users/:user_id/messages', messages.getUserMessages);
