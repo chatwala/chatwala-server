@@ -151,10 +151,10 @@ function saveOutGoingMessage(message_metadata, callback) {
                 // known recipient
                 console.log("saving message: ", message_metadata);
 
-                collection.update(
+                collection.findAndModify(
                     { "user_id": recipient_id},
                     { $push: {"inbox": message_metadata  }},
-                    { "upsert": true },
+                    {},//{ "upsert": true },
                     function (err, object) {
                         if (!err) {
                             console.log("updated inbox for recipient: " + recipient_id);
