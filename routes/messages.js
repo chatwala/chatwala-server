@@ -64,7 +64,6 @@ function postMessage(req, res) {
     var message_id = req.params.message_id;
     var recipient_id = req.body.recipient_id;
     var sender_id = req.body.sender_id;
-    var host = req.headers.host;
 
     if (typeof message_id === 'undefined') {
         res.send(400, [
@@ -87,7 +86,18 @@ function postMessage(req, res) {
         return;
     }
 
+    var sasUrl = getSasURL(message_id);
 
+    if (sasUrl) {
+        console.log("Fetched shared access message url for blob - redirecting");
+        res.send(200, {"status": "OK", 'url': createChatwalaRedirectURL(message_id), 'sasUrl': sasUrl});
+    }
+    else {
+        console.log("Unable to retrieve shared access url for message: " + message_id);
+        res.send(500, {"status": "FAIL", "message": "Unable to create shared access url for message " + message_id});
+    }
+
+    /*
     storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
         if (err) {
             res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
@@ -104,7 +114,7 @@ function postMessage(req, res) {
                 res.send(500, {"status": "FAIL", "message": "Unable to create shared access url for message " + message_id});
             }
         }
-    });
+    });*/
 }
 
 function getUploadURL(req, res) {
@@ -144,6 +154,8 @@ function postFinalize(req, res) {
 
     var message_id = req.params.message_id;
     var recipient_id = req.body.recipient_id;
+    var sender_id = req.body.sender_id;
+    var host = req.headers.host;
 
     if (typeof message_id === 'undefined') {
         res.send(400, [
@@ -159,9 +171,22 @@ function postFinalize(req, res) {
         return;
     }
 
-    sendPushNotification(recipient_id, function (err) {
-        res.send(200, {"status": "OK", "message": "finalize successfully completed"});
+    storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
+        if (err) {
+            res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
+        }
+        else {
+            sendPushNotification(recipient_id, function (err) {
+                if(!err) {
+                    res.send(200, {"status": "OK", "message": "finalize successfully completed"});
+                }
+                else {
+                    res.send(200, {"status": "NOTOK", "message": "push did not succeed"});
+                }
+            });
+        }
     });
+
 
 }
 
