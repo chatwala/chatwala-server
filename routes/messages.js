@@ -172,6 +172,11 @@ function postFinalize(req, res) {
         return;
     }
 
+    if(recipient_id === "unknown_recipient") {
+        res.send(200, {"status": "OK", "message": "finalize called for unknown recipient"});
+        return;
+    }
+
     var doSilentPush = true;
     if(typeof app_version === 'undefined') {
         doSilentPush = false;
