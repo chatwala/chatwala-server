@@ -54,7 +54,7 @@ function getUserMessages(req, res) {
 function postMessage(req, res) {
 
     if (!req.hasOwnProperty('body')) {
-        console.log("Error on postMessage : no body");
+        console.log("postMessage: Error on postMessage : no body");
         res.send(400, [
             { error: "need body"}
         ]);
@@ -89,11 +89,11 @@ function postMessage(req, res) {
     var sasUrl = getSasURL(message_id);
 
     if (sasUrl) {
-        console.log("Fetched shared access message url for blob - redirecting");
+        console.log("postMessage: Fetched shared access message url for blob");
         res.send(200, {"status": "OK", 'url': createChatwalaRedirectURL(message_id), 'sasUrl': sasUrl});
     }
     else {
-        console.log("Unable to retrieve shared access url for message: " + message_id);
+        console.log("postMessage: Unable to retrieve shared access url for message: " + message_id);
         res.send(500, {"status": "FAIL", "message": "Unable to create shared access url for message " + message_id});
     }
 
@@ -331,7 +331,8 @@ function sendPushNotification(recipient_id, doSilentPush, callback) {
         tag = recipient_id + ".silent";
     }
 
-    console.log("sendPushNotification " + doSilentPush);
+    console.log("sendPushNotification: doSilentPush=" + doSilentPush);
+    console.log("sendPushNotification: tag=" + tag);
 
     hub.send(tag, templateVariables, function (err, result, responseObject) {
         if (err) {
