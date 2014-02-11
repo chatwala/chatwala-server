@@ -156,6 +156,7 @@ function postFinalize(req, res) {
     var recipient_id = req.body.recipient_id;
     var sender_id = req.body.sender_id;
     var host = req.headers.host;
+    var app_version = req.headers["x-chatwala-appversion"];
 
     if (typeof message_id === 'undefined') {
         res.send(400, [
@@ -171,17 +172,22 @@ function postFinalize(req, res) {
         return;
     }
 
+    var doSilentPush = true;
+    if(typeof app_version === 'undefined') {
+        doSilentPush = false;
+    }
+
     storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
         if (err) {
             res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
         }
         else {
-            sendPushNotification(recipient_id, function (err) {
+            sendPushNotification(recipient_id, doSilentPush, function (err) {
                 if(!err) {
                     res.send(200, {"status": "OK", "message": "finalize successfully completed"});
                 }
                 else {
-                    res.send(200, {"status": "NOTOK", "message": "push did not succeed"});
+                    res.send(200, {"status": "OK", "message": "add to DB succeeded but push failed."});
                 }
             });
         }
@@ -309,10 +315,15 @@ function saveOutGoingMessage(message_metadata, callback) {
     });
 }
 
-function sendPushNotification(recipient_id, callback) {
-    var payload = {"content_available": 1, "message": "You have a received a new Chatwala reply."};
+function sendPushNotification(recipient_id, doSilentPush, callback) {
+    var message="You have received a new Chatwala reply.";
+    var templateVariables={"content_available": 1, "message": message};
+    var tag = recipient_id;
+    if(doSilentPush) {
+        tag = recipient_id + ".silent";
+    }
 
-    hub.send(recipient_id, payload, function (err, result, responseObject) {
+    hub.send(tag, templateVariables, function (err, result, responseObject) {
         if (err) {
             console.log("Error sending APNS payload to " + recipient_id);
             console.log(err);

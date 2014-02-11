@@ -17,7 +17,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"platform_type":"ios", "user_id":"b11111111-11111-1111-1111-111111111111","push_token": "BBBBBBBB XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX"}' \
+-d '{"platform_type":"ios", "user_id":"b11111111-11111-1111-1111-111111111111","push_token": "12327658e2f2a92c588aeb09d6ffc7cf5d89948f1d05c01abe58017b752370c7"}' \
 "http://localhost:1337/registerPushToken";
 
 
@@ -133,8 +133,8 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"recipient_id":"a11111111-11111-1111-1111-111111111111", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
-"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111111/finalize";
+-d '{"recipient_id":"b11111111-11111-1111-1111-111111111111", "sender_id":"a11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/m11111111-11111-1111-1111-111111111115/finalize";
 
 response:
 HTTP/1.1 200 OK
