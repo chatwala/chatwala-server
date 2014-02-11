@@ -177,6 +177,9 @@ function postFinalize(req, res) {
         doSilentPush = false;
     }
 
+    console.log("app_version=" + app_version);
+    console.log("doSilentPush=" + doSilentPush);
+
     storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
         if (err) {
             res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
@@ -322,6 +325,8 @@ function sendPushNotification(recipient_id, doSilentPush, callback) {
     if(doSilentPush) {
         tag = recipient_id + ".silent";
     }
+
+    console.log("sendPushNotification " + doSilentPush);
 
     hub.send(tag, templateVariables, function (err, result, responseObject) {
         if (err) {

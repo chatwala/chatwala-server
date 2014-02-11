@@ -84,15 +84,16 @@ function postPushToken(req, res) {
                 }
             }
         } else {
+
             // Create a new registration.
             if (platform_type === 'ios') {
-                console.log("Starting APNS registration.");
+                console.log("register ios user for generic tag." + genericTag);
                 var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
                 hub.apns.createTemplateRegistration(push_token,
                     [genericTag], template, registrationComplete);
             }
             else if (platform_type === 'android') {
-                console.log("Starting GCM registration.");
+                console.log("register android user for generic tag." + genericTag);
                 var template = '{\"message\":\"$(message)\"}';
                 hub.gcm.createTemplateRegistration(push_token,
                     [genericTag], template, registrationComplete);
@@ -118,19 +119,20 @@ function postPushToken(req, res) {
         } else {
             // Create a new registration.
             if (platform_type === 'ios') {
-                console.log("Starting APNS registration.");
+                console.log("register ios user for silent tag." + silentTag);
                 var template = '{\"aps\":{\"content-available\":\"$(content_available)\"}}';
                 hub.apns.createTemplateRegistration(push_token,
                     [silentTag], template, registrationComplete);
             }
             else if (platform_type === 'android') {
-                console.log("Starting GCM registration.");
+                console.log("register android user for silent tag." + silentTag);
                 var template = '{\"message\":\"$(message)\"}';
                 hub.gcm.createTemplateRegistration(push_token,
                     [silentTag], template, registrationComplete);
             }
         }
     });
+
 }
 
 /*Deprecated*/
