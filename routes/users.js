@@ -88,7 +88,7 @@ function postPushToken(req, res) {
             // Create a new registration.
             if (platform_type === 'ios') {
                 console.log("register ios user for generic tag." + genericTag);
-                var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
+                var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":1}}';
                 hub.apns.createTemplateRegistration(push_token,
                     [genericTag], template, registrationComplete);
             }
@@ -120,7 +120,7 @@ function postPushToken(req, res) {
             // Create a new registration.
             if (platform_type === 'ios') {
                 console.log("register ios user for silent tag." + silentTag);
-                var template = '{\"aps\":{\"content-available\":\"1\"}}';
+                var template = '{\"aps\":{\"content-available\":1}}';
                 hub.apns.createTemplateRegistration(push_token,
                     [silentTag], template, registrationComplete);
             }
