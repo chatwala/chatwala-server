@@ -54,7 +54,7 @@ function getUserMessages(req, res) {
 function postMessage(req, res) {
 
     if (!req.hasOwnProperty('body')) {
-        console.log("Error on postMessage : no body");
+        console.log("postMessage: Error on postMessage : no body");
         res.send(400, [
             { error: "need body"}
         ]);
@@ -64,7 +64,6 @@ function postMessage(req, res) {
     var message_id = req.params.message_id;
     var recipient_id = req.body.recipient_id;
     var sender_id = req.body.sender_id;
-    var host = req.headers.host;
 
     if (typeof message_id === 'undefined') {
         res.send(400, [
@@ -87,7 +86,18 @@ function postMessage(req, res) {
         return;
     }
 
+    var sasUrl = getSasURL(message_id);
 
+    if (sasUrl) {
+        console.log("postMessage: Fetched shared access message url for blob");
+        res.send(200, {"status": "OK", 'url': createChatwalaRedirectURL(message_id), 'sasUrl': sasUrl});
+    }
+    else {
+        console.log("postMessage: Unable to retrieve shared access url for message: " + message_id);
+        res.send(500, {"status": "FAIL", "message": "Unable to create shared access url for message " + message_id});
+    }
+
+    /*
     storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
         if (err) {
             res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
@@ -104,7 +114,7 @@ function postMessage(req, res) {
                 res.send(500, {"status": "FAIL", "message": "Unable to create shared access url for message " + message_id});
             }
         }
-    });
+    });*/
 }
 
 function getUploadURL(req, res) {
@@ -144,6 +154,9 @@ function postFinalize(req, res) {
 
     var message_id = req.params.message_id;
     var recipient_id = req.body.recipient_id;
+    var sender_id = req.body.sender_id;
+    var host = req.headers.host;
+    var app_version = req.headers["x-chatwala-appversion"];
 
     if (typeof message_id === 'undefined') {
         res.send(400, [
@@ -159,9 +172,35 @@ function postFinalize(req, res) {
         return;
     }
 
-    sendPushNotification(recipient_id, function (err) {
-        res.send(200, {"status": "OK", "message": "finalize successfully completed"});
+    if(recipient_id === "unknown_recipient") {
+        res.send(200, {"status": "OK", "message": "finalize called for unknown recipient"});
+        return;
+    }
+
+    var doSilentPush = true;
+    if(typeof app_version === 'undefined') {
+        doSilentPush = false;
+    }
+
+    console.log("app_version=" + app_version);
+    console.log("doSilentPush=" + doSilentPush);
+
+    storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
+        if (err) {
+            res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
+        }
+        else {
+            sendPushNotification(recipient_id, doSilentPush, function (err) {
+                if(!err) {
+                    res.send(200, {"status": "OK", "message": "finalize successfully completed"});
+                }
+                else {
+                    res.send(200, {"status": "OK", "message": "add to DB succeeded but push failed."});
+                }
+            });
+        }
     });
+
 
 }
 
@@ -284,10 +323,18 @@ function saveOutGoingMessage(message_metadata, callback) {
     });
 }
 
-function sendPushNotification(recipient_id, callback) {
-    var payload = {"content_available": 1, "message": "You have a received a new Chatwala reply."};
+function sendPushNotification(recipient_id, doSilentPush, callback) {
+    var message="You have received a new Chatwala reply.";
+    var templateVariables={"content_available": 1, "message": message};
+    var tag = recipient_id;
+    if(doSilentPush) {
+        tag = recipient_id + ".silent";
+    }
 
-    hub.send(recipient_id, payload, function (err, result, responseObject) {
+    console.log("sendPushNotification: doSilentPush=" + doSilentPush);
+    console.log("sendPushNotification: tag=" + tag);
+
+    hub.send(tag, templateVariables, function (err, result, responseObject) {
         if (err) {
             console.log("Error sending APNS payload to " + recipient_id);
             console.log(err);

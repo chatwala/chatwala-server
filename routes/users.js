@@ -52,20 +52,58 @@ function postPushToken(req, res) {
     var push_token = req.body.push_token;
 
     // Function called when registration is completed.
+    var numRegistrations = 0;
+    var numErrors =0;
     var registrationComplete = function (error, registration) {
-        if (!error) {
-            // Return the registration.
-            console.log("Successfully registered user device for push notifications.");
-            res.send(200, registration);
+        numRegistrations++;
+
+        if(error) {
+            numErrors++;
         }
-        else {
-            console.log("Push notification registration failed with error: ", error);
-            res.send(500,[{ "error": error}]);
+
+        if (numRegistrations==2) {
+            res.send(200, {"status":"OK", "message":"user registered to push notifications with " + numErrors + " errors"});
         }
     };
 
     // Get existing registrations.
-    hub.listRegistrationsByTag(user_id, function (error, existingRegs) {
+
+    //register for "generic"
+    var genericTag = user_id;
+    hub.listRegistrationsByTag(genericTag, function (error, existingRegs) {
+        var firstRegistration = true;
+        if (existingRegs.length > 0) {
+            for (var i = 0; i < existingRegs.length; i++) {
+                if (firstRegistration) {
+                    existingRegs[i].DeviceToken = push_token;
+                    hub.updateRegistration(existingRegs[i], registrationComplete);
+                    firstRegistration = false;
+                } else {
+                    // We shouldn't have any extra registrations; delete if we do.
+                    hub.deleteRegistration(existingRegs[i].RegistrationId, null);
+                }
+            }
+        } else {
+
+            // Create a new registration.
+            if (platform_type === 'ios') {
+                console.log("register ios user for generic tag." + genericTag);
+                var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
+                hub.apns.createTemplateRegistration(push_token,
+                    [genericTag], template, registrationComplete);
+            }
+            else if (platform_type === 'android') {
+                console.log("register android user for generic tag." + genericTag);
+                var template = '{\"message\":\"$(message)\"}';
+                hub.gcm.createTemplateRegistration(push_token,
+                    [genericTag], template, registrationComplete);
+            }
+        }
+    });
+
+    //register for silent
+    var silentTag = user_id + ".silent";
+    hub.listRegistrationsByTag(user_id+".silent", function (error, existingRegs) {
         var firstRegistration = true;
         if (existingRegs.length > 0) {
             for (var i = 0; i < existingRegs.length; i++) {
@@ -81,16 +119,16 @@ function postPushToken(req, res) {
         } else {
             // Create a new registration.
             if (platform_type === 'ios') {
-                console.log("Starting APNS registration.");
-                var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"$(content_available)\"}}';
+                console.log("register ios user for silent tag." + silentTag);
+                var template = '{\"aps\":{\"content-available\":\"$(content_available)\"}}';
                 hub.apns.createTemplateRegistration(push_token,
-                    [user_id], template, registrationComplete);
+                    [silentTag], template, registrationComplete);
             }
             else if (platform_type === 'android') {
-                console.log("Starting GCM registration.");
+                console.log("register android user for silent tag." + silentTag);
                 var template = '{\"message\":\"$(message)\"}';
                 hub.gcm.createTemplateRegistration(push_token,
-                    [user_id], template, registrationComplete);
+                    [silentTag], template, registrationComplete);
             }
         }
     });
