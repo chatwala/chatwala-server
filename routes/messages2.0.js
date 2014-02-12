@@ -17,6 +17,11 @@ function MessageAPI() {
         return arguments.callee._singletonInstance;
     arguments.callee._singletonInstance = this;
 
+    this.UknownRecipientMessageSendRequest = function() {
+
+    }
+
+    //PUBLIC Methods
     this.getMessagesReceived = function(strUserID) {
         // ...
     }
@@ -45,6 +50,20 @@ function MessageAPI() {
     }
 
     this.flagKnownRecipientMessageAsReceived = function(flagKnownRecipientMessageAsReceivedRequest) {
+
+    }
+
+    //message urls
+    this.getMessageUploadURL = function(message_id) {
+
+    }
+
+    this.getMessageDownloadURL = function(message_id) {
+
+    }
+
+    //PRIVATE METHODS
+    function sendPushNotificationForMessage() {
 
     }
 
