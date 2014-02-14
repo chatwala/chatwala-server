@@ -1,17 +1,17 @@
 UnknownRecipientMessageSend= {
     responseCodes: {
-      "200":"success"
+      "success":"A document for {{message_id}} has been successfully added to the messages collection."
     },
-    request: function() {
+    Request: function() {
         this.sender_id=null;
         this.message_id=null;
 
         this.execute= function(callback) {
            //create starter message document
-           //
+
         }
     },
-    response: function() {
+    Response: function() {
         this.message_meta_data=null;
         this.responseCode=null;
     }
