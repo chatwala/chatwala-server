@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var messages = require('./routes/messages');
 var routes = require('./routes');
 var mongoClient = require('./cw_mongo.js');
+//var api = require('./api/ChatwalaApi.js');
 
 var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
 var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
@@ -102,7 +103,7 @@ app.use(express.multipart());
 
 
 // development only
-if ('development' == app.get('env')) {
+if ('development' == app.get('env') || 'sandbox' == app.get('env')) {
     app.use(express.errorHandler());
 }
 

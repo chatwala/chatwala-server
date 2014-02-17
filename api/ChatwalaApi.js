@@ -1,8 +1,8 @@
-var UnkownRecipientMessageSend = require("UnknownRecipientMessageSend");
+var StartUnkownRecipientMessageSend = require("./StartUnknownRecipientMessageSend.js");
+var CompleteUnkownRecipientMessageSend = require("./CompleteUnknownRecipientMessageSend.js");
 
 var ChatwalaApi = {
-    commands: {
-        "UnkownRecipientMessageSend":UnkownRecipientMessageSend.$
-    }
+    "StartUnkownRecipientMessageSend":StartUnkownRecipientMessageSend,
+    "CompleteUnkownRecipientMessageSend":CompleteUnkownRecipientMessageSend,
 };
-exports.$ = ChatwalaApi;
+exports = ChatwalaApi;
