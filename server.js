@@ -11,7 +11,8 @@ var users = require('./routes/users');
 var messages = require('./routes/messages');
 var routes = require('./routes');
 var mongoClient = require('./cw_mongo.js');
-//var api = require('./api/ChatwalaApi.js');
+
+var chatwalaRoutes = require("./api/ChatwalaRoutes2.0.js");
 
 var clientID = "58041de0bc854d9eb514d2f22d50ad4c";
 var clientSecret = "ac168ea53c514cbab949a80bebe09a8a";
@@ -118,40 +119,7 @@ app.get('/monitor', function (req, res) {
 
 app.get('/', routes.index);
 
-//Deprecated
-app.get('/register', users.registerNewUser);
-
-//Registers a push token for a user
-app.post('/registerPushToken', users.postPushToken);
-
-app.get('/users/:user_id/messages', messages.getUserMessages);
-
-//302 redirects to SASURL
-app.get('/messages/:message_id', messages.getMessage);
-
-//posts metadata and returns SASURL
-app.post('/messages/:message_id', messages.postMessage);
-
-//posts finalize on message
-app.post('/messages/:message_id/finalize', messages.postFinalize);
-
-//refresh PUT SASURL
-app.get('/messages/:message_id/uploadURL', messages.getUploadURL);
-
-//deprecated, old put message call, put directly to storage instead
-app.put('/messages/:message_id', messages.putMessage);
-
-//deprecated
-app.post('/messages', messages.submitMessageMetadata);
-
-//302 redirects to SASURL
-app.get('/users/:user_id/picture', users.getProfilePicture);
-
-//deprecated
-app.put('/users/:user_id/picture', users.updateProfilePicture);
-
-//get SASURL
-app.get('/users/:user_id/pictureUploadURL', users.getProfilePictureUploadURL);
+chatwalaRoutes.setRoutes(app);
 
 var server = http.createServer(app);
 
