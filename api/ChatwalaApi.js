@@ -1,8 +1,11 @@
-var StartUnkownRecipientMessageSend = require("./StartUnknownRecipientMessageSend.js");
-var CompleteUnkownRecipientMessageSend = require("./CompleteUnknownRecipientMessageSend.js");
+var StartUnknownRecipientMessageSend = require("./StartUnknownRecipientMessageSend.js");
+var CompleteUnknownRecipientMessageSend = require("./CompleteUnknownRecipientMessageSend.js");
+var ConvertUnknownRecipientMessageToKnownRecipient = require("./ConvertUnknownRecipientMessageToKnownRecipient.js");
 
 var ChatwalaApi = {
-    "StartUnkownRecipientMessageSend":StartUnkownRecipientMessageSend,
-    "CompleteUnkownRecipientMessageSend":CompleteUnkownRecipientMessageSend,
+    "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
+    "CompleteUnknownRecipientMessageSend":CompleteUnknownRecipientMessageSend,
+    "ConvertUnknownRecipientMessageToKnownRecipient":ConvertUnknownRecipientMessageToKnownRecipient
 };
-exports = ChatwalaApi;
+
+module.exports = ChatwalaApi;

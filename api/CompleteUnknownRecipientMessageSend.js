@@ -8,19 +8,23 @@ var CompleteUnknownRecipientMessageSend=(function() {
             "code":1,
             "message":"A document for {{message_id}} has been successfully updated."
         },
+        "invalidServerMessageId": {
+            "code":-1,
+            "message":"You provided an invalid server_message_id"
+        },
         "failureDBConnect": {
-            "code":2,
+            "code":-100,
             "message":"Unable to connect to the db"
         },
         "failureDBSave": {
-            "code": 3,
+            "code":-101,
             "message": "Unable to save message document to db"
         }
     };
 
 
     var Request = function() {
-        this.message_instance_id = null;
+        this.server_message_id = undefined;
     };
 
     var Response = function() {
@@ -32,6 +36,13 @@ var CompleteUnknownRecipientMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
+        if(request.server_message_id === undefined) {
+            var response = new Response();
+            response.messageDocument = {};
+            response.responseCode = responseCodes["invalidServerMessageId"];
+            callback("invalidServerMessageId", response);
+            return;
+        }
 
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
@@ -42,12 +53,12 @@ var CompleteUnknownRecipientMessageSend=(function() {
                 var collection = db.collection('messages');
 
                 collection.update(
-                    {"message_instance_id": request.message_instance_id},
+                    {"server_message_id": request.server_message_id},
                     {"$set":{"uploaded":true}},
                     function (err, docs) {
                     if (!err) {
                         var response = new Response();
-                        response.messageDocument = messageDocument;
+                        response.messageDocument = docs;
                         response.responseCode = responseCodes["success"];
                         callback(null, response);
                     } else {
@@ -68,6 +79,6 @@ var CompleteUnknownRecipientMessageSend=(function() {
     };
 }());
 
-exports = CompleteUnknownRecipientMessageSend;
+module.exports = CompleteUnknownRecipientMessageSend;
 
 

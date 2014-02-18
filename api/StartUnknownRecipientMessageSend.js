@@ -21,7 +21,7 @@ var StartUnknownRecipientMessageSend=(function() {
 
     var Request = function() {
         this.sender_id=null;
-        this.message_id=null;
+        this.client_message_id=null;
     };
 
     var Response = function() {
@@ -31,30 +31,35 @@ var StartUnknownRecipientMessageSend=(function() {
 
     var execute = function(request, callback) {
 
-        CWMongoClient.getConnection(function (err, db) {
-            if (err) {
-                var res = new Response();
-                res.responseCode = responseCodes["failureDBConnect"];
-                return callback("failureDBConnect", res);
-            } else {
-                var collection = db.collection('messages');
-                var messageDocument = ChatwalaMessageDocuments.createStarterUnknownRecipientMessageDocument(request);
-                collection.insert(messageDocument,
-                    function (err, docs) {
-                    if (!err) {
-                        var response = new Response();
-                        response.messageDocument = messageDocument;
-                        response.responseCode = responseCodes["success"];
-                        callback(null, response);
-                    } else {
-                        var response = new Response();
-                        response.messageDocument = {};
-                        response.responseCode = responseCodes["failureDBSave"];
-                        callback("failureDBSave", response);
-                    }
-                });
-            }
-        });
+        var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.client_message_id, request.sender_id);
+        if(message.isValid()) {
+            CWMongoClient.getConnection(function (err, db) {
+                if (err) {
+                    var res = new Response();
+                    res.responseCode = responseCodes["failureDBConnect"];
+                    return callback("failureDBConnect", res);
+                } else {
+                    var collection = db.collection('messages');
+
+                    collection.insert(message.properties,
+                        function (err, doc) {
+                            console.log("err=" + err);
+                            if (!err) {
+                                var response = new Response();
+                                response.messageDocument = doc;
+                                response.responseCode = responseCodes["success"];
+                                callback(null, response);
+                            } else {
+                                var response = new Response();
+                                response.messageDocument = {};
+                                response.responseCode = responseCodes["failureDBSave"];
+                                callback("failureDBSave", response);
+                            }
+                        });
+                }
+            });
+        }
+
     };
 
     return {
@@ -64,6 +69,6 @@ var StartUnknownRecipientMessageSend=(function() {
     };
 }());
 
-exports = StartUnknownRecipientMessageSend;
+module.exports = StartUnknownRecipientMessageSend;
 
 

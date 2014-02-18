@@ -1,26 +1,31 @@
 var async = require('async');
 var CWMongoClient = require('../cw_mongo.js');
+var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
-var CompleteUnknownRecipientMessageSend=(function() {
+var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
     var responseCodes = {
         "success": {
             "code":1,
             "message":"The document for {{message_id}} has been successfully updated."
         },
+        "failureInvalidMessageDocument":{
+            "code":-10,
+            "message":"invalid message document"
+        },
         "failureDBConnect": {
-            "code":2,
+            "code":-100,
             "message":"Unable to connect to the db"
         },
         "failureDBSave": {
-            "code": 3,
+            "code": -101,
             "message": "Unable to save message document to db"
         }
     };
 
 
     var Request = function() {
-        this.message_instance_id = null;
+        this.server_message_id = null;
     };
 
     var Response = function() {
@@ -28,96 +33,156 @@ var CompleteUnknownRecipientMessageSend=(function() {
         this.responseCode=null;
     };
 
-    var createSenderMessageDocument= function(request, originalTimestamp) {
-        return {
-            "message_instance_id": request.sender_id + "." + request.message_id,
-            "message_id": request.message_id,
-            "owner_user_id": request.sender_id,
-            "owner_role": "sender",
-            "other_user_id": request.recipient_id,
-            "other_role": "recipient",
-            "sender_id":request.sender_id,
-            "recipient_id": request.recipient_id,
-            "thread_id": request.message_id + "." + request.sender_id + "." + request.recipient_id,
-            "thread_count":0,
-            "replying_to_message_id": null,
-            "blob_storage_shard_key":1,
-            "unknown_recipient_starter": false,
-            "uploaded":true,
-            "received":true,
-            "replied": false,
-            "replied_message_id":null,
-            "showable":true,
-            "timestamp":originalTimestamp
-        };
-    };
-
-    var createRecipientMessageDocument = function(request, originalTimestamp) {
-        return {
-            "message_instance_id": request.recipient_id + "." + request.message_id,
-            "message_id": request.message_id,
-            "owner_user_id": request.recipient_id,
-            "owner_role": "recipient",
-            "other_user_id": request.sender_id,
-            "other_role": "sender",
-            "sender_id":request.sender_id,
-            "recipient_id":request.recipient_id,
-            "thread_id": request.message_id + "." + request.sender_id + "." + request.recipient_id,
-            "thread_count":0,
-            "replying_to_message_id": null,
-            "blob_storage_shard_key":1,
-            "unknown_recipient_starter": false,
-            "uploaded":true,
-            "received":true,
-            "replied": false,
-            "replied_message_id":null,
-            "showable":true,
-            "timestamp":originalTimestamp
-        };
-    }
-
-    var createActionSaveSenderMessageDocument = function(request) {
-        return function(callback) {
-
-            //get db connection
+    function saveSenderDocument(originalDocument, request, parallelCallback) {
+        console.log("originalDocument=");
+        console.log(originalDocument);
+        var message = new ChatwalaMessageDocuments.Message();
+        message.setPropsFromDictionary(originalDocument);
+        message.properties.owner_user_id = originalDocument.sender_id;
+        message.properties.owner_role = ChatwalaMessageDocuments.ROLE_SENDER;
+        message.properties.other_user_id = request.recipient_id;
+        message.properties.other_user_role = ChatwalaMessageDocuments.ROLE_RECIPIENT;
+        message.properties.recipient_id = request.recipient_id;
+        message.properties.unknown_recipient_starter=false;
+        message.properties.showable=true;
+        message.generateMessageInstanceId();
+        message.generateThreadInformation();
+        console.log("message.properties=");
+        console.log(message.properties);
+        if(message.isValid()) {
+            console.log("message is valid");
 
             CWMongoClient.getConnection(function (err, db) {
+                console.log("got connection");
                 if (err) {
-                    callback("failureDBConnect");
+                    console.log("we have an error!");
+                    var res = new Response();
+                    res.responseCode = responseCodes["failureDBConnect"];
+                    return parallelCallback("failureDBConnect", res);
                 } else {
-                    //save sender document
+                    console.log("getting the collection");
                     var collection = db.collection('messages');
-                    collection.insert();
-                    callback(null,"success");
+
+                    collection.insert(message.properties,
+                        function (err, docs) {
+                            console.log(err);
+                            if (!err) {
+                                var response = new Response();
+                                response.messageDocument = docs;
+                                response.responseCode = responseCodes["success"];
+                                parallelCallback(null, response);
+                            } else {
+                                var response = new Response();
+                                response.messageDocument = {};
+                                response.responseCode = responseCodes["failureDBSave"];
+                                parallelCallback("failureDBSave", response);
+                            }
+                        });
                 }
             });
-
-
-        };
-    };
-    var createActionReceiverMessageDocument = function(request) {
-        return function(callback) {
-
-            //get db connection
-
-            //save receiver document
-            callback(null,"success");
         }
-    };
+        else {
+            console.log("MESSAGE IS NOT VALID");
+            var response = new Response();
+            response.messageDocument = {};
+            response.responseCode = responseCodes["failureInvalidMessageDocument"];
+            parallelCallback("failureInvalidMessageDocument", response);
+        }
+    }
 
+
+    function saveRecipientDocument(originalDocument, request, parallelCallback) {
+        var message = new ChatwalaMessageDocuments.Message();
+        message.setPropsFromDictionary(originalDocument);
+        message.properties.owner_user_id = request.recipient_id;
+        message.properties.owner_role = ChatwalaMessageDocuments.ROLE_RECIPIENT;
+        message.properties.other_user_id = originalDocument.sender_id;
+        message.properties.other_user_role = ChatwalaMessageDocuments.ROLE_SENDER;
+        message.properties.recipient_id = request.recipient_id;
+        message.properties.unknown_recipient_starter=false;
+        message.properties.showable=true;
+        message.generateMessageInstanceId();
+        message.generateThreadInformation();
+        console.log("message.properties=");
+        console.log(message.properties);
+        if(message.isValid()) {
+            console.log("message is valid");
+            CWMongoClient.getConnection(function (err, db) {
+                console.log("get connection");
+                if (err) {
+                    var res = new Response();
+                    res.responseCode = responseCodes["failureDBConnect"];
+                    return parallelCallback("failureDBConnect", res);
+                } else {
+                    var collection = db.collection('messages');
+
+                    collection.insert(message.properties,
+                        function (err, docs) {
+                            if (!err) {
+                                var response = new Response();
+                                response.messageDocument = docs;
+                                response.responseCode = responseCodes["success"];
+                                parallelCallback(null, response);
+                            } else {
+                                var response = new Response();
+                                response.messageDocument = {};
+                                response.responseCode = responseCodes["failureDBSave"];
+                                parallelCallback("failureDBSave", response);
+                            }
+                        });
+                }
+            });
+        }
+        else {
+            console.log("MESSAGE IS NOT VALID");
+            var response = new Response();
+            response.messageDocument = {};
+            response.responseCode = responseCodes["failureInvalidMessageDocument"];
+            parallelCallback("failureInvalidMessageDocument", response);
+        }
+    }
+
+    function getOriginalDocument(request, waterfallCallback) {
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                waterfallCallback(err, null);
+            } else {
+                var collection = db.collection('messages');
+                collection.findOne({"server_message_id": request.server_message_id}, function (err, messageDocument) {
+                    waterfallCallback(err, messageDocument);
+                });
+            }
+        });
+    }
 
     var execute = function(request, callback) {
-
-        async.series([
-            createActionSaveSenderMessageDocument(request),
-            createActionReceiverMessageDocument(request),
-        ],
-        function(err, results) {
-
-        }
+        async.waterfall(
+            [
+                function(waterfallCallback) {
+                    getOriginalDocument(request, waterfallCallback);
+                },
+                function(originalDocument, waterfallCallback) {
+                    async.parallel([
+                        function(parallelCallback) {
+                            saveSenderDocument(originalDocument, request, parallelCallback);
+                        },
+                        function(parallelCallback) {
+                            saveRecipientDocument(originalDocument, request, parallelCallback);
+                        }
+                    ],
+                        function(err, results) {
+                            waterfallCallback(err, results);
+                        }
+                    );
+                }
+            ],
+            function(err, result) {
+                callback(err, result);
+            }
         );
 
-    };
+    }
+
 
     return {
         "responseCodes": responseCodes,
@@ -126,6 +191,6 @@ var CompleteUnknownRecipientMessageSend=(function() {
     };
 }());
 
-exports = CompleteUnknownRecipientMessageSend;
+module.exports = ConvertUnknownRecipientMessageToKnownRecipient;
 
 
