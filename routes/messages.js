@@ -324,7 +324,7 @@ function saveOutGoingMessage(message_metadata, callback) {
 }
 
 function sendPushNotification(recipient_id, doSilentPush, callback) {
-    var message="You have been sent a new Chatwala reply.";
+    var message="You have a new message. Downloading now...";
     var templateVariables={"content_available": 1, "message": message};
     var tag = recipient_id;
     
