@@ -10,11 +10,11 @@ var StartUnknownRecipientMessageSend=(function() {
             "message":"The message has been successfully added to the users outbox."
         },
         "failureDBConnect": {
-            "code":2,
+            "code":-200,
             "message":"Unable to connect to the db"
         },
         "failureDBSave": {
-            "code": 3,
+            "code": -201,
             "message": "Unable to save message document to db"
         }
     };
@@ -25,15 +25,8 @@ var StartUnknownRecipientMessageSend=(function() {
     };
 
     var Response = function() {
-        this.messageDocument=undefined;
-        this.responseCode=undefined;
-
-        this.generateResponseDocument = function() {
-            var responseDocument = {};
-            responseDocument["response_code"] = this.responseCode;
-            responseDocument["message_meta_data"] = this.messageDocument;
-            return responseDocument;
-        }
+        this.message_meta_data=undefined;
+        this.response_code=undefined;
     };
 
     var execute = function(request, callback) {

@@ -1,5 +1,6 @@
 var ChatwalaApi = require("./ChatwalaApi.js");
 
+/******* START UNKNOWN RECIPIENT ROUTES*************/
 function postStartUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.StartUnknownRecipientMessageSend.Request();
     sendRequest.client_message_id = req.body.client_message_id;
@@ -7,10 +8,10 @@ function postStartUnknownRecipientMessageSend(req, res) {
 
     ChatwalaApi.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
        if(!err) {
-        res.send(200, response.generateResponseDocument());
+        res.send(200, response);
        }
        else {
-        res.send(500, response.generateResponseDocument());
+        res.send(500, response);
        }
     });
 }
@@ -22,10 +23,10 @@ function postCompleteUnknownRecipientMessageSend(req, res) {
 
     ChatwalaApi.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
         if(!err) {
-            res.send(200, response.generateResponseDocument());
+            res.send(200, response);
         }
         else {
-            res.send(500, response.generateResponseDocument());
+            res.send(500, response);
         }
     });
 }
@@ -38,18 +39,46 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
     ChatwalaApi.ConvertUnknownRecipientMessageToKnownRecipient.execute(convertRequest, function(err, response){
         if(!err) {
-            res.send(200, response.generateResponseDocument());
+            res.send(200, response);
         }
         else {
-            res.send(500, response.generateResponseDocument());
+            res.send(500, response);
         }
     });
 }
+
+/******* END UNKNOWN RECIPIENT ROUTES*************/
+
+
+
+
+
+/******* START KNOWN RECIPIENT ROUTES*************/
+
+function postStartKnownRecipientMessageSend(req, res) {
+    var request = new ChatwalaApi.StartKnownRecipientMessageSend.Request();
+    request.replying_to_server_message_id = req.body.replying_to_server_message_id;
+    request.client_message_id = req.body.client_message_id;
+    request.owner_user_id = req.body.owner_user_id;
+
+
+    ChatwalaApi.StartKnownRecipientMessageSend.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
+/******* END KNOWN RECIPIENT ROUTES*************/
 
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
+    app.post("/messages/startKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
 }
 
 exports.setRoutes = setRoutes;

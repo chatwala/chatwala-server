@@ -1,5 +1,6 @@
 var async = require('async');
 var CWMongoClient = require('../cw_mongo.js');
+var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
 var CompleteUnknownRecipientMessageSend=(function() {
 
@@ -8,16 +9,16 @@ var CompleteUnknownRecipientMessageSend=(function() {
             "code":1,
             "message":"The message has been successfully marked as uploaded."
         },
-        "invalidServerMessageId": {
-            "code":-1,
+        "failureInvalidServerMessageId": {
+            "code":-101,
             "message":"You provided an invalid server_message_id"
         },
         "failureDBConnect": {
-            "code":-100,
+            "code":-200,
             "message":"Unable to connect to the db"
         },
         "failureDBSave": {
-            "code":-101,
+            "code":-201,
             "message": "Unable to save message document to db"
         }
     };
@@ -28,16 +29,8 @@ var CompleteUnknownRecipientMessageSend=(function() {
     };
 
     var Response = function() {
-        this.messageDocument=undefined;
-        this.responseCode=undefined;
-
-        this.generateResponseDocument = function() {
-            var responseDocument = {};
-            responseDocument["message_meta_data"] = this.messageDocument;
-            responseDocument["response_code"] = this.responseCode;
-            return responseDocument;
-        }
-
+        this.message_meta_data=undefined;
+        this.response_code=undefined;
     };
 
     /*
@@ -46,16 +39,16 @@ var CompleteUnknownRecipientMessageSend=(function() {
     var execute = function(request, callback) {
         if(request.server_message_id === undefined) {
             var response = new Response();
-            response.messageDocument = {};
-            response.responseCode = responseCodes["invalidServerMessageId"];
-            callback("invalidServerMessageId", response);
+            response.message_meta_data = {};
+            response.response_code = responseCodes["failureInvalidServerMessageId"];
+            callback("failureInvalidServerMessageId", response);
             return;
         }
 
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
                 var res = new Response();
-                res.responseCode = responseCodes["failureDBConnect"];
+                res.response_code = responseCodes["failureDBConnect"];
                 return callback("failureDBConnect", res);
             } else {
                 var collection = db.collection('messages');
@@ -66,13 +59,13 @@ var CompleteUnknownRecipientMessageSend=(function() {
                     function (err, docs) {
                     if (!err) {
                         var response = new Response();
-                        response.messageDocument = docs;
-                        response.responseCode = responseCodes["success"];
+                        response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(docs);
+                        response.response_code = responseCodes["success"];
                         callback(null, response);
                     } else {
                         var response = new Response();
-                        response.messageDocument = {};
-                        response.responseCode = responseCodes["failureDBSave"];
+                        response.message_meta_data = {};
+                        response.response_code = responseCodes["failureDBSave"];
                         callback("failureDBSave", response);
                     }
                 });

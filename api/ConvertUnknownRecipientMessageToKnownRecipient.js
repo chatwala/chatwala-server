@@ -10,19 +10,19 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             "message":"The recipient has been added"
         },
         "failure": {
-          "code": -102,
+          "code": -100,
            "message": "Something went wrong, was unable to convert to a known recipient message. Try again"
         },
         "failureInvalidMessageDocument":{
-            "code":-10,
+            "code":-101,
             "message":"invalid message document"
         },
         "failureDBConnect": {
-            "code":-100,
+            "code":-200,
             "message":"Unable to connect to the db"
         },
         "failureDBSave": {
-            "code": -101,
+            "code": -201,
             "message": "Unable to save message document to db"
         }
     };
@@ -33,14 +33,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     };
 
     var Response = function() {
-        this.responseCode=undefined;
-
-        this.generateResponseDocument = function() {
-            var responseDocument = {};
-            responseDocument["response_code"] = this.responseCode;
-            return responseDocument;
-        }
-
+        this.response_code=undefined;
     };
 
     function saveSenderDocument(originalDocument, request, parallelCallback) {
@@ -67,7 +60,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                 if (err) {
                     console.log("we have an error!");
                     var res = new Response();
-                    res.responseCode = responseCodes["failureDBConnect"];
+                    res.response_code = responseCodes["failureDBConnect"];
                     return parallelCallback("failureDBConnect", res);
                 } else {
                     console.log("getting the collection");
@@ -78,13 +71,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                             console.log(err);
                             if (!err) {
                                 var response = new Response();
-                                response.messageDocument = docs;
-                                response.responseCode = responseCodes["success"];
+                                response.response_code = responseCodes["success"];
                                 parallelCallback(null, response);
                             } else {
                                 var response = new Response();
-                                response.messageDocument = {};
-                                response.responseCode = responseCodes["failureDBSave"];
+                                response.response_code = responseCodes["failureDBSave"];
                                 parallelCallback("failureDBSave", response);
                             }
                         });
@@ -95,7 +86,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             console.log("MESSAGE IS NOT VALID");
             var response = new Response();
             response.messageDocument = {};
-            response.responseCode = responseCodes["failureInvalidMessageDocument"];
+            response.response_code = responseCodes["failureInvalidMessageDocument"];
             parallelCallback("failureInvalidMessageDocument", response);
         }
     }
@@ -130,13 +121,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                         function (err, docs) {
                             if (!err) {
                                 var response = new Response();
-                                response.messageDocument = docs;
-                                response.responseCode = responseCodes["success"];
+                                response.response_code = responseCodes["success"];
                                 parallelCallback(null, response);
                             } else {
                                 var response = new Response();
-                                response.messageDocument = {};
-                                response.responseCode = responseCodes["failureDBSave"];
+                                response.response_code = responseCodes["failureDBSave"];
                                 parallelCallback("failureDBSave", response);
                             }
                         });
@@ -146,8 +135,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         else {
             console.log("MESSAGE IS NOT VALID");
             var response = new Response();
-            response.messageDocument = {};
-            response.responseCode = responseCodes["failureInvalidMessageDocument"];
+            response.response_code = responseCodes["failureInvalidMessageDocument"];
             parallelCallback("failureInvalidMessageDocument", response);
         }
     }
@@ -189,17 +177,17 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             function(err, responseArray) {
                 var success = true;
                 for(var i=0; i<responseArray.length; i++) {
-                    if(responseArray[i].responseCode.code!=1) {
+                    if(responseArray[i].response_code.code!=1) {
                         success=false;
                     }
                 }
 
                 var response = new Response();
                 if(success) {
-                    response.responseCode = responseCodes["success"];
+                    response.response_code = responseCodes["success"];
                 }
                 else {
-                    response.responseCode = responseCodes["failure"];
+                    response.response_code = responseCodes["failure"];
                 }
                 console.log(response);
                 callback(err, response);
