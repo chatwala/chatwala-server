@@ -6,7 +6,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"A document for {{message_id}} has been successfully updated."
+            "message":"The message has been successfully marked as uploaded."
         },
         "invalidServerMessageId": {
             "code":-1,
@@ -28,8 +28,16 @@ var CompleteUnknownRecipientMessageSend=(function() {
     };
 
     var Response = function() {
-        this.messageDocument=null;
-        this.responseCode=null;
+        this.messageDocument=undefined;
+        this.responseCode=undefined;
+
+        this.generateResponseDocument = function() {
+            var responseDocument = {};
+            responseDocument["message_meta_data"] = this.messageDocument;
+            responseDocument["response_code"] = this.responseCode;
+            return responseDocument;
+        }
+
     };
 
     /*

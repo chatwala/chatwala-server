@@ -28,11 +28,11 @@ var ChatwalaMessageDocuments=(function() {
                 "delivered":false,
                 "viewed":false,
                 "replied": false,
-                "replied_message_server_id":"none",
-                "replying_to_message_id":null,
+                "replied_by_server_message_id":null,
+                "replying_to_server_message_id":null,
                 "showable":false,
                 "timestamp":undefined, //since epoch
-                "decryptionKey":"none"
+                "decryption_key":null
             };
         }
 
@@ -85,6 +85,14 @@ var ChatwalaMessageDocuments=(function() {
         this.isValid=function() {
             console.log("validating message");
 
+            //clear any weird or invalid props that may have been added by creating a new properties document
+            var newProps = this.getTemplate();
+            for(var property in newProps) {
+                newProps[property] = this.properties[property];
+            }
+
+            this.properties=newProps;
+
             //check for undefined values
            for(var property in this.properties) {
                console.log("property=" + property);
@@ -97,6 +105,23 @@ var ChatwalaMessageDocuments=(function() {
            return true;
         }
 
+
+    }
+
+    function createMetaDataJSON(properties, blnIncludeDecryptionKey) {
+        var message = new Message();
+
+        var metaDataJSON = message.getTemplate();
+
+        for(var property in metaDataJSON) {
+            metaDataJSON[property] = properties[property];
+        }
+
+        if(blnIncludeDecryptionKey===false) {
+            delete metaDataJSON["decryption_key"];
+        }
+
+        return metaDataJSON;
     }
 
     function createNewStarterUnknownRecipientMessage(client_message_id, sender_id) {
@@ -133,35 +158,19 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
-    function createNewKnownRecipientMessage(client_message_id, owner_id, sender_id, recipient_id) {
+    function createNewKnownRecipientMessage(client_message_id, sender_id, replying_to_server_message_id) {
         var message = new Message();
         message.setPropsFromDictionary({
             "client_message_id": client_message_id,
-            "owner_user_id": owner_id,
-            "owner_role": owner_id==sender_id ? ROLE_SENDER:ROLE_RECIPIENT,
-            "other_user_id": owner_id==sender_id ? recipient_id:sender_id,
-            "other_user_role": owner_id==sender_id ? ROLE_RECIPIENT:ROLE_SENDER,
             "recipient_id": recipient_id,
             "sender_id": sender_id,
-            "showable": owner_id==sender_id?true:false
+            "replying_to_server_message_id": replying_to_server_message_id,
+            "thread_id": thread_id,
+            "thread_count": thread_count,
+            "group_id": group_id
         });
 
-        console.log("message=");
-        console.log(message.properties);
-
-        try {
-            message.generateBlobShardKey();
-            message.generateServerMessageId();
-            message.generateMessageInstanceId();
-            message.generateThreadInformation();
-            message.generateGroupId();
-            message.generateTimeStamp();
-            return message;
-        }
-        catch(e) {
-            console.log(e);
-            return null;
-        }
+        return message;
     }
 
 
@@ -171,7 +180,8 @@ var ChatwalaMessageDocuments=(function() {
         "ROLE_RECIPIENT": ROLE_RECIPIENT,
         "RECIPIENT_UNKNOWN":RECIPIENT_UNKNOWN,
         "createNewStarterUnknownRecipientMessage": createNewStarterUnknownRecipientMessage,
-        "createNewKnownRecipientMessage": createNewKnownRecipientMessage
+        "createNewKnownRecipientMessage": createNewKnownRecipientMessage,
+        "createMetaDataJSON": createMetaDataJSON
     };
 }());
 

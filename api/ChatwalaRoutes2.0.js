@@ -7,10 +7,10 @@ function postStartUnknownRecipientMessageSend(req, res) {
 
     ChatwalaApi.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
        if(!err) {
-        res.send(200, response.messageDocument);
+        res.send(200, response.generateResponseDocument());
        }
        else {
-        res.send(500, err);
+        res.send(500, response.generateResponseDocument());
        }
     });
 }
@@ -22,10 +22,10 @@ function postCompleteUnknownRecipientMessageSend(req, res) {
 
     ChatwalaApi.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
         if(!err) {
-            res.send(200, response);
+            res.send(200, response.generateResponseDocument());
         }
         else {
-            res.send(500, err);
+            res.send(500, response.generateResponseDocument());
         }
     });
 }
@@ -38,10 +38,10 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
     ChatwalaApi.ConvertUnknownRecipientMessageToKnownRecipient.execute(convertRequest, function(err, response){
         if(!err) {
-            res.send(200, response);
+            res.send(200, response.generateResponseDocument());
         }
         else {
-            res.send(500, err);
+            res.send(500, response.generateResponseDocument());
         }
     });
 }

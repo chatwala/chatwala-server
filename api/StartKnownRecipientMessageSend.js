@@ -2,12 +2,12 @@ var async = require('async');
 var CWMongoClient = require('../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
-var StartUnknownRecipientMessageSend=(function() {
+var StartKnownRecipientMessageSend=(function() {
 
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"The message has been successfully added to the users outbox."
+            "message":"A document for {{message_id}} has been successfully added to the messages collection."
         },
         "failureDBConnect": {
             "code":2,
@@ -27,17 +27,11 @@ var StartUnknownRecipientMessageSend=(function() {
     var Response = function() {
         this.messageDocument=undefined;
         this.responseCode=undefined;
-
-        this.generateResponseDocument = function() {
-            var responseDocument = {};
-            responseDocument["response_code"] = this.responseCode;
-            responseDocument["message_meta_data"] = this.messageDocument;
-            return responseDocument;
-        }
     };
 
     var execute = function(request, callback) {
 
+       
         var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.client_message_id, request.sender_id);
         if(message.isValid()) {
             CWMongoClient.getConnection(function (err, db) {
@@ -53,7 +47,7 @@ var StartUnknownRecipientMessageSend=(function() {
                             console.log("err=" + err);
                             if (!err) {
                                 var response = new Response();
-                                response.messageDocument = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
+                                response.messageDocument = doc;
                                 response.responseCode = responseCodes["success"];
                                 callback(null, response);
                             } else {
@@ -76,6 +70,6 @@ var StartUnknownRecipientMessageSend=(function() {
     };
 }());
 
-module.exports = StartUnknownRecipientMessageSend;
+module.exports = StartKnownRecipientMessageSend;
 
 

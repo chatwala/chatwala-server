@@ -7,7 +7,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"The document for {{message_id}} has been successfully updated."
+            "message":"The recipient has been added"
+        },
+        "failure": {
+          "code": -102,
+           "message": "Something went wrong, was unable to convert to a known recipient message. Try again"
         },
         "failureInvalidMessageDocument":{
             "code":-10,
@@ -25,12 +29,18 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
 
     var Request = function() {
-        this.server_message_id = null;
+        this.server_message_id = undefined;
     };
 
     var Response = function() {
-        this.messageDocument=null;
-        this.responseCode=null;
+        this.responseCode=undefined;
+
+        this.generateResponseDocument = function() {
+            var responseDocument = {};
+            responseDocument["response_code"] = this.responseCode;
+            return responseDocument;
+        }
+
     };
 
     function saveSenderDocument(originalDocument, request, parallelCallback) {
@@ -176,8 +186,23 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     );
                 }
             ],
-            function(err, result) {
-                callback(err, result);
+            function(err, responseArray) {
+                var success = true;
+                for(var i=0; i<responseArray.length; i++) {
+                    if(responseArray[i].responseCode.code!=1) {
+                        success=false;
+                    }
+                }
+
+                var response = new Response();
+                if(success) {
+                    response.responseCode = responseCodes["success"];
+                }
+                else {
+                    response.responseCode = responseCodes["failure"];
+                }
+                console.log(response);
+                callback(err, response);
             }
         );
 

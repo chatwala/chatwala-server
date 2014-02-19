@@ -1,0 +1,63 @@
+----startUnknownRecipientMessageSend----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"client_message_id":"m1", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/startUnknownRecipientMessageSend";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 942
+Date: Wed, 19 Feb 2014 16:55:52 GMT
+Connection: keep-alive
+
+{"response_code":{"code":1,"message":"The message has been successfully added to the users outbox."},"message_meta_data":{"message_instance_id":"1.m1.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER","client_message_id":"m1","server_message_id":"1.m1","owner_user_id":"b11111111-11111-1111-1111-111111111111","owner_role":"SENDER","other_user_id":"RECIPIENT_UNKNOWN","other_user_role":"RECIPIENT","sender_id":"b11111111-11111-1111-1111-111111111111","recipient_id":"RECIPIENT_UNKNOWN","group_id":"b1288cb3-9a8c-f86e-d940-672a070b5804","thread_id":"1.m1.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN","thread_count":0,"blob_storage_shard_key":1,"unknown_recipient_starter":true,"uploaded":false,"delivered":false,"viewed":false,"replied":false,"replied_by_server_message_id":null,"replying_to_server_message_id":null,"showable":false,"timestamp":1392828952427,"decryption_key":null,"_id":"5304e218418e592f03d31ee0"}}
+
+
+
+
+
+----completeUnknownRecipientMessageSend----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"server_message_id":"1.m1"}' \
+"http://localhost:1337/messages/completeUnknownRecipientMessageSend";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 116
+Date: Wed, 19 Feb 2014 17:01:10 GMT
+Connection: keep-alive
+
+{"message_meta_data":1,"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
+
+
+
+
+
+----convertUnknownRecipientMessageToKnownRecipient----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"server_message_id":"1.m1", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/convertUnknownRecipientMessageToKnownRecipient";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 69
+Date: Wed, 19 Feb 2014 17:08:14 GMT
+Connection: keep-alive
+
+{"response_code":{"code":1,"message":"The recipient has been added"}}
+
+
