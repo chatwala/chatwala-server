@@ -61,3 +61,27 @@ Connection: keep-alive
 {"response_code":{"code":1,"message":"The recipient has been added"}}
 
 
+
+
+
+----startKnownRecipientMessageSend----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"client_message_id":"m3", "owner_user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"1.m2"}' \
+"http://localhost:1337/messages/startKnownRecipientMessageSend";
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 905
+Date: Wed, 19 Feb 2014 21:20:44 GMT
+Connection: keep-alive
+
+{"message_meta_data":{"message_instance_id":"1.m2.a11111111-11111-1111-1111-111111111111","client_message_id":"m2","server_message_id":"1.m2","owner_user_id":"a11111111-11111-1111-1111-111111111111","owner_role":"SENDER","other_user_id":"b11111111-11111-1111-1111-111111111111","other_user_role":"RECIPIENT","sender_id":"a11111111-11111-1111-1111-111111111111","recipient_id":"b11111111-11111-1111-1111-111111111111","group_id":"b1288cb3-9a8c-f86e-d940-672a070b5804","thread_id":"1.m1.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111","thread_count":1,"blob_storage_shard_key":1,"unknown_recipient_starter":false,"uploaded":false,"delivered":false,"viewed":false,"replied":false,"replied_by_server_message_id":null,"replying_to_server_message_id":"1.m1","showable":true,"timestamp":1392844844247},"response_code":{"code":1,"message":"The message has been successfully saved"}}
+
+
+
+
+

@@ -57,7 +57,7 @@ var StartKnownRecipientMessageSend=(function() {
                 })
             },
 
-            //2. create new message that is copied off the original; this will insure thread_id and group_id dont change
+            //2. put the message in the senders outbox
             function(originalMessageDocument, waterfallCallback) {
                 console.log("originalMessage=");
                 console.log(originalMessageDocument);
@@ -89,18 +89,21 @@ var StartKnownRecipientMessageSend=(function() {
                 message.generateTimeStamp();
 
                 if(message.isValid()) {
+                    console.log("trying to add to outbox");
                     CWMongoClient.getConnection(function (err, db) {
                         if (err) {
                             return waterfallCallback(err, null);
                         } else {
                             var collection = db.collection('messages');
 
-                            collection.insert(message.properties,
-                                function (err, doc) {
-                                    console.log("err=" + err);
-                                    console.log(doc[0]);
+                            //we do an update so retries can succeed
+                            collection.update(
+                                {"message_instance_id":message.properties["message_instance_id"]},
+                                message.properties,
+                                {"upsert":true, "multi": false},
+                                function (err, updated) {
                                     if (!err) {
-                                        waterfallCallback(null, doc[0]);
+                                        waterfallCallback(null, message.properties);
                                     } else {
                                         waterfallCallback(err, null);
                                     }
@@ -111,22 +114,79 @@ var StartKnownRecipientMessageSend=(function() {
                 else {
                     waterfallCallback("invalid message", null);
                 }
+            },
+
+            //3. put message in the recipients inbox
+            function(outboxMessageDocument, waterfallCallback) {
+                var message = new ChatwalaMessageDocuments.Message();
+                message.setPropsFromDictionary(
+                    {
+                        "client_message_id": request.client_message_id,
+                        "owner_user_id": outboxMessageDocument["recipient_id"],
+                        "owner_role": ChatwalaMessageDocuments.ROLE_RECIPIENT,
+                        "other_user_role": ChatwalaMessageDocuments.ROLE_SENDER,
+                        "other_user_id":outboxMessageDocument["sender_id"],
+                        "sender_id": outboxMessageDocument["sender_id"],
+                        "recipient_id": outboxMessageDocument["recipient_id"],
+                        "thread_count": outboxMessageDocument["thread_count"],
+                        "thread_id": outboxMessageDocument["thread_id"],
+                        "group_id":outboxMessageDocument["group_id"],
+                        "replying_to_server_message_id":outboxMessageDocument["replying_to_server_message_id"],
+                        "unknown_recipient_starter":false,
+                        "showable":false,
+                        "blob_storage_shard_key": outboxMessageDocument["blob_storage_shard_key"],
+                        "server_message_id": outboxMessageDocument["server_message_id"],
+                        "timestamp": outboxMessageDocument["timestamp"]
+                    }
+                );
+
+                console.log("message=");
+                console.log(message.properties);
+                //unknown_recipient_starter, server_message_id and owner_user_id
+                message.generateMessageInstanceId();
+
+                if(message.isValid()) {
+                    console.log("trying to add to inbox");
+                    CWMongoClient.getConnection(function (err, db) {
+                        if (err) {
+                            return waterfallCallback(err, null);
+                        } else {
+                            var collection = db.collection('messages');
+
+                            //we do an update so retries can succeed
+                            collection.update(
+                                {"message_instance_id":message.properties["message_instance_id"]},
+                                message.properties,
+                                {"upsert":true, "multi": false},
+                                function (err, updated) {
+
+                                    if (!err) {
+                                        waterfallCallback(null, outboxMessageDocument, message.properties);
+                                    } else {
+                                        waterfallCallback(err, null, null);
+                                    }
+                                });
+                        }
+                    })
+                }
+                else {
+                    waterfallCallback("invalid message", null);
+                }
             }
         ],
-        function(err, document) {
+        function(err, outboxMessageDocument, inboxMessageDocument) {
             var response = new Response();
             if(err) {
                 response.response_code = responseCodes["failure"];
             }
             else {
                 response.response_code = responseCodes["success"];
-                response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(document, false);
+                response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(outboxMessageDocument, false);
             }
             callback(err, response);
         }
 
         );
-
     };
 
     return {

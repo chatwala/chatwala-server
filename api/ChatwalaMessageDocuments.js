@@ -121,6 +121,15 @@ var ChatwalaMessageDocuments=(function() {
             delete metaDataJSON["decryption_key"];
         }
 
+        console.log("start deleteing unneeded");
+        delete metaDataJSON["owner_user_id"];
+        delete metaDataJSON["owner_role"];
+        delete metaDataJSON["other_user_id"];
+        delete metaDataJSON["other_user_role"];
+        delete metaDataJSON["showable"];
+        delete metaDataJSON["blob_storage_shard_key"];
+        console.log("end deleteing unneeded");
+
         return metaDataJSON;
     }
 
