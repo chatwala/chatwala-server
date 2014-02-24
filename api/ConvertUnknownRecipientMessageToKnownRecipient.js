@@ -41,13 +41,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         console.log(originalDocument);
         var message = new ChatwalaMessageDocuments.Message();
         message.setPropsFromDictionary(originalDocument);
-        message.properties.owner_user_id = originalDocument.sender_id;
-        message.properties.owner_role = ChatwalaMessageDocuments.ROLE_SENDER;
-        message.properties.other_user_id = request.recipient_id;
-        message.properties.other_user_role = ChatwalaMessageDocuments.ROLE_RECIPIENT;
-        message.properties.recipient_id = request.recipient_id;
-        message.properties.unknown_recipient_starter=false;
-        message.properties.showable=true;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = originalDocument.sender_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] = ChatwalaMessageDocuments.ROLE_SENDER;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID] = request.recipient_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE] = ChatwalaMessageDocuments.ROLE_RECIPIENT;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
         console.log("message.properties=");
@@ -66,8 +66,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     console.log("getting the collection");
                     var collection = db.collection('messages');
 
-                    collection.insert(message.properties,
-                        function (err, docs) {
+                    collection.update(
+                        {"server_message_id": message.properties["server_message_id"]},
+                        message.properties,
+                        {"upsert":true, "multi":false},
+                        function (err, updated) {
                             console.log(err);
                             if (!err) {
                                 var response = new Response();
@@ -95,13 +98,15 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     function saveRecipientDocument(originalDocument, request, parallelCallback) {
         var message = new ChatwalaMessageDocuments.Message();
         message.setPropsFromDictionary(originalDocument);
-        message.properties.owner_user_id = request.recipient_id;
-        message.properties.owner_role = ChatwalaMessageDocuments.ROLE_RECIPIENT;
-        message.properties.other_user_id = originalDocument.sender_id;
-        message.properties.other_user_role = ChatwalaMessageDocuments.ROLE_SENDER;
-        message.properties.recipient_id = request.recipient_id;
-        message.properties.unknown_recipient_starter=false;
-        message.properties.showable=true;
+
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.recipient_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] = ChatwalaMessageDocuments.ROLE_RECIPIENT;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID] = originalDocument.sender_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE] = ChatwalaMessageDocuments.ROLE_SENDER;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
+
         message.generateMessageInstanceId();
         message.generateThreadInformation();
         console.log("message.properties=");
@@ -117,8 +122,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                 } else {
                     var collection = db.collection('messages');
 
-                    collection.insert(message.properties,
-                        function (err, docs) {
+                    collection.update(
+                        {"server_message_id": message.properties["server_message_id"]},
+                        message.properties,
+                        {"upsert":true, "multi":false},
+                        function (err, updated) {
                             if (!err) {
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];

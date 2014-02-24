@@ -52,9 +52,9 @@ var CompleteUnknownRecipientMessageSend=(function() {
                 return callback("failureDBConnect", res);
             } else {
                 var collection = db.collection('messages');
-
+                var prop= ChatwalaMessageDocuments.PROPERTY_SERVER_MESSAGE_ID;
                 collection.update(
-                    {"server_message_id": request.server_message_id},
+                    {prop: request.server_message_id},
                     {"$set":{"uploaded":true}},
                     function (err, docs) {
                     if (!err) {

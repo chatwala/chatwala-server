@@ -62,24 +62,19 @@ var StartKnownRecipientMessageSend=(function() {
                 console.log("originalMessage=");
                 console.log(originalMessageDocument);
                 var message = new ChatwalaMessageDocuments.Message();
-                message.setPropsFromDictionary(
-                    {
-                        "client_message_id": request.client_message_id,
-                        //swap sender/receiver roles
-                        "owner_user_id": request.owner_user_id,
-                        "owner_role": ChatwalaMessageDocuments.ROLE_SENDER,
-                        "other_user_role": ChatwalaMessageDocuments.ROLE_RECIPIENT,
-                        "other_user_id":originalMessageDocument["sender_id"],
-                        "sender_id": request.owner_user_id,
-                        "recipient_id": originalMessageDocument["other_user_id"],
-                        "thread_count": Number(originalMessageDocument["thread_count"])+1,
-                        "thread_id": originalMessageDocument["thread_id"],
-                        "group_id":originalMessageDocument["group_id"],
-                        "replying_to_server_message_id":request.replying_to_server_message_id,
-                        "unknown_recipient_starter":false,
-                        "showable":true
-                    }
-                );
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=request.client_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.owner_user_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=request.owner_user_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=Number(originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT])+1;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=request.replying_to_server_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=true;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
                 message.generateBlobShardKey();
                 message.generateServerMessageId();
@@ -97,8 +92,9 @@ var StartKnownRecipientMessageSend=(function() {
                             var collection = db.collection('messages');
 
                             //we do an update so retries can succeed
+                            var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
                             collection.update(
-                                {"message_instance_id":message.properties["message_instance_id"]},
+                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
@@ -119,26 +115,22 @@ var StartKnownRecipientMessageSend=(function() {
             //3. put message in the recipients inbox
             function(outboxMessageDocument, waterfallCallback) {
                 var message = new ChatwalaMessageDocuments.Message();
-                message.setPropsFromDictionary(
-                    {
-                        "client_message_id": request.client_message_id,
-                        "owner_user_id": outboxMessageDocument["recipient_id"],
-                        "owner_role": ChatwalaMessageDocuments.ROLE_RECIPIENT,
-                        "other_user_role": ChatwalaMessageDocuments.ROLE_SENDER,
-                        "other_user_id":outboxMessageDocument["sender_id"],
-                        "sender_id": outboxMessageDocument["sender_id"],
-                        "recipient_id": outboxMessageDocument["recipient_id"],
-                        "thread_count": outboxMessageDocument["thread_count"],
-                        "thread_id": outboxMessageDocument["thread_id"],
-                        "group_id":outboxMessageDocument["group_id"],
-                        "replying_to_server_message_id":outboxMessageDocument["replying_to_server_message_id"],
-                        "unknown_recipient_starter":false,
-                        "showable":false,
-                        "blob_storage_shard_key": outboxMessageDocument["blob_storage_shard_key"],
-                        "server_message_id": outboxMessageDocument["server_message_id"],
-                        "timestamp": outboxMessageDocument["timestamp"]
-                    }
-                );
+
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=request.client_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=false;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
 
                 console.log("message=");
                 console.log(message.properties);
@@ -154,8 +146,9 @@ var StartKnownRecipientMessageSend=(function() {
                             var collection = db.collection('messages');
 
                             //we do an update so retries can succeed
+                            var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
                             collection.update(
-                                {"message_instance_id":message.properties["message_instance_id"]},
+                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {

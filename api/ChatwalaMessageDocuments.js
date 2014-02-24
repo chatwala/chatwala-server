@@ -6,34 +6,62 @@ var ChatwalaMessageDocuments=(function() {
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
 
+    var MESSAGE_PROPERTIES = {};
+    MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
+    MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID="client_message_id";
+    MESSAGE_PROPERTIES.SERVER_MESSAGE_ID="server_message_id";
+    MESSAGE_PROPERTIES.OWNER_USER_ID="owner_user_id";
+    MESSAGE_PROPERTIES.OWNER_ROLE="owner_role";
+    MESSAGE_PROPERTIES.OTHER_USER_ID="other_user_id";
+    MESSAGE_PROPERTIES.OTHER_USER_ROLE="other_user_role";
+    MESSAGE_PROPERTIES.SENDER_ID="sender_id";
+    MESSAGE_PROPERTIES.RECIPIENT_ID="recipient_id";
+    MESSAGE_PROPERTIES.GROUP_ID="group_id";
+    MESSAGE_PROPERTIES.THREAD_ID="thread_id";
+    MESSAGE_PROPERTIES.THREAD_COUNT="thread_count";
+    MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY="blob_storage_shard_key";
+    MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER="unknown_recipient_starter";
+    MESSAGE_PROPERTIES.UPLOADED="uploaded";
+    MESSAGE_PROPERTIES.DELIVERED="delivered";
+    MESSAGE_PROPERTIES.VIEWED="viewed";
+    MESSAGE_PROPERTIES.REPLIED="replied";
+    MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID="replied_by_server_message_id";
+    MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID="replying_to_server_message_id";
+    MESSAGE_PROPERTIES.SHOWABLE="showable";
+    MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
+    MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
+
     function Message() {
 
         this.getTemplate = function() {
-            return {
-                "message_instance_id": undefined, //blob_storage_shard_key.client_message_id.owner_id
-                "client_message_id": undefined,   //defined by client, not really used
-                "server_message_id": undefined,  //blob_storage_shard_key.client_message_id
-                "owner_user_id": undefined,
-                "owner_role": undefined,
-                "other_user_id": undefined,
-                "other_user_role": undefined,
-                "sender_id": undefined,
-                "recipient_id": undefined,
-                "group_id":undefined,
-                "thread_id": undefined,
-                "thread_count":undefined,
-                "blob_storage_shard_key":undefined,
-                "unknown_recipient_starter": undefined,
-                "uploaded":false,
-                "delivered":false,
-                "viewed":false,
-                "replied": false,
-                "replied_by_server_message_id":null,
-                "replying_to_server_message_id":null,
-                "showable":false,
-                "timestamp":undefined, //since epoch
-                "decryption_key":null
-            };
+           var template={};
+                template[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=undefined; //blob_storage_shard_key.client_message_id.owner_id
+                template[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]= undefined;   //defined by client, not really used
+                template[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]= undefined;  //blob_storage_shard_key.client_message_id
+                template[MESSAGE_PROPERTIES.OWNER_USER_ID]= undefined;
+                template[MESSAGE_PROPERTIES.OWNER_ROLE]= undefined;
+                template[MESSAGE_PROPERTIES.OTHER_USER_ID]= undefined;
+                template[MESSAGE_PROPERTIES.OTHER_USER_ROLE]= undefined;
+                template[MESSAGE_PROPERTIES.SENDER_ID]= undefined;
+                template[MESSAGE_PROPERTIES.RECIPIENT_ID]= undefined;
+                template[MESSAGE_PROPERTIES.GROUP_ID]=undefined;
+                template[MESSAGE_PROPERTIES.THREAD_ID]= undefined;
+                template[MESSAGE_PROPERTIES.THREAD_COUNT]=undefined;
+                template[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=undefined;
+                template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
+                template[MESSAGE_PROPERTIES.UPLOADED]=false;
+                template[MESSAGE_PROPERTIES.DELIVERED]=false;
+                template[MESSAGE_PROPERTIES.VIEWED]=false;
+                template[MESSAGE_PROPERTIES.REPLIED]= false;
+                template[MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID]=null;
+                template[MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=null;
+                template[MESSAGE_PROPERTIES.SHOWABLE]=false;
+                template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
+                template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
+
+            console.log("template=");
+            console.log(template);
+            return template;
         }
 
         this.properties = this.getTemplate();
@@ -46,40 +74,40 @@ var ChatwalaMessageDocuments=(function() {
             }
         }
         this.generateServerMessageId=function() {
-            if(this.properties["client_message_id"]===undefined || this.properties["blob_storage_shard_key"]===undefined) {
+            if(this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]===undefined) {
                 throw "client_message_id and blob_storage_shard_key must be defined";
             }
-            this.properties["server_message_id"] = this.properties["blob_storage_shard_key"] + "." + this.properties["client_message_id"];
+            this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] + "." + this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID];
 
         }
 
         this.generateMessageInstanceId=function() {
-            if(this.properties["unknown_recipient_starter"]===undefined || this.properties["server_message_id"]===undefined || this.properties["owner_user_id"]===undefined) {
+            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined) {
                 throw "unknown_recipient_starter, server_message_id and owner_user_id must be defined";
             }
 
-            this.properties["message_instance_id"] = this.properties["server_message_id"] + "." + this.properties["owner_user_id"] + (this.properties["unknown_recipient_starter"]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
+            this.properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID] + (this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
         }
 
         this.generateThreadInformation=function() {
-            if(this.properties["server_message_id"]===undefined || this.properties["sender_id"]===undefined || this.properties["recipient_id"]===undefined ) {
+            if(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]===undefined ) {
                 throw "server_message_id, sender_id and recipient_id must be defined"
             }
 
-            this.properties["thread_id"] = this.properties["server_message_id"] + "." + this.properties["sender_id"] + "." + this.properties["recipient_id"];
-            this.properties["thread_count"] = 0;
+            this.properties[MESSAGE_PROPERTIES.THREAD_ID] = this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.SENDER_ID] + "." + this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
+            this.properties[MESSAGE_PROPERTIES.THREAD_COUNT] = 0;
         }
 
         this.generateGroupId=function() {
-            this.properties["group_id"] = GUIDUtil.GUID();
+            this.properties[MESSAGE_PROPERTIES.GROUP_ID] = GUIDUtil.GUID();
         }
 
         this.generateBlobShardKey=function() {
-            this.properties["blob_storage_shard_key"] = 1;
+            this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] = 1;
         }
 
         this.generateTimeStamp= function() {
-            this.properties["timestamp"]=(new Date()).getTime();
+            this.properties[MESSAGE_PROPERTIES.TIMESTAMP]=(new Date()).getTime();
         }
 
         this.isValid=function() {
@@ -108,47 +136,39 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
+
     function createMetaDataJSON(properties, blnIncludeDecryptionKey) {
-        var message = new Message();
-
-        var metaDataJSON = message.getTemplate();
-
-        for(var property in metaDataJSON) {
-            metaDataJSON[property] = properties[property];
-        }
-
-        if(blnIncludeDecryptionKey===false) {
-            delete metaDataJSON["decryption_key"];
-        }
-
-        console.log("start deleteing unneeded");
-        delete metaDataJSON["owner_user_id"];
-        delete metaDataJSON["owner_role"];
-        delete metaDataJSON["other_user_id"];
-        delete metaDataJSON["other_user_role"];
-        delete metaDataJSON["showable"];
-        delete metaDataJSON["blob_storage_shard_key"];
-        console.log("end deleteing unneeded");
-
-        return metaDataJSON;
+       var metaDataJSON={};
+        
+           metaDataJSON[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.SENDER_ID]=properties[MESSAGE_PROPERTIES.SENDER_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.RECIPIENT_ID]=properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.TIMESTAMP]=properties[MESSAGE_PROPERTIES.TIMESTAMP];
+           metaDataJSON[MESSAGE_PROPERTIES.THREAD_ID]=properties[MESSAGE_PROPERTIES.THREAD_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
+           metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
+       
+       return metaDataJSON;
     }
 
     function createNewStarterUnknownRecipientMessage(client_message_id, sender_id) {
 
         console.log("client_message_id=" + client_message_id + " sender_id =" + sender_id);
         var message = new Message();
-        message.setPropsFromDictionary({
-            "client_message_id": client_message_id,
-            "owner_user_id": sender_id,
-            "owner_role": ROLE_SENDER,
-            "other_user_id": RECIPIENT_UNKNOWN,
-            "other_user_role":ROLE_RECIPIENT,
-            "recipient_id": RECIPIENT_UNKNOWN,
-            "sender_id": sender_id,
-            "unknown_recipient_starter": true
-        });
+        message.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]= client_message_id;
+        message.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]=sender_id;
+        message.properties[MESSAGE_PROPERTIES.OWNER_ROLE]= ROLE_SENDER;
+        message.properties[MESSAGE_PROPERTIES.OTHER_USER_ID]= RECIPIENT_UNKNOWN;
+        message.properties[MESSAGE_PROPERTIES.OTHER_USER_ROLE]= ROLE_RECIPIENT;
+        message.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]= RECIPIENT_UNKNOWN;
+        message.properties[MESSAGE_PROPERTIES.SENDER_ID]= sender_id;
+        message.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= true;
+       
 
         console.log("message=");
+        console.log(message.properties);
 
         try {
             message.generateBlobShardKey();
@@ -167,6 +187,7 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
+    /*
     function createNewKnownRecipientMessage(client_message_id, sender_id, replying_to_server_message_id) {
         var message = new Message();
         message.setPropsFromDictionary({
@@ -180,7 +201,7 @@ var ChatwalaMessageDocuments=(function() {
         });
 
         return message;
-    }
+    }*/
 
 
     return {
@@ -189,8 +210,9 @@ var ChatwalaMessageDocuments=(function() {
         "ROLE_RECIPIENT": ROLE_RECIPIENT,
         "RECIPIENT_UNKNOWN":RECIPIENT_UNKNOWN,
         "createNewStarterUnknownRecipientMessage": createNewStarterUnknownRecipientMessage,
-        "createNewKnownRecipientMessage": createNewKnownRecipientMessage,
-        "createMetaDataJSON": createMetaDataJSON
+        //"createNewKnownRecipientMessage": createNewKnownRecipientMessage,
+        "createMetaDataJSON": createMetaDataJSON,
+        "MESSAGE_PROPERTIES":MESSAGE_PROPERTIES
     };
 }());
 

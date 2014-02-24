@@ -46,13 +46,13 @@ var StartUnknownRecipientMessageSend=(function() {
                             console.log("err=" + err);
                             if (!err) {
                                 var response = new Response();
-                                response.messageDocument = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
-                                response.responseCode = responseCodes["success"];
+                                response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
+                                response.response_code = responseCodes["success"];
                                 callback(null, response);
                             } else {
                                 var response = new Response();
-                                response.messageDocument = {};
-                                response.responseCode = responseCodes["failureDBSave"];
+                                response.message_meta_data = {};
+                                response.response_code = responseCodes["failureDBSave"];
                                 callback("failureDBSave", response);
                             }
                         });
