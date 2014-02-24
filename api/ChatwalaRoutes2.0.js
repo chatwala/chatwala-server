@@ -88,6 +88,15 @@ function postCompleteKnownRecipientMessageSend(req, res) {
 
 
 
+/******** START USER ROUTES*********************/
+function postRegisterPushToken(req, res) {
+
+}
+
+/******** END USER ROUTES***********************/
+
+
+
 /*************START INBOX ROUTES***************/
 
 
@@ -99,6 +108,7 @@ function setRoutes(app) {
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
+    app.post("/messages/completeKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
 }
 
 exports.setRoutes = setRoutes;
