@@ -187,23 +187,6 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
-    /*
-    function createNewKnownRecipientMessage(client_message_id, sender_id, replying_to_server_message_id) {
-        var message = new Message();
-        message.setPropsFromDictionary({
-            "client_message_id": client_message_id,
-            "recipient_id": recipient_id,
-            "sender_id": sender_id,
-            "replying_to_server_message_id": replying_to_server_message_id,
-            "thread_id": thread_id,
-            "thread_count": thread_count,
-            "group_id": group_id
-        });
-
-        return message;
-    }*/
-
-
     return {
         "Message": Message,
         "ROLE_SENDER": ROLE_SENDER,

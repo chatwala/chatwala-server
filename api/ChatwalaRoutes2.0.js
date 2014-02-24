@@ -46,7 +46,6 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
         }
     });
 }
-
 /******* END UNKNOWN RECIPIENT ROUTES*************/
 
 
@@ -54,7 +53,6 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
 
 /******* START KNOWN RECIPIENT ROUTES*************/
-
 function postStartKnownRecipientMessageSend(req, res) {
     var request = new ChatwalaApi.StartKnownRecipientMessageSend.Request();
     request.replying_to_server_message_id = req.body.replying_to_server_message_id;
@@ -72,7 +70,29 @@ function postStartKnownRecipientMessageSend(req, res) {
     });
 }
 
+function postCompleteKnownRecipientMessageSend(req, res) {
+    var request = new ChatwalaApi.CompleteKnownRecipientMessageSend.Request();
+    request.server_message_id = req.body.server_message_id;
+
+    ChatwalaApi.CompleteKnownRecipientMessageSend.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
 /******* END KNOWN RECIPIENT ROUTES*************/
+
+
+
+/*************START INBOX ROUTES***************/
+
+
+
+/**************END INBOX ROUTES****************/
 
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
