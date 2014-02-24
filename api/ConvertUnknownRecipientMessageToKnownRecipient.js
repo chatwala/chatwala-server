@@ -122,8 +122,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                 } else {
                     var collection = db.collection('messages');
 
+
+                    var query = {};
+                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
                     collection.update(
-                        {"server_message_id": message.properties["server_message_id"]},
+                        query,
                         message.properties,
                         {"upsert":true, "multi":false},
                         function (err, updated) {
