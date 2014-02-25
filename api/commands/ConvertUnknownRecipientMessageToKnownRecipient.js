@@ -47,6 +47,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE] = ChatwalaMessageDocuments.ROLE_RECIPIENT;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
@@ -68,12 +69,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
                     var query={};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+                    /*query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.sender_id;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
-
-                    collection.update(
+                    */
+                    collection.findAndModify(
                         query,
+                        [['_id','asc']],
                         message.properties,
                         {"upsert":true, "multi":false},
                         function (err, updated) {
@@ -111,6 +113,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE] = ChatwalaMessageDocuments.ROLE_SENDER;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
         message.generateMessageInstanceId();
@@ -131,11 +134,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
                     var query = {};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+                    /*query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.recipient_id;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
-                    collection.update(
+                    */
+                    collection.findAndModify(
                         query,
+                        [['_id','asc']],
                         message.properties,
                         {"upsert":true, "multi":false},
                         function (err, updated) {

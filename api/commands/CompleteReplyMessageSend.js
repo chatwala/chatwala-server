@@ -3,7 +3,7 @@ var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./../ChatwalaMessageDocuments.js");
 var PushHelper = require("./../PushHelper.js");
 
-var CompleteKnownRecipientMessageSend=(function() {
+var CompleteReplyMessageSend=(function() {
 
     var responseCodes = {
         "success": {
@@ -96,6 +96,6 @@ var CompleteKnownRecipientMessageSend=(function() {
     };
 }());
 
-module.exports = CompleteKnownRecipientMessageSend;
+module.exports = CompleteReplyMessageSend;
 
 

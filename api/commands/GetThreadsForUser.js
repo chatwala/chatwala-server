@@ -13,7 +13,7 @@ var GetThreadsForUser=(function() {
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"The message has been successfully saved"
+            "message":"Threads successfully found"
         },
         "failure": {
             "code":-100,
@@ -51,7 +51,10 @@ var GetThreadsForUser=(function() {
         CWMongoClient.getConnection(function (err, db) {
 
             if (err) {
-                res.send(500, {"error": "unable to fetch messages - database error: " + err});
+                var response = new Response();
+                response.response_code = responseCodes["failure"];
+                callback("failure", response);
+                return;
             } else {
                 var collection = db.collection('messages');
                 var query = {};
@@ -60,29 +63,33 @@ var GetThreadsForUser=(function() {
                 }
 
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.user_id;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER] = true;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
                 //always grab 1 extra record so we know there are more pages
-                collection.distinct(
-                    "thread_id",
+                collection.find(
                     query,
                     {"limit": page_size+1, "sort":{"_id":1}},
-                    function(err, documents) {
+                    function(err, cursor) {
+                        console.log(err, cursor);
                         if(err) {
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
                             callback(err, response);
                         }
                         else {
-                            var response = new Response();
-                            response.response_code = responseCodes["success"];
-                            response.continue =false;
-                            if(documents.length> page_size) {
-                                var lastElement = documents.pop();
-                                response.continue=true;
-                                response.first_id = lastElement["_id"];
-                            }
-                            response.threads = documents;
-                            callback(null, response);
+                            cursor.toArray(function(err, documents){
+                                var response = new Response();
+                                response.response_code = responseCodes["success"];
+                                response.continue =false;
+                                if(documents.length> page_size) {
+                                    var lastElement = documents.pop();
+                                    response.continue=true;
+                                    response.first_id = lastElement["_id"];
+                                }
+                                response.threads = documents;
+                                callback(null, response);
+                            });
                         }
                     }
                 );

@@ -2,7 +2,7 @@ var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./../ChatwalaMessageDocuments.js");
 
-var StartKnownRecipientMessageSend=(function() {
+var StartReplyMessageSend=(function() {
 
     var responseCodes = {
         "success": {
@@ -27,6 +27,7 @@ var StartKnownRecipientMessageSend=(function() {
         this.owner_user_id=undefined;
         this.client_message_id=undefined;
         this.replying_to_server_message_id=undefined;
+        this.start_recording=undefined;
     };
 
     var Response = function() {
@@ -75,6 +76,8 @@ var StartKnownRecipientMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=Number(originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT])+1;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=false;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=request.start_recording;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=request.replying_to_server_message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
@@ -133,6 +136,8 @@ var StartKnownRecipientMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=false;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
@@ -201,6 +206,6 @@ var StartKnownRecipientMessageSend=(function() {
     };
 }());
 
-module.exports = StartKnownRecipientMessageSend;
+module.exports = StartReplyMessageSend;
 
 

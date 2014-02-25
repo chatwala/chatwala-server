@@ -54,13 +54,13 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
 /******* START KNOWN RECIPIENT ROUTES*************/
 function postStartKnownRecipientMessageSend(req, res) {
-    var request = new ChatwalaApi.StartKnownRecipientMessageSend.Request();
+    var request = new ChatwalaApi.StartReplyMessageSend.Request();
     request.replying_to_server_message_id = req.body.replying_to_server_message_id;
     request.client_message_id = req.body.client_message_id;
     request.owner_user_id = req.body.owner_user_id;
 
 
-    ChatwalaApi.StartKnownRecipientMessageSend.execute(request, function(err, response){
+    ChatwalaApi.StartReplyMessageSend.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -71,10 +71,10 @@ function postStartKnownRecipientMessageSend(req, res) {
 }
 
 function postCompleteKnownRecipientMessageSend(req, res) {
-    var request = new ChatwalaApi.CompleteKnownRecipientMessageSend.Request();
+    var request = new ChatwalaApi.CompleteReplyMessageSend.Request();
     request.server_message_id = req.body.server_message_id;
 
-    ChatwalaApi.CompleteKnownRecipientMessageSend.execute(request, function(err, response){
+    ChatwalaApi.CompleteReplyMessageSend.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -121,8 +121,10 @@ function getThreadsForUser(req, res) {
 }
 
 function getMessagesForThread(req, res) {
+    console.log("getMessagesForThread");
     var request = new ChatwalaApi.GetMessagesForThread.Request();
     request.thread_id = req.body.thread_id;
+    request.user_id = req.body.user_id;
     request.first_id = req.body.first_id;
 
     ChatwalaApi.GetMessagesForThread.execute(request, function(err, response){
@@ -141,8 +143,8 @@ function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
-    app.post("/messages/startKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
-    app.post("/messages/completeKnownRecipientMessageSend", postCompleteKnownRecipientMessageSend);
+    app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
+    app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
     app.post("/user/registerPushToken", postRegisterPushToken);
     app.post("/messages/threadsForUser", getThreadsForUser);
     app.post("/messages/messagesForThread", getMessagesForThread);

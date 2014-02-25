@@ -30,6 +30,9 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.SHOWABLE="showable";
     MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
+    MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
+    MESSAGE_PROPERTIES.START_RECORDING="start_recording";
+
 
     function Message() {
 
@@ -47,6 +50,7 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.GROUP_ID]=undefined;
                 template[MESSAGE_PROPERTIES.THREAD_ID]= undefined;
                 template[MESSAGE_PROPERTIES.THREAD_COUNT]=undefined;
+                template[MESSAGE_PROPERTIES.THREAD_STARTER]=undefined;
                 template[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=undefined;
                 template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
                 template[MESSAGE_PROPERTIES.UPLOADED]=false;
@@ -58,6 +62,7 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.SHOWABLE]=false;
                 template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
                 template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
+                template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
 
             return template;
         }
@@ -145,6 +150,7 @@ var ChatwalaMessageDocuments=(function() {
            metaDataJSON[MESSAGE_PROPERTIES.THREAD_ID]=properties[MESSAGE_PROPERTIES.THREAD_ID];
            metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
            metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
+           metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
        
        return metaDataJSON;
     }
@@ -161,7 +167,9 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]= RECIPIENT_UNKNOWN;
         message.properties[MESSAGE_PROPERTIES.SENDER_ID]= sender_id;
         message.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= true;
-       
+        message.properties[MESSAGE_PROPERTIES.THREAD_STARTER]=true;
+        message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
+
 
         console.log("message=");
         console.log(message.properties);

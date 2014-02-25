@@ -8,16 +8,16 @@ var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./../ChatwalaMessageDocuments.js");
 
-var GetMessagesForThread=(function() {
+var GetThreadBox=(function() {
 
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"Messages have been returned"
+            "message":"Threads successfully found"
         },
         "failure": {
             "code":-100,
-            "message":"A failure occurred while trying to fetch this threads messages"
+            "message":"A failure occurred while trying to fetch this users threads"
         },
         "failureInvalidRequest": {
             "code":-101,
@@ -27,14 +27,13 @@ var GetMessagesForThread=(function() {
     };
 
     var Request = function() {
-        this.thread_id= undefined;
+        this.user_id= undefined;
         this.first_id = undefined;
-        this.user_id = undefined;
     };
 
     var Response = function() {
         this.response_code=undefined;
-        this.messages = undefined;
+        this.threads = undefined;
         this.continue = undefined;
         this.first_id = undefined;
     };
@@ -42,8 +41,7 @@ var GetMessagesForThread=(function() {
     var page_size = 5;
 
     var execute = function(request, callback) {
-        console.log("execute");
-        if(request.thread_id===undefined) {
+        if(request.user_id===undefined) {
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest", response);
@@ -51,7 +49,7 @@ var GetMessagesForThread=(function() {
         }
 
         CWMongoClient.getConnection(function (err, db) {
-            console.log(err);
+
             if (err) {
                 var response = new Response();
                 response.response_code = responseCodes["failure"];
@@ -65,23 +63,22 @@ var GetMessagesForThread=(function() {
                 }
 
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.user_id;
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID] = request.thread_id;
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE] = true;
-
-                console.log(query);
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER] = true;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
                 //always grab 1 extra record so we know there are more pages
                 collection.find(
                     query,
                     {"limit": page_size+1, "sort":{"_id":1}},
                     function(err, cursor) {
+                        console.log(err, cursor);
                         if(err) {
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
                             callback(err, response);
                         }
                         else {
-                            cursor.toArray(function(err, documents) {
+                            cursor.toArray(function(err, documents){
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
                                 response.continue =false;
@@ -90,10 +87,9 @@ var GetMessagesForThread=(function() {
                                     response.continue=true;
                                     response.first_id = lastElement["_id"];
                                 }
-                                response.messages = documents;
+                                response.threads = documents;
                                 callback(null, response);
                             });
-
                         }
                     }
                 );
@@ -108,6 +104,6 @@ var GetMessagesForThread=(function() {
     };
 }());
 
-module.exports = GetMessagesForThread;
+module.exports = GetThreadBox;
 
 
