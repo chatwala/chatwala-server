@@ -37,6 +37,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
+        console.log(request);
         if(request.server_message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
@@ -52,11 +53,17 @@ var CompleteUnknownRecipientMessageSend=(function() {
                 return callback("failureDBConnect", res);
             } else {
                 var collection = db.collection('messages');
-                var prop= ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID;
-                collection.update(
-                    {prop: request.server_message_id},
+
+                var query = {};
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = request.server_message_id;
+
+                collection.findAndModify(
+                    query,
+                    [['_id','asc']],
                     {"$set":{"uploaded":true}},
+                    {"upsert":false, "multi": false},
                     function (err, docs) {
+                        console.log(docs);
                     if (!err) {
                         var response = new Response();
                         response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(docs);

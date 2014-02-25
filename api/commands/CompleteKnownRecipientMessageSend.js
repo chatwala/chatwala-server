@@ -49,13 +49,16 @@ var CompleteKnownRecipientMessageSend=(function() {
                         seriesCallback(err, null);
                     } else {
                         var collection = db.collection('messages');
-                        var prop= ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID;
+                        var query = {};
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = request.server_message_id;
                         collection.findAndModify(
-                            {prop: request.server_message_id},
+                            query,
                             [['_id','asc']],
                             {"$set":{"uploaded":true}},
                             {"multi":true},
-                            seriesCallback
+                            function(err, doc) {
+                                seriesCallback(null, doc);
+                            }
                         );
                     }
                 });
@@ -63,10 +66,11 @@ var CompleteKnownRecipientMessageSend=(function() {
 
             //send push notification
             function(messageDocument, seriesCallback) {
+                console.log(seriesCallback);
                 var recipientId = messageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 PushHelper.sendPush(recipientId, function(err, results){
                     //we don't really care if the push failed
-                    seriesCallback(null, {});
+                    seriesCallback(null,null);
                 });
             }
         ],

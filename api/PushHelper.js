@@ -64,11 +64,11 @@ var PushHelper=(function() {
             if (err) {
                 console.log("Error sending APNS payload to " + recipient_id);
                 console.log(err);
-                callback(err);
+                callback(err,null);
             }
             else {
                 console.log('successfully sent push notification to user: ' + recipient_id);
-                callback(null);
+                callback(null,null);
             }
         });
     }

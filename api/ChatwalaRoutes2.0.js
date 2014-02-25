@@ -90,25 +90,62 @@ function postCompleteKnownRecipientMessageSend(req, res) {
 
 /******** START USER ROUTES*********************/
 function postRegisterPushToken(req, res) {
+    var request = new ChatwalaApi.RegisterPushToken.Request();
+    request.platform_type = req.body.platform_type;
+    request.user_id = req.body.user_id;
+    request.push_token = req.body.push_token;
 
+    ChatwalaApi.RegisterPushToken.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
 }
 
+function getThreadsForUser(req, res) {
+    var request = new ChatwalaApi.GetThreadsForUser.Request();
+    request.user_id = req.body.user_id;
+    request.first_id = req.body.first_id;
+
+    ChatwalaApi.GetThreadsForUser.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
+function getMessagesForThread(req, res) {
+    var request = new ChatwalaApi.GetMessagesForThread.Request();
+    request.thread_id = req.body.thread_id;
+    request.first_id = req.body.first_id;
+
+    ChatwalaApi.GetMessagesForThread.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
+
 /******** END USER ROUTES***********************/
-
-
-
-/*************START INBOX ROUTES***************/
-
-
-
-/**************END INBOX ROUTES****************/
-
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
-    app.post("/messages/completeKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
+    app.post("/messages/completeKnownRecipientMessageSend", postCompleteKnownRecipientMessageSend);
+    app.post("/user/registerPushToken", postRegisterPushToken);
+    app.post("/messages/threadsForUser", getThreadsForUser);
+    app.post("/messages/messagesForThread", getMessagesForThread);
 }
 
 exports.setRoutes = setRoutes;

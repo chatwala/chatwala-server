@@ -35,6 +35,9 @@ var StartKnownRecipientMessageSend=(function() {
     };
 
     var execute = function(request, callback) {
+
+        console.log("request =");
+        console.log(request);
         async.waterfall([
             //1. get replying_to_message
             function(waterfallCallback) {
@@ -46,7 +49,8 @@ var StartKnownRecipientMessageSend=(function() {
 
                         collection.findOne({"owner_user_id":request.owner_user_id, "server_message_id": request.replying_to_server_message_id},
                             function (err, doc) {
-                                console.log("err=" + err);
+
+
                                 if (!err) {
                                     waterfallCallback(null, doc);
                                 } else {
@@ -66,14 +70,14 @@ var StartKnownRecipientMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.owner_user_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=request.owner_user_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=Number(originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT])+1;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=request.replying_to_server_message_id;
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=true;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
                 message.generateBlobShardKey();
@@ -85,6 +89,7 @@ var StartKnownRecipientMessageSend=(function() {
 
                 if(message.isValid()) {
                     console.log("trying to add to outbox");
+                    console.log(message.properties);
                     CWMongoClient.getConnection(function (err, db) {
                         if (err) {
                             return waterfallCallback(err, null);
@@ -93,11 +98,14 @@ var StartKnownRecipientMessageSend=(function() {
 
                             //we do an update so retries can succeed
                             var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
+                            //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
                             collection.update(
                                 {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
+                                    console.log("*****error=******");
+                                    console.log(err);
                                     if (!err) {
                                         waterfallCallback(null, message.properties);
                                     } else {
@@ -120,6 +128,7 @@ var StartKnownRecipientMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT];
@@ -147,12 +156,14 @@ var StartKnownRecipientMessageSend=(function() {
 
                             //we do an update so retries can succeed
                             var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
+                            //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
                             collection.update(
                                 {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
-
+                                    console.log("*****error=******");
+                                    console.log(err);
                                     if (!err) {
                                         waterfallCallback(null, outboxMessageDocument, message.properties);
                                     } else {
@@ -168,6 +179,7 @@ var StartKnownRecipientMessageSend=(function() {
             }
         ],
         function(err, outboxMessageDocument, inboxMessageDocument) {
+            console.log(err);
             var response = new Response();
             if(err) {
                 response.response_code = responseCodes["failure"];

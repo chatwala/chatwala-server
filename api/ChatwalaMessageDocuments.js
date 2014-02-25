@@ -59,8 +59,6 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
                 template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
 
-            console.log("template=");
-            console.log(template);
             return template;
         }
 
@@ -123,13 +121,11 @@ var ChatwalaMessageDocuments=(function() {
 
             //check for undefined values
            for(var property in this.properties) {
-               console.log("property=" + property);
                if(this.properties[property]===undefined) {
-                   console.log("undefined found");
+                   console.log("undefined found for " + property);
                    return false;
                }
            }
-            console.log("isValid returned");
            return true;
         }
 
