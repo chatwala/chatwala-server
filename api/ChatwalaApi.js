@@ -1,9 +1,9 @@
-var MessageApi = require("./messageAPI/MessageApi.js");
-var UserApi = require("./userAPI/ThreadApi.js");
+var MessagesApi = require("./messagesAPI/MessagesApi.js");
+var UserApi = require("./userAPI/UserApi.js");
 var ThreadApi = require("./threadAPI/ThreadApi.js");
 
 var ChatwalaApi = {
-    "Messages": MessageApi,
+    "Messages": MessagesApi,
     "Users": UserApi,
     "Threads":ThreadApi
 

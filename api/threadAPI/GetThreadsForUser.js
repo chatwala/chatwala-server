@@ -6,7 +6,7 @@
  */
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
-var ChatwalaMessageDocuments = require("./../messageAPI/ChatwalaMessageDocuments.js");
+var ChatwalaMessageDocuments = require("././ChatwalaMessageDocuments.js");
 
 var GetThreadsForUser=(function() {
 

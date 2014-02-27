@@ -58,7 +58,6 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.DELIVERED]=false;
                 template[MESSAGE_PROPERTIES.VIEWED]=1;
                 template[MESSAGE_PROPERTIES.REPLIED]= false;
-                template[MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID]=null;
                 template[MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=null;
                 template[MESSAGE_PROPERTIES.SHOWABLE]=false;
                 template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch

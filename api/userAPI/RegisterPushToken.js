@@ -3,7 +3,6 @@
  */
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
-var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 var PushHelper = require("./../PushHelper.js");
 
 var RegisterPushToken=(function() {
