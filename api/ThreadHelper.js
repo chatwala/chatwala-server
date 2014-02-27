@@ -4,6 +4,7 @@
 
 var config = require('../config.js')();
 var azure = require('azure');
+var Message = require('./ChatwalaMessageDocument.js')
 
 var ThreadHelper=(function() {
 
@@ -26,27 +27,97 @@ var ThreadHelper=(function() {
     var ASSOCIATION_TYPE_FOLLOWER="FOLLOWER";
 
     var USER_ASSOCIATION_PROPERTIES = {};
-    USER_ASSOCIATION_PROPERTIES.TYPE="type";
-    USER_ASSOCIATION_PROPERTIES.OWNER_ID="owner_id";
-    USER_ASSOCIATION_PROPERTIES.OTHER_USER_ID="other_user_id";
+    USER_ASSOCIATION_PROPERTIES.TYPE="type"; //
+    USER_ASSOCIATION_PROPERTIES.OWNER_ID="owner_id"; //unique
+    USER_ASSOCIATION_PROPERTIES.OTHER_USER_ID="other_user_id"; //unique
+    //user association id = owner_id + other_user_id
     USER_ASSOCIATION_PROPERTIES.LAST_REPLY_SERVER_MESSAGE_ID="last_reply_server_message_id";
     USER_ASSOCIATION_PROPERTIES.LAST_REPLY_TIMESTAMP = "last_reply_timestamp";
     USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT="unread_count";
     USER_ASSOCIATION_PROPERTIES.NUM_THREADS = "num_threads";
 
-    function incrementNumberOfThreadsForUser() {
-
+    function incrementNumberOfThreadsForUser(owner_id, callback) {
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                callback(err, null);
+            } else {
+                var collection = db.collection('users');
+                var query = {};
+                query[USER_ASSOCIATION_PROPERTIES.OWNER_ID] = owner_id;
+                collection.findAndModify(
+                    query,
+                    {"$inc":{USER_ASSOCIATION_PROPERTIES.NUM_THREADS:1}},
+                    {"multi":true, upsert:true},
+                    function(err, doc) {
+                        callback(null, doc);
+                    }
+                );
+            }
+        });
     }
 
-    function decrementNumberOfThreadsForUser() {
+    function decrementNumberOfThreadsForUser(owner_id, callback) {
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                callback(err, null);
+            } else {
+                var collection = db.collection('users');
+                var query = {};
+                query[USER_ASSOCIATION_PROPERTIES.OWNER_ID] = user_id;
+                collection.findAndModify(
+                    query,
+                    {"$inc":{USER_ASSOCIATION_PROPERTIES.NUM_THREADS:-1}},
+                    {"multi":true, upsert:true},
+                    function(err, doc) {
+                        callback(null, doc);
+                    }
+                );
+            }
+        });
+    }
 
+    function incrementUnreadCountForUser(owner_id, callback){
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                callback(err, null);
+            } else {
+                var collection = db.collection('users');
+                var query = {};
+                query[USER_ASSOCIATION_PROPERTIES.OWNER_ID] = user_id;
+                collection.findAndModify(
+                    query,
+                    {"$inc":{USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT:1}},
+                    {"multi":true, upsert:true},
+                    function(err, doc) {
+                        callback(null, doc);
+                    }
+                );
+            }
+        });
     }
 
     function decrementUnreadCountForUser(owner_id, other_user_id, callback){
-
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                callback(err, null);
+            } else {
+                var collection = db.collection('users');
+                var query = {};
+                query[USER_ASSOCIATION_PROPERTIES.OWNER_ID] = user_id;
+                collection.findAndModify(
+                    query,
+                    {"$inc":{USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT:-1}},
+                    {"multi":true, upsert:true},
+                    function(err, doc) {
+                        callback(null, doc);
+                    }
+                );
+            }
+        });
     }
 
-    function incrementUnreadCountForUser(woo){
+
+    function incrementUnreadCountForThread(thread_id, owner_id, callback) {
 
     }
 
@@ -54,9 +125,6 @@ var ThreadHelper=(function() {
 
     }
 
-    function incrementUnreadCountForThread(thread_id, owner_id, callback) {
-
-    }
 
     //creates a new thread
     function setLastMessageForThread(thread_id, owner_id, last_message_id, last_message_timestamp, callback) {
@@ -73,7 +141,7 @@ var ThreadHelper=(function() {
                     query,
                     [['_id','asc']],
                     {"$set":{"uploaded":true}},
-                    {"multi":true},
+                    {"multi":true, upsert:true},
                     function(err, doc) {
                         seriesCallback(null, doc);
                     }
@@ -83,7 +151,7 @@ var ThreadHelper=(function() {
     }
 
     return {
-        "registerPushToken": registerPushToken,
+        "setLastMessageForThread": setLastMessageForThread,
         "sendPush": sendPush
     }
 }());
