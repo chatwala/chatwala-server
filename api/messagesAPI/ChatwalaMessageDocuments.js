@@ -1,10 +1,12 @@
 var GUIDUtil = require('GUIDUtil');
+var SASHelper = require('../SASHelper.js');
 
 var ChatwalaMessageDocuments=(function() {
 
     var ROLE_SENDER = "SENDER";
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
+    var VERSION = 2.0;
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
@@ -32,7 +34,8 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
-
+    MESSAGE_PROPERTIES.READ_URL="read_url";
+    MESSAGE_PROPERTIES.VERSION="version";
 
 
     function Message() {
@@ -56,13 +59,16 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
                 template[MESSAGE_PROPERTIES.UPLOADED]=false;
                 template[MESSAGE_PROPERTIES.DELIVERED]=false;
-                template[MESSAGE_PROPERTIES.VIEWED]=1;
+                template[MESSAGE_PROPERTIES.VIEWED]=false;
                 template[MESSAGE_PROPERTIES.REPLIED]= false;
                 template[MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=null;
                 template[MESSAGE_PROPERTIES.SHOWABLE]=false;
                 template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
                 template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
                 template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
+                template[MESSAGE_PROPERTIES.READ_URL]=undefined;
+                template[MESSAGE_PROPERTIES.VERSION]=VERSION;
+
 
             return template;
         }
@@ -106,11 +112,18 @@ var ChatwalaMessageDocuments=(function() {
         }
 
         this.generateBlobShardKey=function() {
-            this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] = 1;
+            this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] = SASHelper.getCurrentShardKey();
         }
 
         this.generateTimeStamp= function() {
             this.properties[MESSAGE_PROPERTIES.TIMESTAMP]=(new Date()).getTime();
+        }
+
+        this.generateReadURL = function() {
+            if(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined) {
+                throw "server_message_id must be defined";
+            }
+            this.properties[MESSAGE_PROPERTIES.READ_URL] = SASHelper.getReadSharedAccessPolicy(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
         }
 
         this.isValid=function() {
@@ -140,7 +153,7 @@ var ChatwalaMessageDocuments=(function() {
 
     function createMetaDataJSON(properties, blnIncludeDecryptionKey) {
        var metaDataJSON={};
-        
+
            metaDataJSON[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID];
            metaDataJSON[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
            metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
@@ -151,7 +164,8 @@ var ChatwalaMessageDocuments=(function() {
            metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
            metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
            metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
-       
+           metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=properties[MESSAGE_PROPERTIES.READ_URL];
+
        return metaDataJSON;
     }
 
@@ -169,7 +183,7 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= true;
         message.properties[MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
-        message.properties[MESSAGE_PROPERTIES.UNVIEWED]=1;
+        message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
 
 
         console.log("message=");
@@ -182,6 +196,7 @@ var ChatwalaMessageDocuments=(function() {
             message.generateThreadInformation();
             message.generateGroupId();
             message.generateTimeStamp();
+            message.generateReadURL();
             console.log(message.properties);
             return message;
         }
