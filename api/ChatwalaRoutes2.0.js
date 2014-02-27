@@ -6,7 +6,7 @@ function postStartUnknownRecipientMessageSend(req, res) {
     sendRequest.client_message_id = req.body.client_message_id;
     sendRequest.sender_id = req.body.sender_id;
 
-    ChatwalaApi.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
+    ChatwalaApi.Messages.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
        if(!err) {
         res.send(200, response);
        }
@@ -21,7 +21,7 @@ function postCompleteUnknownRecipientMessageSend(req, res) {
     sendRequest.server_message_id = req.body.server_message_id;
 
 
-    ChatwalaApi.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
+    ChatwalaApi.Messages.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -37,7 +37,7 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
     convertRequest.recipient_id = req.body.recipient_id;
 
 
-    ChatwalaApi.ConvertUnknownRecipientMessageToKnownRecipient.execute(convertRequest, function(err, response){
+    ChatwalaApi.Messages.ConvertUnknownRecipientMessageToKnownRecipient.execute(convertRequest, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -60,7 +60,7 @@ function postStartKnownRecipientMessageSend(req, res) {
     request.owner_user_id = req.body.owner_user_id;
 
 
-    ChatwalaApi.StartReplyMessageSend.execute(request, function(err, response){
+    ChatwalaApi.Messages.StartReplyMessageSend.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -74,7 +74,7 @@ function postCompleteKnownRecipientMessageSend(req, res) {
     var request = new ChatwalaApi.CompleteReplyMessageSend.Request();
     request.server_message_id = req.body.server_message_id;
 
-    ChatwalaApi.CompleteReplyMessageSend.execute(request, function(err, response){
+    ChatwalaApi.Messages.CompleteReplyMessageSend.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -95,7 +95,7 @@ function postRegisterPushToken(req, res) {
     request.user_id = req.body.user_id;
     request.push_token = req.body.push_token;
 
-    ChatwalaApi.RegisterPushToken.execute(request, function(err, response){
+    ChatwalaApi.Messages.RegisterPushToken.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -104,7 +104,7 @@ function postRegisterPushToken(req, res) {
         }
     });
 }
-
+/*
 function getThreadsForUser(req, res) {
     var request = new ChatwalaApi.GetThreadsForUser.Request();
     request.user_id = req.body.user_id;
@@ -127,7 +127,7 @@ function getMessagesForThread(req, res) {
     request.user_id = req.body.user_id;
     request.first_id = req.body.first_id;
 
-    ChatwalaApi.GetMessagesForThread.execute(request, function(err, response){
+    ChatwalaApi.Messages.GetMessagesForThread.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -136,7 +136,7 @@ function getMessagesForThread(req, res) {
         }
     });
 }
-
+*/
 
 /******** END USER ROUTES***********************/
 function setRoutes(app) {
@@ -146,8 +146,8 @@ function setRoutes(app) {
     app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
     app.post("/user/registerPushToken", postRegisterPushToken);
-    app.post("/messages/threadsForUser", getThreadsForUser);
-    app.post("/messages/messagesForThread", getMessagesForThread);
+  //  app.post("/messages/threadsForUser", getThreadsForUser);
+  //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
 
 exports.setRoutes = setRoutes;

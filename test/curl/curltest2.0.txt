@@ -95,13 +95,27 @@ curl -i \
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
-Content-Length: 905
-Date: Wed, 19 Feb 2014 21:20:44 GMT
+Content-Length: 94
+Date: Tue, 25 Feb 2014 01:12:45 GMT
 Connection: keep-alive
 
+{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
+
+
+---- Get Threads for User -----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"user_id":"b11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/threadsForUser";
 
 
 
-
-
-
+---- Get Messages for User -----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"user_id":"b11111111-11111-1111-1111-111111111111", "thread_id":"1.m6.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/messagesForThread";

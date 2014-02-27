@@ -25,13 +25,14 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.DELIVERED="delivered";
     MESSAGE_PROPERTIES.VIEWED="viewed";
     MESSAGE_PROPERTIES.REPLIED="replied";
-    MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID="replied_by_server_message_id";
+    //MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID="replied_by_server_message_id";
     MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID="replying_to_server_message_id";
     MESSAGE_PROPERTIES.SHOWABLE="showable";
     MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
+
 
 
     function Message() {
@@ -55,7 +56,7 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
                 template[MESSAGE_PROPERTIES.UPLOADED]=false;
                 template[MESSAGE_PROPERTIES.DELIVERED]=false;
-                template[MESSAGE_PROPERTIES.VIEWED]=false;
+                template[MESSAGE_PROPERTIES.VIEWED]=1;
                 template[MESSAGE_PROPERTIES.REPLIED]= false;
                 template[MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID]=null;
                 template[MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=null;
@@ -169,6 +170,7 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= true;
         message.properties[MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
+        message.properties[MESSAGE_PROPERTIES.UNVIEWED]=1;
 
 
         console.log("message=");
