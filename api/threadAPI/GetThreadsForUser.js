@@ -6,7 +6,7 @@
  */
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
-var ChatwalaMessageDocuments = require("./../ChatwalaMessageDocuments.js");
+var ChatwalaMessageDocuments = require("./../messageAPI/ChatwalaMessageDocuments.js");
 
 var GetThreadsForUser=(function() {
 
@@ -69,7 +69,7 @@ var GetThreadsForUser=(function() {
                 //always grab 1 extra record so we know there are more pages
                 collection.find(
                     query,
-                    {"limit": page_size+1, "sort":{"_id":1}},
+                    {"limit": page_size+1, "sort":{"_id":-1}},
                     function(err, cursor) {
                         console.log(err, cursor);
                         if(err) {

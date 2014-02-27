@@ -6,18 +6,18 @@
  */
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
-var ChatwalaMessageDocuments = require("./../ChatwalaMessageDocuments.js");
+var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
-var GetThreadBox=(function() {
+var GetMessagesForThread=(function() {
 
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"Threads successfully found"
+            "message":"Messages have been returned"
         },
         "failure": {
             "code":-100,
-            "message":"A failure occurred while trying to fetch this users threads"
+            "message":"A failure occurred while trying to fetch this threads messages"
         },
         "failureInvalidRequest": {
             "code":-101,
@@ -27,13 +27,14 @@ var GetThreadBox=(function() {
     };
 
     var Request = function() {
-        this.user_id= undefined;
+        this.thread_id= undefined;
         this.first_id = undefined;
+        this.user_id = undefined;
     };
 
     var Response = function() {
         this.response_code=undefined;
-        this.threads = undefined;
+        this.messages = undefined;
         this.continue = undefined;
         this.first_id = undefined;
     };
@@ -41,7 +42,8 @@ var GetThreadBox=(function() {
     var page_size = 5;
 
     var execute = function(request, callback) {
-        if(request.user_id===undefined) {
+        console.log("execute");
+        if(request.thread_id===undefined) {
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest", response);
@@ -49,7 +51,7 @@ var GetThreadBox=(function() {
         }
 
         CWMongoClient.getConnection(function (err, db) {
-
+            console.log(err);
             if (err) {
                 var response = new Response();
                 response.response_code = responseCodes["failure"];
@@ -63,22 +65,23 @@ var GetThreadBox=(function() {
                 }
 
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.user_id;
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER] = true;
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID] = request.thread_id;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE] = true;
+
+                console.log(query);
 
                 //always grab 1 extra record so we know there are more pages
                 collection.find(
                     query,
-                    {"limit": page_size+1, "sort":{"_id":1}},
+                    {"limit": page_size+1, "sort":{"_id":-1}},
                     function(err, cursor) {
-                        console.log(err, cursor);
                         if(err) {
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
                             callback(err, response);
                         }
                         else {
-                            cursor.toArray(function(err, documents){
+                            cursor.toArray(function(err, documents) {
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
                                 response.continue =false;
@@ -87,9 +90,10 @@ var GetThreadBox=(function() {
                                     response.continue=true;
                                     response.first_id = lastElement["_id"];
                                 }
-                                response.threads = documents;
+                                response.messages = documents;
                                 callback(null, response);
                             });
+
                         }
                     }
                 );
@@ -104,6 +108,6 @@ var GetThreadBox=(function() {
     };
 }());
 
-module.exports = GetThreadBox;
+module.exports = GetMessagesForThread;
 
 
