@@ -5,7 +5,7 @@ var GUIDUtil = require('GUIDUtil');
 var os = require("os");
 
 var blobService = null;
-var config = require('./config.js')();
+var config = require('./config.js');
 var account = config.azure.storage_name; //config["STORAGE_NAME"];
 var access_key = config.azure.storage_key //config["STORAGE_KEY"];
 //var host = config["PARTITION_KEY"];

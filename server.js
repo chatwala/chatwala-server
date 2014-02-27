@@ -3,7 +3,7 @@
  */
 
 console.log("Initializing node: " + new Date());
-var config = require('./config.js')();
+var config = require('./config.js');
 
 "use strict";
 var express = require('express');

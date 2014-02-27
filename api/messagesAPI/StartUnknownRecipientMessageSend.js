@@ -1,6 +1,7 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
+var SASHelper = require('../SASHelper.js');
 
 var StartUnknownRecipientMessageSend=(function() {
 
@@ -26,6 +27,7 @@ var StartUnknownRecipientMessageSend=(function() {
 
     var Response = function() {
         this.message_meta_data=undefined;
+        this.write_url=undefined;
         this.response_code=undefined;
     };
 
@@ -47,6 +49,7 @@ var StartUnknownRecipientMessageSend=(function() {
                             if (!err) {
                                 var response = new Response();
                                 response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
+                                response.write_url = SASHelper.getWriteSharedAccessPolicy(message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
                                 response.response_code = responseCodes["success"];
                                 callback(null, response);
                             } else {

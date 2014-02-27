@@ -2,7 +2,7 @@
  * Created by samirahman on 2/24/14.
  */
 
-var config = require('../config.js')();
+var config = require('../config.js');
 var azure = require('azure');
 
 var ThreadHelper=(function() {

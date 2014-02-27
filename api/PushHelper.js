@@ -2,7 +2,7 @@
  * Created by samirahman on 2/24/14.
  */
 
-var config = require('../config.js')();
+var config = require('../config.js');
 var azure = require('azure');
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint, config.azure.hub_keyname, config.azure.hub_key);
 

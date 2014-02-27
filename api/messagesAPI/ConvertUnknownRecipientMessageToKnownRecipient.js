@@ -172,7 +172,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             } else {
                 var collection = db.collection('messages');
                 collection.findOne({"server_message_id": request.server_message_id}, function (err, messageDocument) {
-                    waterfallCallback(err, messageDocument);
+                    if(messageDocument==null) {
+                        waterfallCallback("messageIsNull", null);
+                    }
+                    else {
+                        waterfallCallback(null, messageDocument);
+                    }
+
                 });
             }
         });
@@ -193,18 +199,22 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                             saveRecipientDocument(originalDocument, request, parallelCallback);
                         }
                     ],
-                        function(err, results) {
-                            waterfallCallback(err, results);
-                        }
+                    function(err, results) {
+                        waterfallCallback(err, results);
+                    }
                     );
                 }
             ],
             function(err, responseArray) {
                 var success = true;
-                for(var i=0; i<responseArray.length; i++) {
+                for(var i=0; responseArray && i<responseArray.length; i++) {
                     if(responseArray[i].response_code.code!=1) {
                         success=false;
                     }
+                }
+
+                if(responseArray==null) {
+                    success=false;
                 }
 
                 var response = new Response();

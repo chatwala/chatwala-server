@@ -25,7 +25,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"1.m6"}' \
+-d '{"server_message_id":"shard1.m6"}' \
 "http://localhost:1337/messages/completeUnknownRecipientMessageSend";
 
 response:
@@ -47,7 +47,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"1.m6", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
+-d '{"server_message_id":"shard1.m6", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/convertUnknownRecipientMessageToKnownRecipient";
 
 response:
