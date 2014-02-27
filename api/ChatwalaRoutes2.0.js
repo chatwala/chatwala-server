@@ -19,7 +19,7 @@ function postStartUnknownRecipientMessageSend(req, res) {
 function postCompleteUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.CompleteUnknownRecipientMessageSend.Request();
     sendRequest.server_message_id = req.body.server_message_id;
-
+    
 
     ChatwalaApi.Messages.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
         if(!err) {

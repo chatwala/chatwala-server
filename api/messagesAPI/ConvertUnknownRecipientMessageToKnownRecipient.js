@@ -1,6 +1,7 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
+var Threads = require("../threadAPI/ThreadAPI.js");
 
 var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
@@ -77,17 +78,17 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                         query,
                         [['_id','asc']],
                         message.properties,
-                        {"upsert":true, "multi":false},
+                        {"upsert":true, "multi":false, "new":true},
                         function (err, updated) {
                             console.log(err);
                             if (!err) {
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
-                                parallelCallback(null, response);
+                                parallelCallback(null, response, updated);
                             } else {
                                 var response = new Response();
                                 response.response_code = responseCodes["failureDBSave"];
-                                parallelCallback("failureDBSave", response);
+                                parallelCallback("failureDBSave", response, updated);
                             }
                         });
                 }
@@ -98,7 +99,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             var response = new Response();
             response.messageDocument = {};
             response.response_code = responseCodes["failureInvalidMessageDocument"];
-            parallelCallback("failureInvalidMessageDocument", response);
+            parallelCallback("failureInvalidMessageDocument", response, null);
         }
     }
 
@@ -131,7 +132,6 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                 } else {
                     var collection = db.collection('messages');
 
-
                     var query = {};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
                     /*query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
@@ -142,16 +142,16 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                         query,
                         [['_id','asc']],
                         message.properties,
-                        {"upsert":true, "multi":false},
+                        {"upsert":true, "multi":false, "new":true},
                         function (err, updated) {
                             if (!err) {
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
-                                parallelCallback(null, response);
+                                parallelCallback(null, response, updated);
                             } else {
                                 var response = new Response();
                                 response.response_code = responseCodes["failureDBSave"];
-                                parallelCallback("failureDBSave", response);
+                                parallelCallback("failureDBSave", response, null);
                             }
                         });
                 }
@@ -161,7 +161,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             console.log("MESSAGE IS NOT VALID");
             var response = new Response();
             response.response_code = responseCodes["failureInvalidMessageDocument"];
-            parallelCallback("failureInvalidMessageDocument", response);
+            parallelCallback("failureInvalidMessageDocument", response, null);
         }
     }
 
@@ -194,9 +194,21 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                         }
                     ],
                         function(err, results) {
-                            waterfallCallback(err, results);
+                            if(err){
+                                console.log("error on message creation, cannot create thread");
+                                waterfallCallback(err, null);
+                            }
+                            else{
+                                //get info from results
+                                var senderDocument = results[0][1];
+                                var recipientDocument = results[1][1];
+                                waterfallCallback(null, [senderDocument, recipientDocument])
+                            }
                         }
                     );
+                },
+                function(messageDocuments, waterfallCallback){
+                    Threads.setLastMessageForThread(messageDocuments, waterfallCallback);
                 }
             ],
             function(err, responseArray) {
