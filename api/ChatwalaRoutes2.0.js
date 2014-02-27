@@ -146,7 +146,7 @@ function setRoutes(app) {
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
-    app.post("/user/registerPushToken", postRegisterPushToken);
+   // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
