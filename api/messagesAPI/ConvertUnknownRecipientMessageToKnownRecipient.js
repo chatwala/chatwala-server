@@ -1,7 +1,7 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
-var Threads = require("../threadAPI/ThreadAPI.js");
+var Threads = require("../threadAPI/ThreadHelper.js");
 
 var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
