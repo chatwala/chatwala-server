@@ -53,11 +53,12 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
 
 /******* START KNOWN RECIPIENT ROUTES*************/
-function postStartKnownRecipientMessageSend(req, res) {
+function postStartReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.StartReplyMessageSend.Request();
     request.replying_to_server_message_id = req.body.replying_to_server_message_id;
     request.client_message_id = req.body.client_message_id;
     request.owner_user_id = req.body.owner_user_id;
+    request.start_recording = req.body.start_recording;
 
 
     ChatwalaApi.Messages.StartReplyMessageSend.execute(request, function(err, response){
@@ -70,7 +71,7 @@ function postStartKnownRecipientMessageSend(req, res) {
     });
 }
 
-function postCompleteKnownRecipientMessageSend(req, res) {
+function postCompleteReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.CompleteReplyMessageSend.Request();
     request.server_message_id = req.body.server_message_id;
 
@@ -144,8 +145,8 @@ function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
-    app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
-    app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
+    app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);
+    app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);

@@ -33,6 +33,7 @@ var CompleteReplyMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
+        console.log("server_message_id="+request.server_message_id);
         if(request.server_message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
@@ -55,9 +56,9 @@ var CompleteReplyMessageSend=(function() {
                             query,
                             [['_id','asc']],
                             {"$set":{"uploaded":true}},
-                            {"multi":true},
+                            {"multi":true, "new":true},
                             function(err, doc) {
-                                seriesCallback(null, doc);
+                                seriesCallback(doc==null?"failure":null, doc);
                             }
                         );
                     }
