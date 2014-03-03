@@ -48,7 +48,7 @@ var ThreadHelper=(function() {
     };
 
 
-/*
+
     function incrementUnreadCountForThread(thread_id, callback) {
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
@@ -90,79 +90,14 @@ var ThreadHelper=(function() {
             }
         });  
     }
-*/
-    //creates a new thread
-    function setLastMessageForThread(messagesDocuments, waterfallCallback) {
-        var senderDocument = messagesDocuments[0];
-        var recipientDocument = messagesDocuments[1];
-        createThreadForUser(senderDocument, function(sErr, senderThread){
-            if(sErr){
-                var response = new Response();
-                response.response_code = responseCodes["failureDBSave"];
-                waterfallCallback("failureDBSave", response);
-            }
-            else{
-                createThreadForUser(recipientDocument, function(rErr, recipientThread){
-                    if(rErr){
-                        var response = {};
-                        response.response_code = responseCodes["failureDBSave"];
-                        waterfallCallback("failureDBSave", response);
-                    }
-                    else{
-                        var response = {};
-                        response.response_code = responseCodes["success"];
-                        waterfallCallback(null, response);
-                    }
-                });
-            }
-        });
-    } 
 
-    //creates a new thread
-    function createThreadForUser(userDocument, callback) {
-
-        //findAndModify
-        //upsert
-        CWMongoClient.getConnection(function (err, db) {
-            if (err) {
-                callback(err, null);
-            } else {
-                var collection = db.collection('threads');
-                var query = {};
-                query[THREAD_PROPERTIES.THREAD_INSTANCE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] + "." + userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
-
-                var threadObject = {}
-                threadObject[THREAD_PROPERTIES.THREAD_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
-                threadObject[THREAD_PROPERTIES.OWNER_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID];
-                threadObject[THREAD_PROPERTIES.THREAD_INSTANCE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] + "." + userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
-                threadObject[THREAD_PROPERTIES.OTHER_USER_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
-                threadObject[THREAD_PROPERTIES.OWNER_THREAD_ROLE] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE];
-                threadObject[THREAD_PROPERTIES.UNREAD_COUNT] = 0;                
-                if(userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] === ChatwalaMessageDocuments.ROLE_RECIPIENT){
-                    threadObject[THREAD_PROPERTIES.LAST_RECEIVED_SERVER_MESSAGE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
-                    threadObject[THREAD_PROPERTIES.LAST_RECEIVED_TIMESTAMP] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
-                    threadObject[THREAD_PROPERTIES.UNREAD_COUNT] = 1;
-                }
-
-                collection.findAndModify(
-                    query,
-                    [['_id','asc']],
-                    {"$set": threadObject},
-                    {"multi":true, upsert:true},
-                    function(err, doc) {
-                        if (!err) {
-                            callback(null, doc);
-                        } else {
-                            callback(err, null);
-                        }
-                    }
-                );
-            }
-        });
-    }
+    
 
     return {
-        "setLastMessageForThread": setLastMessageForThread
+        "THREAD_PROPERTIES" : THREAD_PROPERTIES,
+        "THREAD_ROLE_STARTER" : THREAD_ROLE_STARTER,
+        "THREAD_ROLE_REPLIER" : THREAD_ROLE_REPLIER
+ 
     }
 }());
 

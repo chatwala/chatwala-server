@@ -1,7 +1,7 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
-var Threads = require("../threadAPI/ThreadHelper.js");
+var ThreadApi = require("../threadAPI/ThreadApi.js");
 
 var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
@@ -214,7 +214,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     );
                 },
                 function(messageDocuments, waterfallCallback){
-                    Threads.setLastMessageForThread(messageDocuments, waterfallCallback);
+                    ThreadApi.CreateThreadsFromMessageDocuments.execute(messageDocuments, waterfallCallback);
                 }
             ],
             function(err, responseArray) {

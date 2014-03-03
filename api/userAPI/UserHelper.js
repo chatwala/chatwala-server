@@ -3,9 +3,6 @@
 **/
 
 var config = require('../config.js')();
-var azure = require('azure');
-var Message = require('./ChatwalaMessageDocument.js');
-
 
 var UserHelper = (function(){
 
@@ -27,16 +24,18 @@ var UserHelper = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('users');
+                var collection = db.collection('users_associations');
                 var query = {};
                 query[USER_ASSOCIATION_PROPERTIES.USER_ASSOCIATION_ID] = owner_id + "." + other_user_id;
+                var update = {};
+                update[USER_ASSOCIATION_PROPERTIES.NUM_THREADS] = 1;
                 collection.findAndModify(
                     query,
-                    {"$inc":{USER_ASSOCIATION_PROPERTIES.NUM_THREADS:1}},
+                    {"$inc":update},
                     {"multi":true, upsert:true},
                     function(err, doc) {
                         callback(null, doc);
-                    }
+                    }   
                 );
             }
         });
@@ -47,12 +46,14 @@ var UserHelper = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('users');
+                var collection = db.collection('users_associations');
                 var query = {};
                 query[USER_ASSOCIATION_PROPERTIES.USER_ASSOCIATION_ID] = owner_id + "." + other_user_id;
+                var update = {};
+                update[USER_ASSOCIATION_PROPERTIES.NUM_THREADS] = -1;
                 collection.findAndModify(
                     query,
-                    {"$inc":{USER_ASSOCIATION_PROPERTIES.NUM_THREADS:-1}},
+                    {"$inc":update},
                     {"multi":true, upsert:true},
                     function(err, doc) {
                         callback(null, doc);
@@ -67,12 +68,14 @@ var UserHelper = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('users');
+                var collection = db.collection('users_associations');
                 var query = {};
                 query[USER_ASSOCIATION_PROPERTIES.USER_ASSOCIATION_ID] = owner_id + "." + other_user_id;
+                var update = {};
+                update[USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT] = 1;
                 collection.findAndModify(
                     query,
-                    {"$inc":{USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT:1}},
+                    {"$inc":update},
                     {"multi":true, upsert:true},
                     function(err, doc) {
                         callback(null, doc);
@@ -87,12 +90,14 @@ var UserHelper = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('users');
+                var collection = db.collection('users_associations');
                 var query = {};
                 query[USER_ASSOCIATION_PROPERTIES.USER_ASSOCIATION_ID] = owner_id;
+                var update = {};
+                update[USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT] = -1;
                 collection.findAndModify(
                     query,
-                    {"$inc":{USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT:-1}},
+                    {"$inc":update},
                     {"multi":true, upsert:true},
                     function(err, doc) {
                         callback(null, doc);
