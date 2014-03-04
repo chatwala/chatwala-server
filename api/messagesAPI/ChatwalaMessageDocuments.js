@@ -20,7 +20,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.RECIPIENT_ID="recipient_id";
     MESSAGE_PROPERTIES.GROUP_ID="group_id";
     MESSAGE_PROPERTIES.THREAD_ID="thread_id";
-    MESSAGE_PROPERTIES.THREAD_COUNT="thread_count";
+    MESSAGE_PROPERTIES.THREAD_INDEX="thread_index";
     MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY="blob_storage_shard_key";
     MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER="unknown_recipient_starter";
     MESSAGE_PROPERTIES.UPLOADED="uploaded";
@@ -55,7 +55,7 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.RECIPIENT_ID]= undefined;
                 template[MESSAGE_PROPERTIES.GROUP_ID]=undefined;
                 template[MESSAGE_PROPERTIES.THREAD_ID]= undefined;
-                template[MESSAGE_PROPERTIES.THREAD_COUNT]=undefined;
+                template[MESSAGE_PROPERTIES.THREAD_INDEX]=undefined;
                 template[MESSAGE_PROPERTIES.THREAD_STARTER]=undefined;
                 template[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=undefined;
                 template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
@@ -99,7 +99,7 @@ var ChatwalaMessageDocuments=(function() {
             }
 
             this.properties[MESSAGE_PROPERTIES.THREAD_ID] = this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.SENDER_ID] + "." + this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
-            this.properties[MESSAGE_PROPERTIES.THREAD_COUNT] = 0;
+            this.properties[MESSAGE_PROPERTIES.THREAD_INDEX] = 0;
         }
 
         this.generateGroupId=function() {
@@ -150,7 +150,7 @@ var ChatwalaMessageDocuments=(function() {
         metaDataJSON[MESSAGE_PROPERTIES.RECIPIENT_ID]=properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
         metaDataJSON[MESSAGE_PROPERTIES.TIMESTAMP]=properties[MESSAGE_PROPERTIES.TIMESTAMP];
         metaDataJSON[MESSAGE_PROPERTIES.THREAD_ID]=properties[MESSAGE_PROPERTIES.THREAD_ID];
-        metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
+        metaDataJSON[MESSAGE_PROPERTIES.THREAD_INDEX]=properties[MESSAGE_PROPERTIES.THREAD_INDEX];
         metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
         metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
         metaDataJSON[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
