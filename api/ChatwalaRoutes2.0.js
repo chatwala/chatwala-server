@@ -139,6 +139,31 @@ function getMessagesForThread(req, res) {
 }
 */
 
+
+function postUserProfilePicture(req, res){
+    var request = {};//ChatwalaApi.Users.UploadUserProfilePicture.Request();
+    request.user_id = req.body.user_id;
+
+    ChatwalaApi.Users.UploadUserProfilePicture.execute(request, function(err, response){
+        if(err === "success"){
+            res.send(200,response);
+        }
+        else{
+            res.send(500, response);
+        }
+    })
+
+} 
+
+function getUserProfilePicture(req, res){
+    var request = {};
+    request.user_id = req.body.user_id;
+
+
+
+
+}
+
 /******** END USER ROUTES***********************/
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
@@ -146,6 +171,8 @@ function setRoutes(app) {
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
+    app.post("/user/postUserProfilePicture", postUserProfilePicture);
+    //app.get("/usr/getUserProfilePicture", getUserProfilePicture);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);

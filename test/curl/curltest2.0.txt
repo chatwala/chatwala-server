@@ -119,3 +119,16 @@ curl -i \
 -H "Content-Type: application/json" \
 -d '{"user_id":"b11111111-11111-1111-1111-111111111111", "thread_id":"1.m6.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/messagesForThread";
+
+
+
+----- Post Profile Picture -------
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"user_id":"b11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/user/postUserProfilePicture";
+
+{"sasURL":"http://chatwalasandbox.blob.core.windows.net/profile-pictures/b11111111-11111-1111-1111-111111111111","response_code":{"code":1,"message":"The profile picture SAS Url has been provided"}}
+

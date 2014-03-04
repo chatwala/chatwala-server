@@ -11,6 +11,10 @@ module.exports = {
                 "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww=="
             }
         },
+        "nonShardedBlobStorage" : {
+            "storage_name":"chatwalasandbox",
+            "storage_key":"HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww=="
+        },
         "hub_name" : "chatwala-dev-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
