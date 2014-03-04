@@ -53,11 +53,12 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
 
 /******* START KNOWN RECIPIENT ROUTES*************/
-function postStartKnownRecipientMessageSend(req, res) {
+function postStartReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.StartReplyMessageSend.Request();
     request.replying_to_server_message_id = req.body.replying_to_server_message_id;
     request.client_message_id = req.body.client_message_id;
     request.owner_user_id = req.body.owner_user_id;
+    request.start_recording = req.body.start_recording;
 
 
     ChatwalaApi.Messages.StartReplyMessageSend.execute(request, function(err, response){
@@ -70,7 +71,7 @@ function postStartKnownRecipientMessageSend(req, res) {
     });
 }
 
-function postCompleteKnownRecipientMessageSend(req, res) {
+function postCompleteReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.CompleteReplyMessageSend.Request();
     request.server_message_id = req.body.server_message_id;
 
@@ -89,6 +90,22 @@ function postCompleteKnownRecipientMessageSend(req, res) {
 
 
 /******** START USER ROUTES*********************/
+
+function postGetUserInbox(req, res) {
+    var request = new ChatwalaApi.Messages.GetUserInbox.Request();
+    request.user_id = req.body.user_id;
+    request.first_id = req.body.first_id;
+
+    ChatwalaApi.Messages.GetUserInbox.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
 /*
 function postRegisterPushToken(req, res) {
     var request = new ChatwalaApi.RegisterPushToken.Request();
@@ -169,9 +186,10 @@ function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
-    app.post("/messages/startReplyMessageSend", postStartKnownRecipientMessageSend);
-    app.post("/messages/completeReplyMessageSend", postCompleteKnownRecipientMessageSend);
-    app.post("/user/postUserProfilePicture", postUserProfilePicture);
+    app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);
+    app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
+    app.post("/messages/userInbox", postGetUserInbox);
+     app.post("/user/postUserProfilePicture", postUserProfilePicture);
     //app.get("/usr/getUserProfilePicture", getUserProfilePicture);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);

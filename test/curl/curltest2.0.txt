@@ -3,7 +3,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"client_message_id":"m6", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
+-d '{"client_message_id":"m18", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/startUnknownRecipientMessageSend";
 
 response:
@@ -14,8 +14,26 @@ Content-Length: 942
 Date: Wed, 19 Feb 2014 16:55:52 GMT
 Connection: keep-alive
 
-{"response_code":{"code":1,"message":"The message has been successfully added to the users outbox."},"message_meta_data":{"message_instance_id":"1.m1.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER","client_message_id":"m1","server_message_id":"1.m1","owner_user_id":"b11111111-11111-1111-1111-111111111111","owner_role":"SENDER","other_user_id":"RECIPIENT_UNKNOWN","other_user_role":"RECIPIENT","sender_id":"b11111111-11111-1111-1111-111111111111","recipient_id":"RECIPIENT_UNKNOWN","group_id":"b1288cb3-9a8c-f86e-d940-672a070b5804","thread_id":"1.m1.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN","thread_count":0,"blob_storage_shard_key":1,"unknown_recipient_starter":true,"uploaded":false,"delivered":false,"viewed":false,"replied":false,"replied_by_server_message_id":null,"replying_to_server_message_id":null,"showable":false,"timestamp":1392828952427,"decryption_key":null,"_id":"5304e218418e592f03d31ee0"}}
-
+{
+    "message_meta_data": {
+        "client_message_id": "m18",
+        "server_message_id": "shard1.m18",
+        "message_instance_id": "shard1.m18.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER",
+        "sender_id": "b11111111-11111-1111-1111-111111111111",
+        "recipient_id": "RECIPIENT_UNKNOWN",
+        "timestamp": 1393894956615,
+        "thread_id": "shard1.m18.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN",
+        "thread_count": 0,
+        "group_id": "ec5ecc74-736c-9d43-3cd0-69c0c97cc03f",
+        "start_recording": 0,
+        "read_url": "https://chatwalasandbox.blob.core.windows.net:443/messages/shard1.m18?se=2114-02-08T01%3A02%3A36Z&sp=r&sr=b&sv=2012-02-12&sig=Lg5U77RKsWfYV9sddb1ECeANIcECUoYVlVDH3sjBBZc%3D"
+    },
+    "write_url": "https://chatwalasandbox.blob.core.windows.net:443/messages/shard1.m18?se=2014-03-04T01%3A12%3A36Z&sp=rw&sr=b&sv=2012-02-12&sig=OiRkWtqguv%2F8C64x6%2B6kvPIBeIaDIzl60ghyrZ5SsxI%3D",
+    "response_code": {
+        "code": 1,
+        "message": "The message has been successfully added to the users outbox."
+    }
+}
 
 
 
@@ -64,13 +82,13 @@ Connection: keep-alive
 
 
 
-----startKnownRecipientMessageSend----
+----startReplyMessageSend----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"client_message_id":"m7", "owner_user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"1.m6"}' \
-"http://localhost:1337/messages/startKnownRecipientMessageSend";
+-d '{"client_message_id":"m7", "owner_user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"shard1.m6", "start_recording": 0}' \
+"http://localhost:1337/messages/startReplyMessageSend";
 
 HTTP/1.1 200 OK
 X-Powered-By: Express
@@ -84,13 +102,13 @@ Connection: keep-alive
 
 
 
-----CompleteKnownRecipientMessageSend----
+----CompleteReplyMessageSend----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"1.m7"}' \
-"http://localhost:1337/messages/completeKnownRecipientMessageSend";
+-d '{"server_message_id":"shard1.m7"}' \
+"http://localhost:1337/messages/completeReplyMessageSend";
 
 HTTP/1.1 200 OK
 X-Powered-By: Express
@@ -102,15 +120,24 @@ Connection: keep-alive
 {"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
 
 
----- Get Threads for User -----
+
+
+----GetUserInbox----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"b11111111-11111-1111-1111-111111111111"}' \
-"http://localhost:1337/messages/threadsForUser";
+-d '{"user_id":"a11111111-11111-1111-1111-111111111111"}' \
+"http://localhost:1337/messages/userInbox";
 
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 94
+Date: Tue, 25 Feb 2014 01:12:45 GMT
+Connection: keep-alive
 
+{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
 
 ---- Get Messages for User -----
 curl -i \
@@ -131,4 +158,5 @@ curl -i \
 "http://localhost:1337/user/postUserProfilePicture";
 
 {"sasURL":"http://chatwalasandbox.blob.core.windows.net/profile-pictures/b11111111-11111-1111-1111-111111111111","response_code":{"code":1,"message":"The profile picture SAS Url has been provided"}}
+
 

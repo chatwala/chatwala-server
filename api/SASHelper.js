@@ -67,10 +67,11 @@ var SASHelper=(function() {
 
     function getReadSharedAccessPolicy(server_message_id) {
 
-        //create a SAS that expires in an hour
+        //create a SAS that expires in 10 thousand years
         var sharedAccessPolicy = {
             AccessPolicy: {
-                Permissions: 'r'
+                Permissions: 'r',
+                Expiry:azure.date.minutesFromNow(60*24*365*100)
             }
         };
 

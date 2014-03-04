@@ -48,12 +48,24 @@ var StartReplyMessageSend=(function() {
                     } else {
                         var collection = db.collection('messages');
 
-                        collection.findOne({"owner_user_id":request.owner_user_id, "server_message_id": request.replying_to_server_message_id},
+                        var query ={};
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]= request.owner_user_id;
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]= request.replying_to_server_message_id;
+
+                        //make sure we are replying to the converted message and not the unknown_recipient_starter template
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
+
+                        collection.findOne(query,
                             function (err, doc) {
 
 
                                 if (!err) {
-                                    waterfallCallback(null, doc);
+                                    if(doc==null){
+                                        waterfallCallback("failure", null);
+                                    }
+                                    else {
+                                        waterfallCallback(null, doc);
+                                    }
                                 } else {
                                     waterfallCallback(err, null);
                                 }
@@ -66,6 +78,7 @@ var StartReplyMessageSend=(function() {
             function(originalMessageDocument, waterfallCallback) {
                 console.log("originalMessage=");
                 console.log(originalMessageDocument);
+
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=request.client_message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.owner_user_id;
@@ -82,10 +95,12 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=request.replying_to_server_message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 message.generateBlobShardKey();
                 message.generateServerMessageId();
                 message.generateMessageInstanceId();
+
 
                 //update time stamp
                 message.generateTimeStamp();
@@ -145,6 +160,7 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 console.log("message=");
                 console.log(message.properties);
