@@ -146,6 +146,18 @@ Connection: keep-alive
 
 
 
+----RenewWriteUrlForMessage----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"server_message_id":"shard1.m7"}' \
+"http://localhost:1337/messages/renewWriteUrlForMessage";
+
+
+
+
+
 ---- Get Messages for User -----
 curl -i \
 -X POST \
@@ -153,6 +165,8 @@ curl -i \
 -H "Content-Type: application/json" \
 -d '{"user_id":"b11111111-11111-1111-1111-111111111111", "thread_id":"1.m6.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/messagesForThread";
+
+
 
 
 

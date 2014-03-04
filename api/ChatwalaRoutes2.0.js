@@ -85,6 +85,21 @@ function postCompleteReplyMessageSend(req, res) {
     });
 }
 
+
+function postRenewWriteUrlForMessage(req, res) {
+    var request = new ChatwalaApi.Messages.RenewWriteSASURL.Request();
+    request.server_message_id = req.body.server_message_id;
+
+    ChatwalaApi.Messages.RenewWriteSASURL.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
 /******* END KNOWN RECIPIENT ROUTES*************/
 
 
@@ -180,8 +195,9 @@ function setRoutes(app) {
     app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
+    app.post("/messages/renewWriteUrlForMessage", postRenewWriteUrlForMessage);
     app.post("/messages/userInbox", postGetUserInbox);
-     app.post("/user/postUserProfilePicture", postUserProfilePicture);
+    app.post("/user/postUserProfilePicture", postUserProfilePicture);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);

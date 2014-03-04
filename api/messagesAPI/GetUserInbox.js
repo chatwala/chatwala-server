@@ -79,15 +79,23 @@ var GetUserInbox=(function() {
                         }
                         else {
                             cursor.toArray(function(err, documents) {
+                                console.log(documents);
+                                var messagesArray = [];
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
                                 response.continue =false;
+
                                 if(documents.length> page_size) {
                                     var lastElement = documents.pop();
                                     response.continue=true;
                                     response.first_id = lastElement["_id"];
                                 }
-                                response.messages = documents;
+
+                                for(var i=0; i<documents.length;i++) {
+                                    messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i]));
+                                }
+
+                                response.messages = messagesArray;
                                 callback(null, response);
                             });
 

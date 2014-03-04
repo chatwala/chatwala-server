@@ -1,5 +1,6 @@
 var GUIDUtil = require('GUIDUtil');
 var SASHelper = require('../SASHelper.js');
+var config = require('../config.js');
 
 var ChatwalaMessageDocuments=(function() {
 
@@ -10,7 +11,7 @@ var ChatwalaMessageDocuments=(function() {
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
-    MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID="client_message_id";
+    MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID="message_id";
     MESSAGE_PROPERTIES.SERVER_MESSAGE_ID="server_message_id";
     MESSAGE_PROPERTIES.OWNER_USER_ID="owner_user_id";
     MESSAGE_PROPERTIES.OWNER_ROLE="owner_role";
@@ -38,6 +39,8 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.THUMBNAIL_URL = "thumbnail_url";
     MESSAGE_PROPERTIES.VERSION="version";
 
+    //dynamic properties: these are created only when the metadata file is asked for
+    MESSAGE_PROPERTIES.SHARE_URL="share_url";
 
     function Message() {
 
@@ -84,6 +87,7 @@ var ChatwalaMessageDocuments=(function() {
                 }
             }
         }
+
         this.generateServerMessageId=function() {
             if(this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]===undefined) {
                 throw "client_message_id and blob_storage_shard_key must be defined";

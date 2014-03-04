@@ -4,7 +4,7 @@ module.exports = {
     },
     "azure": { 
         "partition_key": "chatwalasandbox",
-        "currentShardKey":"shard1",
+        "currentShardKey":"s1",
         "blobStorageShard" : {
             "shard1":{
                 "storage_name":"chatwalasandbox",
@@ -22,5 +22,6 @@ module.exports = {
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
-    }
+    },
+    "shareBaseURL": "http://chatwala.com/sandbox/?"
 };

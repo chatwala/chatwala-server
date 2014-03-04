@@ -3,7 +3,7 @@ module.exports = {
         "mongodb": "mongodb://chatwala-dev:OFXd6OICqM8vr.ME3OCbh.l2T9GjAuXFF.7Hp9gDXNE-@ds030607.mongolab.com:30607/chatwala-dev"
     },
     "azure": {
-        "currentShardKey":"shard1",
+        "currentShardKey":"s1",
         "blobStorageShard" : {
           "shard1":{
               "storage_name":"chatwaladeveast",
@@ -15,5 +15,6 @@ module.exports = {
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
-    }
+    },
+    "shareBaseURL": "http://chatwala.com/dev/?"
 };
