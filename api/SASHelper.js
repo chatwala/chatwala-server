@@ -77,7 +77,7 @@ var SASHelper=(function() {
             }
         };
 
-        return getBlobServiceForShard(shard_key).getBlobUrl("messages", message_id, sharedAccessPolicy);
+        return getBlobServiceForShard(shard_key).getBlobUrl("messages2", message_id, sharedAccessPolicy);
     }
 
     function getWriteSharedAccessPolicyForProfilePicture(user_id) {
