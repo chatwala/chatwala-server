@@ -164,7 +164,7 @@ var ChatwalaMessageDocuments=(function() {
         //Dynamic Properties
         metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=SASHelper.getMessageReadUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
         metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
-        metaDataJSON[MESSAGE_PROPERTIES.SHARE_URL]=config.shareBaseURL + properties[MESSAGE_PROPERTIES.MESSAGE_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.SHARE_URL]=  SASHelper.getShareUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
 
         return metaDataJSON;
     }

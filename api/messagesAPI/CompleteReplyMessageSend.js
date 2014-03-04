@@ -58,50 +58,10 @@ var CompleteReplyMessageSend=(function() {
                             {"multi":true, "new":true},
                             function(err, numberTouched) {
                                 seriesCallback(numberTouched==0?"failure":null, true);
+                                getRecipientIDAndSendPushNotification(request.message_id);
                             }
                         );
                     }
-                });
-            },
-
-            //get recipient_id
-            function(numberTouched, seriesCallback) {
-
-                CWMongoClient.getConnection(function (err, db) {
-                    if (err) {
-                        seriesCallback(err, null);
-                    } else {
-                        var collection = db.collection('messages');
-                        var query = {};
-                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
-                        collection.find(
-                            query,
-                            function(err, cursor) {
-                                if(!err) {
-
-                                    cursor.nextObject(function(err, document) {
-                                        seriesCallback(err, document);
-                                    });
-
-                                }
-                                else {
-                                    seriesCallback(err, null);
-                                }
-
-                            }
-                        );
-                    }
-                });
-            },
-
-
-            //send push notification
-            function(messageDocument, seriesCallback) {
-                console.log(seriesCallback);
-                var recipientId = messageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
-                PushHelper.sendPush(recipientId, function(err, results){
-                    //we don't really care if the push failed
-                    seriesCallback(null,null);
                 });
             }
         ],
@@ -119,6 +79,51 @@ var CompleteReplyMessageSend=(function() {
         }
         );
     };
+
+
+
+    function getRecipientIDAndSendPushNotification(message_id){
+
+        //get recipient_id
+        CWMongoClient.getConnection(function (err, db) {
+            if (err) {
+                seriesCallback(err, null);
+            } else {
+                var collection = db.collection('messages');
+                var query = {};
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = message_id;
+                collection.find(
+                    query,
+                    function(err, cursor) {
+                        if(!err) {
+                            cursor.nextObject(function(err, document) {
+                                sendPushNotification(document);
+                            });
+                        }
+                        else{
+                            console.log("Cannot find user to send push notification to");
+                        }
+                    }
+                );
+            }
+        });
+
+    }
+
+    //send push notification
+    function sendPushNotification(messageDocument){
+
+        var recipientId = messageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
+        PushHelper.sendPush(recipientId, function(err, results){
+            //we don't really care if the push failed
+            if(err){
+                console.log("Push notification failed to send for " + messageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID])
+            }
+        });
+    }
+
+
+
 
     return {
         "responseCodes": responseCodes,

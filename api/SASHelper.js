@@ -63,6 +63,10 @@ var SASHelper=(function() {
         return config.azure.blobStorageShard[shard_key].base_url + message_id;
     }
 
+    function getShareUrl(shard_key, message_id){
+        return config.azure.blobStorageShard[shard_key].base_url + shard_key + "." + message_id;
+    }
+
     function getWriteSharedAccessPolicy(shard_key, message_id) {
 
         //create a SAS that expires in 10 min
@@ -101,7 +105,8 @@ var SASHelper=(function() {
         "getWriteSharedAccessPolicy":getWriteSharedAccessPolicy,
         "getProfilePictureUploadURL":getProfilePictureUploadURL,
         "getThumbnailUrl":getThumbnailUrl,
-        "getMessageReadUrl":getMessageReadUrl
+        "getMessageReadUrl":getMessageReadUrl,
+        "getShareUrl":getShareUrl
     };
 
 }());
