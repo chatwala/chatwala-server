@@ -46,7 +46,7 @@ var SASHelper=(function() {
             var access_key = config.azure.nonShardedBlobStorage.storage_key //config["STORAGE_KEY"];
 
             blobService = azure.createBlobService(account,access_key);
-            blobService.createContainerIfNotExists("profile-pictures", function(error) {
+            blobService.createContainerIfNotExists(config.azure.nonShardedBlobStorage.container, function(error) {
                 if(!error) {
 
                 }
@@ -56,13 +56,17 @@ var SASHelper=(function() {
                 }
             });
         }
-        console.log("BLOBBBBBBBBBB!!!",blobService);
         return blobService;
     }
 
     function getShardKeyFromServerMessageId(server_message_id) {
         var split = server_message_id.split(".");
         return split[0];
+    }
+
+    function getMessageReadUrl(message_id) {
+        var current_shard_key = config.azure.currentShardKey;
+        return config.azure.blobStorageShard[current_shard_key].base_url + message_id;
     }
 
     function getReadSharedAccessPolicy(server_message_id) {
@@ -91,29 +95,33 @@ var SASHelper=(function() {
         return getBlobServiceForShard(getShardKeyFromServerMessageId(server_message_id)).getBlobUrl("messages", server_message_id, sharedAccessPolicy);
     }
 
-    function getWriteSharedAccessPolicyForProfilePicture(user_id){
+    function getWriteSharedAccessPolicyForProfilePicture(user_id) {
         //create a SAS that expires in 10 min
         var sharedAccessPolicy = {
             AccessPolicy: {
                 Permissions: 'rw',
-                Expiry: azure.date.minutesFromNow(60*24*365*100)
+                Expiry: azure.date.minutesFromNow(10)
             }
         };    
-        return getBlobServiceForProfilePicture().getBlobUrl("profile-pictures", user_id, sharedAccessPolicy);
+        return getBlobServiceForProfilePicture().getBlobUrl(config.azure.nonShardedBlobStorage.container, user_id, sharedAccessPolicy);
     }
 
 
-    function getProfilePictureUploadURL(user_id, callback){
-        var url = getWriteSharedAccessPolicyForProfilePicture(user_id);
-        callback(null, url);
-        return;
+    function getProfilePictureUploadURL(user_id) {
+        return getWriteSharedAccessPolicyForProfilePicture(user_id);
+    }
+
+    function getThumbnailUrl(sender_user_id) {
+        return config.azure.nonShardedBlobStorage.base_url + sender_user_id;
     }
 
     return {
         "getCurrentShardKey":getCurrentShardKey,
         "getReadSharedAccessPolicy":getReadSharedAccessPolicy,
         "getWriteSharedAccessPolicy":getWriteSharedAccessPolicy,
-        "getProfilePictureUploadURL":getProfilePictureUploadURL
+        "getProfilePictureUploadURL":getProfilePictureUploadURL,
+        "getThumbnailUrl":getThumbnailUrl,
+        "getMessageReadUrl":getMessageReadUrl
     };
 
 }());

@@ -158,11 +158,11 @@ function getMessagesForThread(req, res) {
 
 
 function postUserProfilePicture(req, res){
-    var request = {};//ChatwalaApi.Users.UploadUserProfilePicture.Request();
+    var request = new ChatwalaApi.Users.UploadUserProfilePicture.Request();
     request.user_id = req.body.user_id;
 
     ChatwalaApi.Users.UploadUserProfilePicture.execute(request, function(err, response){
-        if(err === "success"){
+        if(!err){
             res.send(200,response);
         }
         else{
@@ -172,14 +172,6 @@ function postUserProfilePicture(req, res){
 
 } 
 
-function getUserProfilePicture(req, res){
-    var request = {};
-    request.user_id = req.body.user_id;
-
-
-
-
-}
 
 /******** END USER ROUTES***********************/
 function setRoutes(app) {
@@ -190,7 +182,6 @@ function setRoutes(app) {
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
     app.post("/messages/userInbox", postGetUserInbox);
      app.post("/user/postUserProfilePicture", postUserProfilePicture);
-    //app.get("/usr/getUserProfilePicture", getUserProfilePicture);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);

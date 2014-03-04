@@ -8,12 +8,15 @@ module.exports = {
         "blobStorageShard" : {
             "shard1":{
                 "storage_name":"chatwalasandbox",
-                "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww=="
+                "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
+                "base_url": "http://chatwalasandbox.blob.core.windows.net/messages/"
             }
         },
         "nonShardedBlobStorage" : {
-            "storage_name":"chatwalasandbox",
-            "storage_key":"HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww=="
+            "storage_name":"chatwalaprofilepictures",
+            "storage_key":"rAP6UjP+lB9+ApoIJ6KyNTLfrvzkdOPPWaWKoeoCLdu0dG36J8CogDdhPjjxc/5nByMV/nxkTHUCF+FW2vuROg==",
+            "container":"sandbox",
+            "base_url": "http://chatwalaprofilepictures.blob.core.windows.net/sandbox/"
         },
         "hub_name" : "chatwala-dev-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",

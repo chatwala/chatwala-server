@@ -29,7 +29,7 @@ var UploadUserProfilePicture = (function(){
     };
 
     var Response = function() {
-    	this.sasURL=undefined;
+    	this.write_url=undefined;
         this.response_code=undefined;
     };
 
@@ -43,21 +43,21 @@ var UploadUserProfilePicture = (function(){
 			return;
 		}
 
-		SASHelper.getProfilePictureUploadURL(request.user_id, function(err, sasUploadURL){
-			if(!err){
-				var response = new Response();
-				response.sasURL = sasUploadURL;
-				response.response_code = responseCodes['success'];
-				callback("success", response);
-				return;
-			}
-			else{
-				var response = new Response();
-				response.response_code = responseCodes['failure'];
-				callback("failure", response);
-				return;
-			}
-		})
+		var write_url = SASHelper.getProfilePictureUploadURL(request.user_id);
+
+		if(typeof write_url !== "undefined"){
+			var response = new Response();
+			response.write_url = write_url;
+			response.response_code = responseCodes['success'];
+			callback(null, response);
+			return;
+		}
+		else{
+			var response = new Response();
+			response.response_code = responseCodes['failure'];
+			callback("failure", response);
+			return;
+		}
 
 	}
 

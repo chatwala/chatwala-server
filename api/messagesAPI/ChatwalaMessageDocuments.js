@@ -35,6 +35,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
     MESSAGE_PROPERTIES.READ_URL="read_url";
+    MESSAGE_PROPERTIES.THUMBNAIL_URL = "thumbnail_url";
     MESSAGE_PROPERTIES.VERSION="version";
 
 
@@ -67,6 +68,7 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
                 template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
                 template[MESSAGE_PROPERTIES.READ_URL]=undefined;
+                template[MESSAGE_PROPERTIES.THUMBNAIL_URL]=undefined;
                 template[MESSAGE_PROPERTIES.VERSION]=VERSION;
 
 
@@ -123,7 +125,15 @@ var ChatwalaMessageDocuments=(function() {
             if(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined) {
                 throw "server_message_id must be defined";
             }
-            this.properties[MESSAGE_PROPERTIES.READ_URL] = SASHelper.getReadSharedAccessPolicy(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
+            this.properties[MESSAGE_PROPERTIES.READ_URL] = SASHelper.getMessageReadUrl(this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID])
+            //getReadSharedAccessPolicy(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
+        }
+        
+        this.generateThumbnailURL = function() {
+            if(this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined) {
+                throw "sender_user_id must be defined";
+            }
+            this.properties[MESSAGE_PROPERTIES.THUMBNAIL_URL] = SASHelper.getThumbnailUrl(this.properties[MESSAGE_PROPERTIES.SENDER_ID]);
         }
 
         this.isValid=function() {
@@ -165,6 +175,7 @@ var ChatwalaMessageDocuments=(function() {
            metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
            metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
            metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=properties[MESSAGE_PROPERTIES.READ_URL];
+           metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=properties[MESSAGE_PROPERTIES.THUMBNAIL_URL];
 
        return metaDataJSON;
     }
@@ -197,6 +208,7 @@ var ChatwalaMessageDocuments=(function() {
             message.generateGroupId();
             message.generateTimeStamp();
             message.generateReadURL();
+            message.generateThumbnailURL();
             console.log(message.properties);
             return message;
         }
