@@ -25,8 +25,8 @@ var StartReplyMessageSend=(function() {
 
     var Request = function() {
         this.owner_user_id=undefined;
-        this.client_message_id=undefined;
-        this.replying_to_server_message_id=undefined;
+        this.message_id=undefined;
+        this.replying_to_message_id=undefined;
         this.start_recording=undefined;
     };
 
@@ -50,7 +50,7 @@ var StartReplyMessageSend=(function() {
 
                         var query ={};
                         query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]= request.owner_user_id;
-                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]= request.replying_to_server_message_id;
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]= request.replying_to_message_id;
 
                         //make sure we are replying to the converted message and not the unknown_recipient_starter template
                         query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
@@ -80,7 +80,7 @@ var StartReplyMessageSend=(function() {
                 console.log(originalMessageDocument);
 
                 var message = new ChatwalaMessageDocuments.Message();
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=request.client_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.owner_user_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
@@ -92,13 +92,12 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=request.start_recording;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=request.replying_to_server_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=request.replying_to_message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 message.generateBlobShardKey();
-                message.generateServerMessageId();
                 message.generateMessageInstanceId();
 
 
@@ -142,7 +141,7 @@ var StartReplyMessageSend=(function() {
             function(outboxMessageDocument, waterfallCallback) {
                 var message = new ChatwalaMessageDocuments.Message();
 
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=request.client_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID];
@@ -154,17 +153,16 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 console.log("message=");
                 console.log(message.properties);
-                //unknown_recipient_starter, server_message_id and owner_user_id
+                //unknown_recipient_starter, message_id and owner_user_id
                 message.generateMessageInstanceId();
 
                 if(message.isValid()) {

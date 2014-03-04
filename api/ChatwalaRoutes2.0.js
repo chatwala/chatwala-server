@@ -3,7 +3,7 @@ var ChatwalaApi = require("./ChatwalaApi.js");
 /******* START UNKNOWN RECIPIENT ROUTES*************/
 function postStartUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.StartUnknownRecipientMessageSend.Request();
-    sendRequest.client_message_id = req.body.client_message_id;
+    sendRequest.message_id = req.body.message_id;
     sendRequest.sender_id = req.body.sender_id;
 
     ChatwalaApi.Messages.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
@@ -18,7 +18,7 @@ function postStartUnknownRecipientMessageSend(req, res) {
 
 function postCompleteUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.CompleteUnknownRecipientMessageSend.Request();
-    sendRequest.server_message_id = req.body.server_message_id;
+    sendRequest.message_id = req.body.message_id;
     
 
     ChatwalaApi.Messages.CompleteUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
@@ -33,7 +33,7 @@ function postCompleteUnknownRecipientMessageSend(req, res) {
 
 function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
     var convertRequest = new ChatwalaApi.Messages.ConvertUnknownRecipientMessageToKnownRecipient.Request();
-    convertRequest.server_message_id = req.body.server_message_id;
+    convertRequest.message_id = req.body.message_id;
     convertRequest.recipient_id = req.body.recipient_id;
 
 
@@ -55,8 +55,8 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 /******* START KNOWN RECIPIENT ROUTES*************/
 function postStartReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.StartReplyMessageSend.Request();
-    request.replying_to_server_message_id = req.body.replying_to_server_message_id;
-    request.client_message_id = req.body.client_message_id;
+    request.replying_to_message_id = req.body.replying_to_message_id;
+    request.message_id = req.body.message_id;
     request.owner_user_id = req.body.user_id;
     request.start_recording = req.body.start_recording;
 
@@ -73,7 +73,7 @@ function postStartReplyMessageSend(req, res) {
 
 function postCompleteReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.CompleteReplyMessageSend.Request();
-    request.server_message_id = req.body.server_message_id;
+    request.message_id = req.body.message_id;
 
     ChatwalaApi.Messages.CompleteReplyMessageSend.execute(request, function(err, response){
         if(!err) {
@@ -88,7 +88,7 @@ function postCompleteReplyMessageSend(req, res) {
 
 function postRenewWriteUrlForMessage(req, res) {
     var request = new ChatwalaApi.Messages.RenewWriteSASURL.Request();
-    request.server_message_id = req.body.server_message_id;
+    request.message_id = req.body.message_id;
 
     ChatwalaApi.Messages.RenewWriteSASURL.execute(request, function(err, response){
         if(!err) {

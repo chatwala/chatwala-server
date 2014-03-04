@@ -20,7 +20,7 @@ var ThreadHelper=(function() {
     THREAD_PROPERTIES.THREAD_INSTANCE_ID="thread_instance_id";
     THREAD_PROPERTIES.OTHER_USER_ID="other_user_id";
     THREAD_PROPERTIES.OWNER_THREAD_ROLE="owner_thread_role";
-    THREAD_PROPERTIES.LAST_RECEIVED_SERVER_MESSAGE_ID="last_received_server_message_id";
+    THREAD_PROPERTIES.LAST_RECEIVED_MESSAGE_ID="last_received_message_id";
     THREAD_PROPERTIES.LAST_RECEIVED_TIMESTAMP = "last_received_timestamp";
     THREAD_PROPERTIES.UNREAD_COUNT="unread_count";
 

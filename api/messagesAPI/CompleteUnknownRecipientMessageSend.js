@@ -11,7 +11,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
         },
         "failureInvalidServerMessageId": {
             "code":-101,
-            "message":"You provided an invalid server_message_id"
+            "message":"You provided an invalid message_id"
         },
         "failureDBConnect": {
             "code":-200,
@@ -25,7 +25,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
 
 
     var Request = function() {
-        this.server_message_id = undefined;
+        this.message_id = undefined;
     };
 
     var Response = function() {
@@ -38,7 +38,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
      */
     var execute = function(request, callback) {
         console.log(request);
-        if(request.server_message_id === undefined) {
+        if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
             response.response_code = responseCodes["failureInvalidServerMessageId"];
@@ -55,7 +55,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
                 var collection = db.collection('messages');
 
                 var query = {};
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = request.server_message_id;
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
 
                 collection.findAndModify(
                     query,

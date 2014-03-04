@@ -2,6 +2,7 @@
 	created by kevinmiller on 2/27/14
 **/
 
+var CWMongoClient = require('../../cw_mongo.js');
 
 var UserHelper = (function(){
 
@@ -13,7 +14,7 @@ var UserHelper = (function(){
 	USER_ASSOCIATION_PROPERTIES.TYPE="type";
 	USER_ASSOCIATION_PROPERTIES.OWNER_ID="owner_id"; 
 	USER_ASSOCIATION_PROPERTIES.OTHER_USER_ID="other_user_id";
-	USER_ASSOCIATION_PROPERTIES.LAST_REPLY_SERVER_MESSAGE_ID="last_reply_server_message_id";
+	USER_ASSOCIATION_PROPERTIES.LAST_REPLY_MESSAGE_ID="last_reply_message_id";
 	USER_ASSOCIATION_PROPERTIES.LAST_REPLY_TIMESTAMP = "last_reply_timestamp";
 	USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT="unread_count";
 	USER_ASSOCIATION_PROPERTIES.NUM_THREADS = "num_threads";
@@ -104,6 +105,10 @@ var UserHelper = (function(){
                 );
             }
         });
+    }
+
+    return {
+        "USER_ASSOCIATION_PROPERTIES": USER_ASSOCIATION_PROPERTIES
     }
 
 }());

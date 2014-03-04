@@ -3,38 +3,38 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"client_message_id":"m19", "sender_id":"kevinb11111111-11111-1111-1111-111111111111"}' \
+-d '{"message_id":"m19", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/startUnknownRecipientMessageSend";
 
 response:
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
-Content-Length: 942
-Date: Wed, 19 Feb 2014 16:55:52 GMT
+Content-Length: 958
+Date: Tue, 04 Mar 2014 20:16:18 GMT
 Connection: keep-alive
 
 {
     "message_meta_data": {
-        "client_message_id": "m18",
-        "server_message_id": "shard1.m18",
-        "message_instance_id": "shard1.m18.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER",
+        "message_id": "m19",
+        "message_instance_id": "m19.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER",
         "sender_id": "b11111111-11111-1111-1111-111111111111",
         "recipient_id": "RECIPIENT_UNKNOWN",
-        "timestamp": 1393894956615,
-        "thread_id": "shard1.m18.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN",
+        "timestamp": 1393964333162,
+        "thread_id": "m19.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN",
         "thread_count": 0,
-        "group_id": "ec5ecc74-736c-9d43-3cd0-69c0c97cc03f",
+        "group_id": "bd06a7c2-ef85-132f-4f66-60b430d19757",
         "start_recording": 0,
-        "read_url": "https://chatwalasandbox.blob.core.windows.net:443/messages/shard1.m18?se=2114-02-08T01%3A02%3A36Z&sp=r&sr=b&sv=2012-02-12&sig=Lg5U77RKsWfYV9sddb1ECeANIcECUoYVlVDH3sjBBZc%3D"
+        "read_url": "http://chatwalasandbox.blob.core.windows.net/messages/m19",
+        "thumbnail_url": "http://chatwalaprofilepictures.blob.core.windows.net/sandbox/b11111111-11111-1111-1111-111111111111",
+        "share_url": "http://chatwala.com/sandbox/?m19"
     },
-    "write_url": "https://chatwalasandbox.blob.core.windows.net:443/messages/shard1.m18?se=2014-03-04T01%3A12%3A36Z&sp=rw&sr=b&sv=2012-02-12&sig=OiRkWtqguv%2F8C64x6%2B6kvPIBeIaDIzl60ghyrZ5SsxI%3D",
+    "write_url": "https://chatwalasandbox.blob.core.windows.net:443/messages/m19?se=2014-03-04T20%3A28%3A53Z&sp=rw&sr=b&sv=2012-02-12&sig=WjcacsKWYNWBaRvGg0tO4mXz%2BFodnS3XcQOPBkxeccc%3D",
     "response_code": {
         "code": 1,
         "message": "The message has been successfully added to the users outbox."
     }
 }
-
 
 //renew write sasurl
 
@@ -45,19 +45,36 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"shard1.m6"}' \
+-d '{"message_id":"m19"}' \
 "http://localhost:1337/messages/completeUnknownRecipientMessageSend";
 
 response:
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
-Content-Length: 116
-Date: Wed, 19 Feb 2014 17:01:10 GMT
+Content-Length: 740
+Date: Tue, 04 Mar 2014 20:21:12 GMT
 Connection: keep-alive
-
-{"message_meta_data":1,"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
-
+{
+    "message_meta_data": {
+        "message_id": "m19",
+        "message_instance_id": "m19.b11111111-11111-1111-1111-111111111111.UNKNOWN_RECIPIENT_STARTER",
+        "sender_id": "b11111111-11111-1111-1111-111111111111",
+        "recipient_id": "RECIPIENT_UNKNOWN",
+        "timestamp": 1393964333162,
+        "thread_id": "m19.b11111111-11111-1111-1111-111111111111.RECIPIENT_UNKNOWN",
+        "thread_count": 0,
+        "group_id": "bd06a7c2-ef85-132f-4f66-60b430d19757",
+        "start_recording": 0,
+        "read_url": "http://chatwalasandbox.blob.core.windows.net/messages/m19",
+        "thumbnail_url": "http://chatwalaprofilepictures.blob.core.windows.net/sandbox/b11111111-11111-1111-1111-111111111111",
+        "share_url": "http://chatwala.com/sandbox/?m19"
+    },
+    "response_code": {
+        "code": 1,
+        "message": "The message has been successfully marked as uploaded."
+    }
+}
 
 
 
@@ -67,7 +84,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"shard1.m6", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
+-d '{"message_id":"m19", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/addUnknownRecipientMessageToInbox";
 
 response:
@@ -75,11 +92,10 @@ HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
 Content-Length: 69
-Date: Wed, 19 Feb 2014 17:08:14 GMT
+Date: Tue, 04 Mar 2014 20:22:56 GMT
 Connection: keep-alive
 
 {"response_code":{"code":1,"message":"The recipient has been added"}}
-
 
 
 
@@ -89,19 +105,16 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"client_message_id":"m7", "user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"shard1.m6", "start_recording": 0}' \
+-d '{"message_id":"m20", "user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_message_id":"m19", "start_recording": 0}' \
 "http://localhost:1337/messages/startReplyMessageSend";
 
+response:
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
-Content-Length: 905
-Date: Wed, 19 Feb 2014 21:20:44 GMT
+Content-Length: 742
+Date: Tue, 04 Mar 2014 20:23:38 GMT
 Connection: keep-alive
-
-{"message_meta_data":{"message_instance_id":"1.m2.a11111111-11111-1111-1111-111111111111","client_message_id":"m2","server_message_id":"1.m2","owner_user_id":"a11111111-11111-1111-1111-111111111111","owner_role":"SENDER","other_user_id":"b11111111-11111-1111-1111-111111111111","other_user_role":"RECIPIENT","sender_id":"a11111111-11111-1111-1111-111111111111","recipient_id":"b11111111-11111-1111-1111-111111111111","group_id":"b1288cb3-9a8c-f86e-d940-672a070b5804","thread_id":"1.m1.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111","thread_count":1,"blob_storage_shard_key":1,"unknown_recipient_starter":false,"uploaded":false,"delivered":false,"viewed":false,"replied":false,"replied_by_server_message_id":null,"replying_to_server_message_id":"1.m1","showable":true,"timestamp":1392844844247},"response_code":{"code":1,"message":"The message has been successfully saved"}}
-
-
 
 
 ----CompleteReplyMessageSend----
@@ -109,19 +122,10 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"shard1.m7"}' \
+-d '{"message_id":"m20"}' \
 "http://localhost:1337/messages/completeReplyMessageSend";
 
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 94
-Date: Tue, 25 Feb 2014 01:12:45 GMT
-Connection: keep-alive
-
-{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
-
-
+response:
 
 
 ----GetUserInbox----
@@ -139,8 +143,51 @@ Content-Length: 94
 Date: Tue, 25 Feb 2014 01:12:45 GMT
 Connection: keep-alive
 
-
-{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
+{
+    "response_code": {
+        "code": 1,
+        "message": "Messages have been returned"
+    },
+    "messages": [
+        {
+            "message_id": "m20",
+            "message_instance_id": "m20.a11111111-11111-1111-1111-111111111111",
+            "sender_id": "b11111111-11111-1111-1111-111111111111",
+            "recipient_id": "a11111111-11111-1111-1111-111111111111",
+            "timestamp": 1393966370564,
+            "thread_id": "m19.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111",
+            "thread_count": 1,
+            "group_id": "f7c82323-8610-371c-f4dd-6849cd1d5bc6",
+            "start_recording": 0,
+            "replying_to_message_id": "m19",
+            "viewed": false,
+            "delivered": false,
+            "replied": false,
+            "read_url": "http://chatwalasandbox.blob.core.windows.net/messages/m20",
+            "thumbnail_url": "http://chatwalaprofilepictures.blob.core.windows.net/sandbox/b11111111-11111-1111-1111-111111111111",
+            "share_url": "http://chatwala.com/sandbox/?m20"
+        },
+        {
+            "message_id": "m19",
+            "message_instance_id": "m19.a11111111-11111-1111-1111-111111111111",
+            "sender_id": "b11111111-11111-1111-1111-111111111111",
+            "recipient_id": "a11111111-11111-1111-1111-111111111111",
+            "timestamp": 1393966335056,
+            "thread_id": "m19.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111",
+            "thread_count": 0,
+            "group_id": "f7c82323-8610-371c-f4dd-6849cd1d5bc6",
+            "start_recording": 0,
+            "replying_to_message_id": null,
+            "viewed": false,
+            "delivered": false,
+            "replied": false,
+            "read_url": "http://chatwalasandbox.blob.core.windows.net/messages/m19",
+            "thumbnail_url": "http://chatwalaprofilepictures.blob.core.windows.net/sandbox/b11111111-11111-1111-1111-111111111111",
+            "share_url": "http://chatwala.com/sandbox/?m19"
+        }
+    ],
+    "continue": false
+}
 
 
 
@@ -151,19 +198,19 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"server_message_id":"shard1.m7"}' \
+-d '{"message_id":"m19"}' \
 "http://localhost:1337/messages/renewWriteUrlForMessage";
 
 
 
 
 
----- Get Messages for User -----
+---- Get Messages for Thread -----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"b11111111-11111-1111-1111-111111111111", "thread_id":"1.m6.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111"}' \
+-d '{"user_id":"b11111111-11111-1111-1111-111111111111", "thread_id":"m19.b11111111-11111-1111-1111-111111111111.a11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/messagesForThread";
 
 

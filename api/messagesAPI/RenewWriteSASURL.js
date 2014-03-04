@@ -22,7 +22,7 @@ var RenewWriteSASURL=(function() {
 
 
     var Request = function() {
-        this.server_message_id = undefined;
+        this.message_id = undefined;
     };
 
     var Response = function() {
@@ -34,8 +34,8 @@ var RenewWriteSASURL=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
-        console.log("server_message_id="+request.server_message_id);
-        if(request.server_message_id === undefined) {
+        console.log("message_id="+request.message_id);
+        if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
             response.response_code = responseCodes["failureInvalidServerMessageId"];
@@ -43,7 +43,7 @@ var RenewWriteSASURL=(function() {
             return;
         }
 
-        var write_url = SASHelper.getWriteSharedAccessPolicy(request.server_message_id);
+        var write_url = SASHelper.getWriteSharedAccessPolicy(request.message_id);
         var response = new Response();
         response.responseCode = responseCodes["success"];
         response.write_url = write_url;

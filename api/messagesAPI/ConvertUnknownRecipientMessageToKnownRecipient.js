@@ -30,7 +30,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
 
     var Request = function() {
-        this.server_message_id = undefined;
+        this.message_id = undefined;
     };
 
     var Response = function() {
@@ -72,7 +72,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
                     /*query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.sender_id;
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
                     collection.findAndModify(
                         query,
@@ -136,7 +136,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
                     /*query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.recipient_id;
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
                     collection.findAndModify(
                         query,
@@ -171,7 +171,9 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                 waterfallCallback(err, null);
             } else {
                 var collection = db.collection('messages');
-                collection.findOne({"server_message_id": request.server_message_id}, function (err, messageDocument) {
+                var query = {};
+                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
+                collection.findOne(query, function (err, messageDocument) {
                     if(messageDocument==null) {
                         waterfallCallback("messageIsNull", null);
                     }

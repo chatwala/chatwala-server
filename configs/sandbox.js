@@ -6,7 +6,7 @@ module.exports = {
         "partition_key": "chatwalasandbox",
         "currentShardKey":"s1",
         "blobStorageShard" : {
-            "shard1":{
+            "s1":{
                 "storage_name":"chatwalasandbox",
                 "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
                 "base_url": "http://chatwalasandbox.blob.core.windows.net/messages/"

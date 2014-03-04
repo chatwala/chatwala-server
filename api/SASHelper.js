@@ -59,30 +59,11 @@ var SASHelper=(function() {
         return blobService;
     }
 
-    function getShardKeyFromServerMessageId(server_message_id) {
-        var split = server_message_id.split(".");
-        return split[0];
+    function getMessageReadUrl(shard_key, message_id) {
+        return config.azure.blobStorageShard[shard_key].base_url + message_id;
     }
 
-    function getMessageReadUrl(message_id) {
-        var current_shard_key = config.azure.currentShardKey;
-        return config.azure.blobStorageShard[current_shard_key].base_url + message_id;
-    }
-
-    function getReadSharedAccessPolicy(server_message_id) {
-
-        //create a SAS that expires in 10 thousand years
-        var sharedAccessPolicy = {
-            AccessPolicy: {
-                Permissions: 'r',
-                Expiry:azure.date.minutesFromNow(60*24*365*100)
-            }
-        };
-
-        return getBlobServiceForShard(getShardKeyFromServerMessageId(server_message_id)).getBlobUrl("messages", server_message_id, sharedAccessPolicy);
-    }
-
-    function getWriteSharedAccessPolicy(server_message_id) {
+    function getWriteSharedAccessPolicy(shard_key, message_id) {
 
         //create a SAS that expires in 10 min
         var sharedAccessPolicy = {
@@ -92,7 +73,7 @@ var SASHelper=(function() {
             }
         };
 
-        return getBlobServiceForShard(getShardKeyFromServerMessageId(server_message_id)).getBlobUrl("messages", server_message_id, sharedAccessPolicy);
+        return getBlobServiceForShard(shard_key).getBlobUrl("messages", message_id, sharedAccessPolicy);
     }
 
     function getWriteSharedAccessPolicyForProfilePicture(user_id) {
@@ -117,7 +98,6 @@ var SASHelper=(function() {
 
     return {
         "getCurrentShardKey":getCurrentShardKey,
-        "getReadSharedAccessPolicy":getReadSharedAccessPolicy,
         "getWriteSharedAccessPolicy":getWriteSharedAccessPolicy,
         "getProfilePictureUploadURL":getProfilePictureUploadURL,
         "getThumbnailUrl":getThumbnailUrl,

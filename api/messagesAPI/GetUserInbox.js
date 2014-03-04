@@ -92,7 +92,7 @@ var GetUserInbox=(function() {
                                 }
 
                                 for(var i=0; i<documents.length;i++) {
-                                    messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i]));
+                                    messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i], true));
                                 }
 
                                 response.messages = messagesArray;

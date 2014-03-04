@@ -22,7 +22,7 @@ var StartUnknownRecipientMessageSend=(function() {
 
     var Request = function() {
         this.sender_id=undefined;
-        this.client_message_id=undefined;
+        this.message_id=undefined;
     };
 
     var Response = function() {
@@ -33,7 +33,7 @@ var StartUnknownRecipientMessageSend=(function() {
 
     var execute = function(request, callback) {
 
-        var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.client_message_id, request.sender_id);
+        var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.message_id, request.sender_id);
         if(message.isValid()) {
             CWMongoClient.getConnection(function (err, db) {
                 if (err) {
@@ -49,7 +49,9 @@ var StartUnknownRecipientMessageSend=(function() {
                             if (!err) {
                                 var response = new Response();
                                 response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
-                                response.write_url = SASHelper.getWriteSharedAccessPolicy(message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
+                                response.write_url = SASHelper.getWriteSharedAccessPolicy(
+                                    message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY],
+                                    message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]);
                                 response.response_code = responseCodes["success"];
                                 callback(null, response);
                             } else {

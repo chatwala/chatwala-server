@@ -52,7 +52,7 @@ var CreateInitialUser = (function(){
 
         if(user_type === ChatwalaMessageDocuments.ROLE_RECIPIENT){
             var last_reply_timestamp = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
-            var last_reply_server_message_id = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+            var last_reply_message_id = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID];
             var unread_count = 1;
         }
         
@@ -73,7 +73,7 @@ var CreateInitialUser = (function(){
                 create[UserHelper.USER_ASSOCIATION_PROPERTIES.NUM_THREADS] = num_threads;
 
                 if(user_type === ChatwalaMessageDocuments.ROLE_RECIPIENT){
-                    create[UserHelper.USER_ASSOCIATION_PROPERTIES.LAST_REPLY_SERVER_MESSAGE_ID] = last_reply_server_message_id;
+                    create[UserHelper.USER_ASSOCIATION_PROPERTIES.LAST_REPLY_MESSAGE_ID] = last_reply_message_id;
                     create[UserHelper.USER_ASSOCIATION_PROPERTIES.LAST_REPLY_TIMESTAMP] = last_reply_timestamp;
                     create[UserHelper.USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT] = unread_count;
                 }

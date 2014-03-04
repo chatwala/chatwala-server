@@ -1,6 +1,6 @@
 var GUIDUtil = require('GUIDUtil');
 var SASHelper = require('../SASHelper.js');
-var config = require('../config.js');
+var config = require('../../config.js');
 
 var ChatwalaMessageDocuments=(function() {
 
@@ -11,8 +11,7 @@ var ChatwalaMessageDocuments=(function() {
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
-    MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID="message_id";
-    MESSAGE_PROPERTIES.SERVER_MESSAGE_ID="server_message_id";
+    MESSAGE_PROPERTIES.MESSAGE_ID="message_id";
     MESSAGE_PROPERTIES.OWNER_USER_ID="owner_user_id";
     MESSAGE_PROPERTIES.OWNER_ROLE="owner_role";
     MESSAGE_PROPERTIES.OTHER_USER_ID="other_user_id";
@@ -28,27 +27,26 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.DELIVERED="delivered";
     MESSAGE_PROPERTIES.VIEWED="viewed";
     MESSAGE_PROPERTIES.REPLIED="replied";
-    //MESSAGE_PROPERTIES.REPLIED_BY_SERVER_MESSAGE_ID="replied_by_server_message_id";
-    MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID="replying_to_server_message_id";
+    //MESSAGE_PROPERTIES.REPLIED_BY_message_id="replied_by_message_id";
+    MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID="replying_to_message_id";
     MESSAGE_PROPERTIES.SHOWABLE="showable";
     MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
-    MESSAGE_PROPERTIES.READ_URL="read_url";
-    MESSAGE_PROPERTIES.THUMBNAIL_URL = "thumbnail_url";
     MESSAGE_PROPERTIES.VERSION="version";
 
     //dynamic properties: these are created only when the metadata file is asked for
     MESSAGE_PROPERTIES.SHARE_URL="share_url";
+    MESSAGE_PROPERTIES.READ_URL="read_url";
+    MESSAGE_PROPERTIES.THUMBNAIL_URL = "thumbnail_url";
 
     function Message() {
 
         this.getTemplate = function() {
            var template={};
-                template[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=undefined; //blob_storage_shard_key.client_message_id.owner_id
-                template[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]= undefined;   //defined by client, not really used
-                template[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]= undefined;  //blob_storage_shard_key.client_message_id
+                template[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=undefined; //blob_storage_shard_key.message_id.owner_id
+                template[MESSAGE_PROPERTIES.MESSAGE_ID]= undefined;   //defined by client, not really used
                 template[MESSAGE_PROPERTIES.OWNER_USER_ID]= undefined;
                 template[MESSAGE_PROPERTIES.OWNER_ROLE]= undefined;
                 template[MESSAGE_PROPERTIES.OTHER_USER_ID]= undefined;
@@ -65,13 +63,11 @@ var ChatwalaMessageDocuments=(function() {
                 template[MESSAGE_PROPERTIES.DELIVERED]=false;
                 template[MESSAGE_PROPERTIES.VIEWED]=false;
                 template[MESSAGE_PROPERTIES.REPLIED]= false;
-                template[MESSAGE_PROPERTIES.REPLYING_TO_SERVER_MESSAGE_ID]=null;
+                template[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=null;
                 template[MESSAGE_PROPERTIES.SHOWABLE]=false;
                 template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
                 template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
                 template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
-                template[MESSAGE_PROPERTIES.READ_URL]=undefined;
-                template[MESSAGE_PROPERTIES.THUMBNAIL_URL]=undefined;
                 template[MESSAGE_PROPERTIES.VERSION]=VERSION;
 
 
@@ -88,28 +84,21 @@ var ChatwalaMessageDocuments=(function() {
             }
         }
 
-        this.generateServerMessageId=function() {
-            if(this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]===undefined) {
-                throw "client_message_id and blob_storage_shard_key must be defined";
-            }
-            this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = this.properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] + "." + this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID];
-
-        }
 
         this.generateMessageInstanceId=function() {
-            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined) {
-                throw "unknown_recipient_starter, server_message_id and owner_user_id must be defined";
+            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined) {
+                throw "unknown_recipient_starter, message_id and owner_user_id must be defined";
             }
 
-            this.properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID] + (this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
+            this.properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID] + (this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
         }
 
         this.generateThreadInformation=function() {
-            if(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]===undefined ) {
-                throw "server_message_id, sender_id and recipient_id must be defined"
+            if(this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]===undefined ) {
+                throw "message_id, sender_id and recipient_id must be defined"
             }
 
-            this.properties[MESSAGE_PROPERTIES.THREAD_ID] = this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.SENDER_ID] + "." + this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
+            this.properties[MESSAGE_PROPERTIES.THREAD_ID] = this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.SENDER_ID] + "." + this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
             this.properties[MESSAGE_PROPERTIES.THREAD_COUNT] = 0;
         }
 
@@ -125,20 +114,7 @@ var ChatwalaMessageDocuments=(function() {
             this.properties[MESSAGE_PROPERTIES.TIMESTAMP]=(new Date()).getTime();
         }
 
-        this.generateReadURL = function() {
-            if(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]===undefined) {
-                throw "server_message_id must be defined";
-            }
-            this.properties[MESSAGE_PROPERTIES.READ_URL] = SASHelper.getMessageReadUrl(this.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID])
-            //getReadSharedAccessPolicy(this.properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]);
-        }
-        
-        this.generateThumbnailURL = function() {
-            if(this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined) {
-                throw "sender_user_id must be defined";
-            }
-            this.properties[MESSAGE_PROPERTIES.THUMBNAIL_URL] = SASHelper.getThumbnailUrl(this.properties[MESSAGE_PROPERTIES.SENDER_ID]);
-        }
+
 
         this.isValid=function() {
             console.log("validating message");
@@ -165,30 +141,39 @@ var ChatwalaMessageDocuments=(function() {
     }
 
 
-    function createMetaDataJSON(properties, blnIncludeDecryptionKey) {
-       var metaDataJSON={};
+    function createMetaDataJSON(properties, blnShowBoxProperties) {
+        var metaDataJSON={};
 
-           metaDataJSON[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.SENDER_ID]=properties[MESSAGE_PROPERTIES.SENDER_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.RECIPIENT_ID]=properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.TIMESTAMP]=properties[MESSAGE_PROPERTIES.TIMESTAMP];
-           metaDataJSON[MESSAGE_PROPERTIES.THREAD_ID]=properties[MESSAGE_PROPERTIES.THREAD_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
-           metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
-           metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
-           metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=properties[MESSAGE_PROPERTIES.READ_URL];
-           metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=properties[MESSAGE_PROPERTIES.THUMBNAIL_URL];
+        metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.SENDER_ID]=properties[MESSAGE_PROPERTIES.SENDER_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.RECIPIENT_ID]=properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.TIMESTAMP]=properties[MESSAGE_PROPERTIES.TIMESTAMP];
+        metaDataJSON[MESSAGE_PROPERTIES.THREAD_ID]=properties[MESSAGE_PROPERTIES.THREAD_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.THREAD_COUNT]=properties[MESSAGE_PROPERTIES.THREAD_COUNT];
+        metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
+        metaDataJSON[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
 
-       return metaDataJSON;
+        if(blnShowBoxProperties) {
+            metaDataJSON[MESSAGE_PROPERTIES.VIEWED]=properties[MESSAGE_PROPERTIES.VIEWED];
+            metaDataJSON[MESSAGE_PROPERTIES.DELIVERED]=properties[MESSAGE_PROPERTIES.DELIVERED];
+            metaDataJSON[MESSAGE_PROPERTIES.REPLIED]=properties[MESSAGE_PROPERTIES.REPLIED];
+        }
+
+        //Dynamic Properties
+        metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=SASHelper.getMessageReadUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
+        metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
+        metaDataJSON[MESSAGE_PROPERTIES.SHARE_URL]=config.shareBaseURL + properties[MESSAGE_PROPERTIES.MESSAGE_ID];
+
+        return metaDataJSON;
     }
 
-    function createNewStarterUnknownRecipientMessage(client_message_id, sender_id) {
+    function createNewStarterUnknownRecipientMessage(message_id, sender_id) {
 
-        console.log("client_message_id=" + client_message_id + " sender_id =" + sender_id);
+        console.log("message_id=" + message_id + " sender_id =" + sender_id);
         var message = new Message();
-        message.properties[MESSAGE_PROPERTIES.CLIENT_MESSAGE_ID]= client_message_id;
+        message.properties[MESSAGE_PROPERTIES.MESSAGE_ID]= message_id;
         message.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]=sender_id;
         message.properties[MESSAGE_PROPERTIES.OWNER_ROLE]= ROLE_SENDER;
         message.properties[MESSAGE_PROPERTIES.OTHER_USER_ID]= RECIPIENT_UNKNOWN;
@@ -201,18 +186,16 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
 
 
+
         console.log("message=");
         console.log(message.properties);
 
         try {
             message.generateBlobShardKey();
-            message.generateServerMessageId();
             message.generateMessageInstanceId();
             message.generateThreadInformation();
             message.generateGroupId();
             message.generateTimeStamp();
-            message.generateReadURL();
-            message.generateThumbnailURL();
             console.log(message.properties);
             return message;
         }

@@ -98,7 +98,7 @@ var CreateThreadsFromMessageDocuments = (function(){
                 threadObject[ThreadHelper.THREAD_PROPERTIES.OWNER_THREAD_ROLE] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE];
                 threadObject[ThreadHelper.THREAD_PROPERTIES.UNREAD_COUNT] = 0;                
                 if(userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] === ChatwalaMessageDocuments.ROLE_RECIPIENT){
-                    threadObject[ThreadHelper.THREAD_PROPERTIES.LAST_RECEIVED_SERVER_MESSAGE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID];
+                    threadObject[ThreadHelper.THREAD_PROPERTIES.LAST_RECEIVED_MESSAGE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID];
                     threadObject[ThreadHelper.THREAD_PROPERTIES.LAST_RECEIVED_TIMESTAMP] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
                     threadObject[ThreadHelper.THREAD_PROPERTIES.UNREAD_COUNT] = 1;
                 }

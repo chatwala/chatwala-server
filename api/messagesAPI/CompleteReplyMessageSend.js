@@ -16,13 +16,13 @@ var CompleteReplyMessageSend=(function() {
         },
         "failureInvalidServerMessageId": {
             "code":-101,
-            "message":"You provided an invalid server_message_id"
+            "message":"You provided an invalid message_id"
         }
     };
 
 
     var Request = function() {
-        this.server_message_id = undefined;
+        this.message_id = undefined;
     };
 
     var Response = function() {
@@ -33,8 +33,8 @@ var CompleteReplyMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
-        console.log("server_message_id="+request.server_message_id);
-        if(request.server_message_id === undefined) {
+        console.log("message_id="+request.message_id);
+        if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
             response.response_code = responseCodes["failureInvalidServerMessageId"];
@@ -51,19 +51,49 @@ var CompleteReplyMessageSend=(function() {
                     } else {
                         var collection = db.collection('messages');
                         var query = {};
-                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SERVER_MESSAGE_ID] = request.server_message_id;
-                        collection.findAndModify(
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
+                        collection.update(
                             query,
-                            [['_id','asc']],
-                            {"$set":{"uploaded":true}},
+                            {"$set":{"uploaded":true, "showable":true}},
                             {"multi":true, "new":true},
-                            function(err, doc) {
-                                seriesCallback(doc==null?"failure":null, doc);
+                            function(err, numberTouched) {
+                                seriesCallback(numberTouched==0?"failure":null, true);
                             }
                         );
                     }
                 });
             },
+
+            //get recipient_id
+            function(numberTouched, seriesCallback) {
+
+                CWMongoClient.getConnection(function (err, db) {
+                    if (err) {
+                        seriesCallback(err, null);
+                    } else {
+                        var collection = db.collection('messages');
+                        var query = {};
+                        query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
+                        collection.find(
+                            query,
+                            function(err, cursor) {
+                                if(!err) {
+
+                                    cursor.nextObject(function(err, document) {
+                                        seriesCallback(err, document);
+                                    });
+
+                                }
+                                else {
+                                    seriesCallback(err, null);
+                                }
+
+                            }
+                        );
+                    }
+                });
+            },
+
 
             //send push notification
             function(messageDocument, seriesCallback) {
