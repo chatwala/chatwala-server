@@ -7,8 +7,6 @@ var config = require('./config.js');
 
 "use strict";
 var express = require('express');
-var users = require('./routes/users');
-var messages = require('./routes/messages');
 var routes = require('./routes');
 var mongoClient = require('./cw_mongo.js');
 
