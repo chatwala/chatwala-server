@@ -36,6 +36,8 @@ Connection: keep-alive
 }
 
 
+//renew write sasurl
+
 
 
 ----completeUnknownRecipientMessageSend----
@@ -66,7 +68,7 @@ curl -i \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
 -d '{"server_message_id":"shard1.m6", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
-"http://localhost:1337/messages/convertUnknownRecipientMessageToKnownRecipient";
+"http://localhost:1337/messages/addUnknownRecipientMessageToInbox";
 
 response:
 HTTP/1.1 200 OK
@@ -87,7 +89,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"client_message_id":"m7", "owner_user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"shard1.m6", "start_recording": 0}' \
+-d '{"client_message_id":"m7", "user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_server_message_id":"shard1.m6", "start_recording": 0}' \
 "http://localhost:1337/messages/startReplyMessageSend";
 
 HTTP/1.1 200 OK
@@ -136,6 +138,4 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 94
 Date: Tue, 25 Feb 2014 01:12:45 GMT
 Connection: keep-alive
-
-{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
 

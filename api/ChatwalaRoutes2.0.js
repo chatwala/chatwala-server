@@ -57,7 +57,7 @@ function postStartReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.StartReplyMessageSend.Request();
     request.replying_to_server_message_id = req.body.replying_to_server_message_id;
     request.client_message_id = req.body.client_message_id;
-    request.owner_user_id = req.body.owner_user_id;
+    request.owner_user_id = req.body.user_id;
     request.start_recording = req.body.start_recording;
 
 
@@ -160,7 +160,7 @@ function getMessagesForThread(req, res) {
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
-    app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
+    app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
     app.post("/messages/userInbox", postGetUserInbox);
