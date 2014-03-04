@@ -90,6 +90,22 @@ function postCompleteReplyMessageSend(req, res) {
 
 
 /******** START USER ROUTES*********************/
+
+function postGetUserInbox(req, res) {
+    var request = new ChatwalaApi.Messages.GetUserInbox.Request();
+    request.user_id = req.body.user_id;
+    request.first_id = req.body.first_id;
+
+    ChatwalaApi.Messages.GetUserInbox.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(500, response);
+        }
+    });
+}
+
 /*
 function postRegisterPushToken(req, res) {
     var request = new ChatwalaApi.RegisterPushToken.Request();
@@ -147,6 +163,7 @@ function setRoutes(app) {
     app.post("/messages/convertUnknownRecipientMessageToKnownRecipient", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
+    app.post("/messages/userInbox", postGetUserInbox);
    // app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);

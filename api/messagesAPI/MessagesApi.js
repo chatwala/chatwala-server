@@ -3,13 +3,15 @@ var CompleteUnknownRecipientMessageSend = require("./CompleteUnknownRecipientMes
 var ConvertUnknownRecipientMessageToKnownRecipient = require("./ConvertUnknownRecipientMessageToKnownRecipient.js");
 var StartReplyMessageSend = require("./StartReplyMessageSend.js");
 var CompleteReplyMessageSend = require("./CompleteReplyMessageSend.js");
+var GetUserInbox = require("./GetUserInbox.js");
 
 var MessagesApi = {
     "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
     "CompleteUnknownRecipientMessageSend":CompleteUnknownRecipientMessageSend,
     "ConvertUnknownRecipientMessageToKnownRecipient":ConvertUnknownRecipientMessageToKnownRecipient,
     "StartReplyMessageSend":StartReplyMessageSend,
-    "CompleteReplyMessageSend": CompleteReplyMessageSend
+    "CompleteReplyMessageSend": CompleteReplyMessageSend,
+    "GetUserInbox":GetUserInbox
 };
 
 module.exports = MessagesApi;
