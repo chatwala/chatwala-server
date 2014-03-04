@@ -2,7 +2,6 @@
 	created by kevinmiller on 2/27/14
 **/
 
-var config = require('../config.js')();
 
 var UserHelper = (function(){
 
@@ -19,7 +18,7 @@ var UserHelper = (function(){
 	USER_ASSOCIATION_PROPERTIES.UNREAD_COUNT="unread_count";
 	USER_ASSOCIATION_PROPERTIES.NUM_THREADS = "num_threads";
 
-  function incrementNumberOfThreadsForUser(owner_id, other_user_id callback) {
+  function incrementNumberOfThreadsForUser(owner_id, other_user_id, callback) {
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
                 callback(err, null);

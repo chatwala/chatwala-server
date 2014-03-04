@@ -57,9 +57,11 @@ var ThreadHelper=(function() {
                 var collection = db.collection('thread');
                 var query = {};
                 query[THREAD_PROPERTIES.THREAD_ID] = thread_id;
+                var update = {};
+                update[THREAD_PROPERTIES.UNREAD_COUNT] = 1;
                 collection.findAndModify(
                     query,
-                    {"$inc":{THREAD_PROPERTIES.UNREAD_COUNT:1}},
+                    {"$inc":update},
                     {"multi":true, upsert:true},
                     function(err, doc) {
                         callback(null, doc);
