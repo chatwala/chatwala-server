@@ -1,7 +1,8 @@
 var async = require('async');
-var CWMongoClient = require('../../cw_mongo.js');
+var CWMongoClient = require('./../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 var PushHelper = require("./../PushHelper.js");
+var ThreadHelper = require("./../threadAPI/ThreadHelper");
 
 var CompleteReplyMessageSend=(function() {
 
@@ -41,9 +42,10 @@ var CompleteReplyMessageSend=(function() {
             callback("failureInvalidServerMessageId", response);
             return;
         }
-
+        console.log(request);
         async.waterfall([
             //update to say "uploaded"
+
             function(seriesCallback) {
                 CWMongoClient.getConnection(function (err, db) {
                     if (err) {
@@ -59,11 +61,13 @@ var CompleteReplyMessageSend=(function() {
                             function(err, numberTouched) {
                                 seriesCallback(numberTouched==0?"failure":null, true);
                                 getRecipientIDAndSendPushNotification(request.message_id);
+                                //ThreadHelper.incrementUnreadCountForThread()
                             }
                         );
                     }
                 });
             }
+
         ],
 
         function(err, results) {
@@ -81,9 +85,8 @@ var CompleteReplyMessageSend=(function() {
     };
 
 
-
+    //get the recipient id and send the push notification
     function getRecipientIDAndSendPushNotification(message_id){
-
         //get recipient_id
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
@@ -121,9 +124,6 @@ var CompleteReplyMessageSend=(function() {
             }
         });
     }
-
-
-
 
     return {
         "responseCodes": responseCodes,

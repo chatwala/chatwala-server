@@ -10,7 +10,7 @@ var RegisterPushToken=(function() {
     var responseCodes = {
         "success": {
             "code":1,
-            "message":"The message has been successfully saved"
+            "message":"The push token was registered successfully"
         },
         "failure": {
             "code":-100,
@@ -35,6 +35,8 @@ var RegisterPushToken=(function() {
     };
 
     var execute = function(request, callback) {
+
+
         if(request.push_token===undefined || request.user_id===undefined || request.platform_type===undefined) {
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
@@ -43,14 +45,13 @@ var RegisterPushToken=(function() {
         }
 
         PushHelper.registerPushToken(request.platform_type, request.user_id, request.push_token, function(err, result){
+            var response = new Response();
             if(!err) {
-                var response = new Response();
                 response.response_code = responseCodes["success"];
                 callback(null, response);
                 return;
             }
             else {
-                var response = new Response();
                 response.response_code = responseCodes["failure"];
                 callback(null, response);
                 return;

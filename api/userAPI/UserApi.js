@@ -4,7 +4,8 @@ var UploadUserProfilePicture = require('./UploadUserProfilePicture.js');
 
 var UserApi = {
 	"CreateInitialUser" : CreateInitialUser,
-	"UploadUserProfilePicture" : UploadUserProfilePicture
+	"UploadUserProfilePicture" : UploadUserProfilePicture,
+    "RegisterPushToken":RegisterPushToken
 };
 
 module.exports = UserApi;

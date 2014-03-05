@@ -12,8 +12,9 @@ var PushHelper=(function() {
 
     function registerPushToken(platform_type, user_id, push_token, callback) {
 
+
         // Function called when registration is completed.
-        var registrationComplete = function (error, registration) {
+        var registrationComplete = function(error, registration) {
             if (!error) {
                 // Return the registration.
                 console.log("Successfully registered user device for push notifications.");
@@ -24,6 +25,7 @@ var PushHelper=(function() {
                 callback(error);
             }
         };
+
 
         // Get existing registrations.
         hub.listRegistrationsByTag(user_id, function (error, existingRegs) {
@@ -56,6 +58,7 @@ var PushHelper=(function() {
             }
         });
     }
+
 
     function sendPush(recipient_id, callback) {
         var payload = {"message": REPLY_MESSAGE};

@@ -13,7 +13,7 @@ var MessagesApi = {
     "StartReplyMessageSend":StartReplyMessageSend,
     "CompleteReplyMessageSend": CompleteReplyMessageSend,
     "GetUserInbox":GetUserInbox,
-    "RenewWriteSASURL":RenewWriteSASURL
+    "RenewWriteSASURL":RenewWriteSASURL,
 };
 
 module.exports = MessagesApi;

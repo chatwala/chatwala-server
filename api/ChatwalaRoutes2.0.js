@@ -121,14 +121,14 @@ function postGetUserInbox(req, res) {
     });
 }
 
-/*
+
 function postRegisterPushToken(req, res) {
-    var request = new ChatwalaApi.RegisterPushToken.Request();
+    var request = new ChatwalaApi.Users.RegisterPushToken.Request();
     request.platform_type = req.body.platform_type;
     request.user_id = req.body.user_id;
     request.push_token = req.body.push_token;
 
-    ChatwalaApi.Messages.RegisterPushToken.execute(request, function(err, response){
+    ChatwalaApi.Users.RegisterPushToken.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
@@ -137,7 +137,7 @@ function postRegisterPushToken(req, res) {
         }
     });
 }
-
+/*
 function getThreadsForUser(req, res) {
     var request = new ChatwalaApi.GetThreadsForUser.Request();
     request.user_id = req.body.user_id;
@@ -198,7 +198,7 @@ function setRoutes(app) {
     app.post("/messages/renewWriteUrlForMessage", postRenewWriteUrlForMessage);
     app.post("/messages/userInbox", postGetUserInbox);
     app.post("/user/postUserProfilePicture", postUserProfilePicture);
-   // app.post("/user/registerPushToken", postRegisterPushToken);
+    app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }

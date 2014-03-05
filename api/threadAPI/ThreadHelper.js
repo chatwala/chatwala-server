@@ -96,6 +96,8 @@ var ThreadHelper=(function() {
     
 
     return {
+        "decrementUnreadCountForThread":decrementUnreadCountForThread,
+        "incrementUnreadCountForThread":incrementUnreadCountForThread,
         "THREAD_PROPERTIES" : THREAD_PROPERTIES,
         "THREAD_ROLE_STARTER" : THREAD_ROLE_STARTER,
         "THREAD_ROLE_REPLIER" : THREAD_ROLE_REPLIER

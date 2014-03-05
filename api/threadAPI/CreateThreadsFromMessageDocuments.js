@@ -62,13 +62,12 @@ var CreateThreadsFromMessageDocuments = (function(){
             }
             else{
                 createThreadForUser(recipientDocument, function(rErr, recipientThread){
+                    var response = new Response();
                     if(rErr){
-                        var response = new Response();
                         response.response_code = responseCodes["failureDBSave"];
                         waterfallCallback("failureDBSave", response);
                     }
                     else{
-                        var response = new Response();
                         response.response_code = responseCodes["success"];
                         waterfallCallback(null, response);
                     }
