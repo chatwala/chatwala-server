@@ -46,6 +46,22 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
         }
     });
 }
+
+function postGetReadURLForMessage(req,res){
+    var readUrlRequest = new ChatwalaApi.Messages.GetReadURLForMessage.Request();
+    readUrlRequest.shard_key = req.body.shard_key;
+    readUrlRequest.message_id = req.body.message_id;
+
+    ChatwalaApi.Messages.GetReadURLForMessage.execute(readUrlRequest, function(err, response){
+        if(!err){
+            res.send(200, response);
+        }
+        else{
+            res.send(500, response);
+        }
+    })
+}
+
 /******* END UNKNOWN RECIPIENT ROUTES*************/
 
 
@@ -197,6 +213,7 @@ function setRoutes(app) {
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
     app.post("/messages/renewWriteUrlForMessage", postRenewWriteUrlForMessage);
     app.post("/messages/userInbox", postGetUserInbox);
+    app.post("/messages/postGetReadURLForMessage",postGetReadURLForMessage);
     app.post("/user/postUserProfilePicture", postUserProfilePicture);
     app.post("/user/registerPushToken", postRegisterPushToken);
   //  app.post("/messages/threadsForUser", getThreadsForUser);

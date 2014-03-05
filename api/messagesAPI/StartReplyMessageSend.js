@@ -95,7 +95,6 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=request.replying_to_message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 message.generateBlobShardKey();
                 message.generateMessageInstanceId();
@@ -158,7 +157,6 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
-                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.READ_URL];
 
                 console.log("message=");
                 console.log(message.properties);
