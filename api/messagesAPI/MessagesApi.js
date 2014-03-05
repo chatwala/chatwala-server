@@ -5,6 +5,7 @@ var StartReplyMessageSend = require("./StartReplyMessageSend.js");
 var CompleteReplyMessageSend = require("./CompleteReplyMessageSend.js");
 var GetUserInbox = require("./GetUserInbox.js");
 var RenewWriteSASURL = require("./RenewWriteSASURL.js");
+var GetReadURLForMessage = require("./GetReadURLForMessage.js");
 
 var MessagesApi = {
     "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
@@ -13,7 +14,8 @@ var MessagesApi = {
     "StartReplyMessageSend":StartReplyMessageSend,
     "CompleteReplyMessageSend": CompleteReplyMessageSend,
     "GetUserInbox":GetUserInbox,
-    "RenewWriteSASURL":RenewWriteSASURL
+    "RenewWriteSASURL":RenewWriteSASURL,
+    "GetReadURLForMessage":GetReadURLForMessage
 };
 
 module.exports = MessagesApi;

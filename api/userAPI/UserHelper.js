@@ -107,8 +107,19 @@ var UserHelper = (function(){
         });
     }
 
+    function updateLastReplyMessageForUser(user_id, other_user_id, callback){
+
+    }
+
     return {
-        "USER_ASSOCIATION_PROPERTIES": USER_ASSOCIATION_PROPERTIES
+        "USER_ASSOCIATION_PROPERTIES": USER_ASSOCIATION_PROPERTIES,
+        "ASSOCIATION_TYPE_FRIEND":ASSOCIATION_TYPE_FRIEND,
+        "ASSOCIATION_TYPE_FOLLOWER":ASSOCIATION_TYPE_FOLLOWER,
+        "incrementNumberOfThreadsForUser":incrementNumberOfThreadsForUser,
+        "decrementNumberOfThreadsForUser":decrementNumberOfThreadsForUser,
+        "incrementUnreadCountForUser":incrementUnreadCountForUser,
+        "decrementUnreadCountForUser":decrementUnreadCountForUser,
+        "updateLastReplyMessageForUser":updateLastReplyMessageForUser
     }
 
 }());
