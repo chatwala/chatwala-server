@@ -94,12 +94,16 @@ var CreateThreadsFromMessageDocuments = (function(){
                 threadObject[ThreadHelper.THREAD_PROPERTIES.OWNER_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID];
                 threadObject[ThreadHelper.THREAD_PROPERTIES.THREAD_INSTANCE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] + "." + userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
                 threadObject[ThreadHelper.THREAD_PROPERTIES.OTHER_USER_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
-                threadObject[ThreadHelper.THREAD_PROPERTIES.OWNER_THREAD_ROLE] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE];
-                threadObject[ThreadHelper.THREAD_PROPERTIES.UNREAD_COUNT] = 0;                
+                threadObject[ThreadHelper.THREAD_PROPERTIES.UNREAD_COUNT] = 0;
                 if(userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] === ChatwalaMessageDocuments.ROLE_RECIPIENT){
+                    threadObject[ThreadHelper.THREAD_PROPERTIES.OWNER_THREAD_ROLE] = ThreadHelper.THREAD_ROLE_REPLIER;
                     threadObject[ThreadHelper.THREAD_PROPERTIES.LAST_RECEIVED_MESSAGE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID];
                     threadObject[ThreadHelper.THREAD_PROPERTIES.LAST_RECEIVED_TIMESTAMP] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
                     threadObject[ThreadHelper.THREAD_PROPERTIES.UNREAD_COUNT] = 1;
+                }
+                else{
+                    //else the user is the starter
+                    threadObject[ThreadHelper.THREAD_PROPERTIES.OWNER_THREAD_ROLE] = ThreadHelper.THREAD_ROLE_STARTER;
                 }
 
                 collection.findAndModify(
