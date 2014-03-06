@@ -37,7 +37,7 @@ var SASHelper=(function() {
     }
 
     function getShareUrl(shard_key, message_id){
-        return config.azure.blobStorageShard[shard_key].base_url + shard_key + "." + message_id;
+        return config.share_base_url + shard_key + "." + message_id;
     }
 
     function getWriteSharedAccessPolicy(shard_key, message_id) {

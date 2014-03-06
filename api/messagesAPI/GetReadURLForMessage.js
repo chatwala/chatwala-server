@@ -19,8 +19,7 @@ var GetReadURLForMessage = (function(){
 
     var Request = function() {
         //platform_type, user_id, push_token
-        this.message_id=undefined;
-        this.shard_key= undefined;
+        this.share_url_id=undefined;
     };
 
     var Response = function() {
@@ -29,14 +28,17 @@ var GetReadURLForMessage = (function(){
     };
 
     function execute(request, callback){
-
-        if(typeof request.message_id === 'undefined' || typeof request.shard_key === 'undefined'){
+        var shard_key = request.share_url_id.split('.')[0];
+        var message_id = request.share_url_id.split('.')[1];
+        console.log("shard_key" + shard_key);
+        console.log("message id" + message_id);
+        if(typeof message_id === 'undefined' || typeof shard_key === 'undefined'){
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest",response);
         }
 
-        var read_url_for_message = config.azure.blobStorageShard[request.shard_key].base_url + request.message_id;
+        var read_url_for_message = config.azure.blobStorageShard[shard_key].base_url + message_id;
 
         var response = new Response();
         response.response_code = responseCodes["success"];

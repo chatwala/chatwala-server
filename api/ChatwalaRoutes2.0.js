@@ -49,8 +49,7 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
 
 function postGetReadURLForMessage(req,res){
     var readUrlRequest = new ChatwalaApi.Messages.GetReadURLForMessage.Request();
-    readUrlRequest.shard_key = req.body.shard_key;
-    readUrlRequest.message_id = req.body.message_id;
+    readUrlRequest.share_url_id = req.body.share_url_id;
 
     ChatwalaApi.Messages.GetReadURLForMessage.execute(readUrlRequest, function(err, response){
         if(!err){
