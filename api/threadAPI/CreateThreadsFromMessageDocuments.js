@@ -85,7 +85,7 @@ var CreateThreadsFromMessageDocuments = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('threads');
+                var collection = db.collection(ThreadHelper.THREADS_COLLECTION);
                 var query = {};
                 query[ThreadHelper.THREAD_PROPERTIES.THREAD_INSTANCE_ID] = userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] + "." + userDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID];
 

@@ -1,6 +1,5 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
-var PushHelper = require("./../PushHelper.js");
 var UserHelper = require('./UserHelper.js');
 var ChatwalaMessageDocuments = require("../messagesAPI/ChatwalaMessageDocuments.js");
 
@@ -61,7 +60,7 @@ var CreateInitialUser = (function(){
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('users');
+                var collection = db.collection(UserHelper.USER_ASSOCIATION_COLLECTION);
                 var query = {};
                 query[UserHelper.USER_ASSOCIATION_PROPERTIES.USER_ASSOCIATION_ID] = user_id + "." + other_user_id;
 
@@ -97,6 +96,7 @@ var CreateInitialUser = (function(){
 
 
 	return{
+        "Request" : Request,
 		"execute" : execute
 	}
 

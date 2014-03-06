@@ -12,6 +12,7 @@ var ThreadHelper=(function() {
 
     var THREAD_ROLE_STARTER = "THREAD_STARTER";
     var THREAD_ROLE_REPLIER = "THREAD_REPLIER";
+    var THREADS_COLLECTION = "threads";
 
 
     var THREAD_PROPERTIES = {};
@@ -24,45 +25,24 @@ var ThreadHelper=(function() {
     THREAD_PROPERTIES.LAST_RECEIVED_TIMESTAMP = "last_received_timestamp";
     THREAD_PROPERTIES.UNREAD_COUNT="unread_count";
 
-    var responseCodes = {
-        "success": {
-            "code":1,
-            "message":"The recipient has been added"
-        },
-        "failure": {
-          "code": -100,
-           "message": "Something went wrong, was unable to convert to a known recipient message. Try again"
-        },
-        "failureInvalidMessageDocument":{
-            "code":-101,
-            "message":"invalid message document"
-        },
-        "failureDBConnect": {
-            "code":-200,
-            "message":"Unable to connect to the db"
-        },
-        "failureDBSave": {
-            "code": -201,
-            "message": "Unable to save message document to db"
-        }
-    };
-
-
 
     function incrementUnreadCountForThread(thread_id, callback) {
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('thread');
+                var collection = db.collection(THREADS_COLLECTION);
+
                 var query = {};
                 query[THREAD_PROPERTIES.THREAD_ID] = thread_id;
+
                 var update = {};
                 update[THREAD_PROPERTIES.UNREAD_COUNT] = 1;
+
                 collection.findAndModify(
                     query,
                     {"$inc":update},
-                    {"multi":true, upsert:true},
+                    {"multi":true, "upsert":true},
                     function(err, doc) {
                         callback(null, doc);
                     }
@@ -71,20 +51,23 @@ var ThreadHelper=(function() {
         });  
     }
 
-    function decrementUnreadCountForThread(thread_id, owner_id, callback) {
+    function decrementUnreadCountForThread(thread_id, callback) {
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
                 callback(err, null);
             } else {
-                var collection = db.collection('thread');
+                var collection = db.collection(THREADS_COLLECTION);
+
                 var query = {};
                 query[THREAD_PROPERTIES.THREAD_ID] = thread_id;
+
                 var update = {};
                 update[THREAD_PROPERTIES.UNREAD_COUNT] = -1;
+
                 collection.findAndModify(
                     query,
                     {"$inc":update},
-                    {"multi":true, upsert:true},
+                    {"multi":true, "upsert":true},
                     function(err, doc) {
                         callback(null, doc);
                     }
@@ -96,12 +79,12 @@ var ThreadHelper=(function() {
     
 
     return {
-        "decrementUnreadCountForThread":decrementUnreadCountForThread,
-        "incrementUnreadCountForThread":incrementUnreadCountForThread,
         "THREAD_PROPERTIES" : THREAD_PROPERTIES,
         "THREAD_ROLE_STARTER" : THREAD_ROLE_STARTER,
-        "THREAD_ROLE_REPLIER" : THREAD_ROLE_REPLIER
- 
+        "THREAD_ROLE_REPLIER" : THREAD_ROLE_REPLIER,
+        "THREADS_COLLECTION" : THREADS_COLLECTION,
+        "decrementUnreadCountForThread":decrementUnreadCountForThread,
+        "incrementUnreadCountForThread":incrementUnreadCountForThread
     }
 }());
 
