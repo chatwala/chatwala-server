@@ -8,6 +8,7 @@ var ChatwalaMessageDocuments=(function() {
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
     var VERSION = 2.0;
+    var VERSION_OLD=1.0;
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
@@ -44,32 +45,31 @@ var ChatwalaMessageDocuments=(function() {
     function Message() {
 
         this.getTemplate = function() {
-           var template={};
-                template[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=undefined; //blob_storage_shard_key.message_id.owner_id
-                template[MESSAGE_PROPERTIES.MESSAGE_ID]= undefined;   //defined by client, not really used
-                template[MESSAGE_PROPERTIES.OWNER_USER_ID]= undefined;
-                template[MESSAGE_PROPERTIES.OWNER_ROLE]= undefined;
-                template[MESSAGE_PROPERTIES.OTHER_USER_ID]= undefined;
-                template[MESSAGE_PROPERTIES.OTHER_USER_ROLE]= undefined;
-                template[MESSAGE_PROPERTIES.SENDER_ID]= undefined;
-                template[MESSAGE_PROPERTIES.RECIPIENT_ID]= undefined;
-                template[MESSAGE_PROPERTIES.GROUP_ID]=undefined;
-                template[MESSAGE_PROPERTIES.THREAD_ID]= undefined;
-                template[MESSAGE_PROPERTIES.THREAD_INDEX]=undefined;
-                template[MESSAGE_PROPERTIES.THREAD_STARTER]=undefined;
-                template[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=undefined;
-                template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
-                template[MESSAGE_PROPERTIES.UPLOADED]=false;
-                template[MESSAGE_PROPERTIES.DELIVERED]=false;
-                template[MESSAGE_PROPERTIES.VIEWED]=false;
-                template[MESSAGE_PROPERTIES.REPLIED]= false;
-                template[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=null;
-                template[MESSAGE_PROPERTIES.SHOWABLE]=false;
-                template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
-                template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
-                template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
-                template[MESSAGE_PROPERTIES.VERSION]=VERSION;
-
+            var template={};
+            template[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=undefined; //blob_storage_shard_key.message_id.owner_id
+            template[MESSAGE_PROPERTIES.MESSAGE_ID]= undefined;   //defined by client, not really used
+            template[MESSAGE_PROPERTIES.OWNER_USER_ID]= undefined;
+            template[MESSAGE_PROPERTIES.OWNER_ROLE]= undefined;
+            template[MESSAGE_PROPERTIES.OTHER_USER_ID]= undefined;
+            template[MESSAGE_PROPERTIES.OTHER_USER_ROLE]= undefined;
+            template[MESSAGE_PROPERTIES.SENDER_ID]= undefined;
+            template[MESSAGE_PROPERTIES.RECIPIENT_ID]= undefined;
+            template[MESSAGE_PROPERTIES.GROUP_ID]=undefined;
+            template[MESSAGE_PROPERTIES.THREAD_ID]= undefined;
+            template[MESSAGE_PROPERTIES.THREAD_COUNT]=undefined;
+            template[MESSAGE_PROPERTIES.THREAD_STARTER]=undefined;
+            template[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=undefined;
+            template[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= undefined;
+            template[MESSAGE_PROPERTIES.UPLOADED]=false;
+            template[MESSAGE_PROPERTIES.DELIVERED]=false;
+            template[MESSAGE_PROPERTIES.VIEWED]=false;
+            template[MESSAGE_PROPERTIES.REPLIED]= false;
+            template[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=null;
+            template[MESSAGE_PROPERTIES.SHOWABLE]=false;
+            template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
+            template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
+            template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
+            template[MESSAGE_PROPERTIES.VERSION]=VERSION;
 
             return template;
         }
@@ -145,7 +145,7 @@ var ChatwalaMessageDocuments=(function() {
         var metaDataJSON={};
 
         metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_ID];
-        metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
+        //metaDataJSON[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID]=properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
         metaDataJSON[MESSAGE_PROPERTIES.SENDER_ID]=properties[MESSAGE_PROPERTIES.SENDER_ID];
         metaDataJSON[MESSAGE_PROPERTIES.RECIPIENT_ID]=properties[MESSAGE_PROPERTIES.RECIPIENT_ID];
         metaDataJSON[MESSAGE_PROPERTIES.TIMESTAMP]=properties[MESSAGE_PROPERTIES.TIMESTAMP];
@@ -185,8 +185,6 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
         message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
 
-
-
         console.log("message=");
         console.log(message.properties);
 
@@ -214,7 +212,8 @@ var ChatwalaMessageDocuments=(function() {
         "createNewStarterUnknownRecipientMessage": createNewStarterUnknownRecipientMessage,
         //"createNewKnownRecipientMessage": createNewKnownRecipientMessage,
         "createMetaDataJSON": createMetaDataJSON,
-        "MESSAGE_PROPERTIES":MESSAGE_PROPERTIES
+        "MESSAGE_PROPERTIES":MESSAGE_PROPERTIES,
+        "VERSION_OLD": VERSION_OLD
     };
 }());
 
