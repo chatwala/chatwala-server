@@ -91,7 +91,7 @@ function migrate() {
 function downloadBlob(name) {
     console.log("*************************************************************** attempting to download" + name);
     var file = './downloaded/output.zip';
-    oldBlobService.getBlobToStream("messages"
+    oldBlobService.getBlobToStream(config.azure.oldStorage.container
         , name
         , fs.createWriteStream(file)
         , function(error){
@@ -166,7 +166,7 @@ function unzipFile(file, messageId) {
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=senderId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=recipientId;
-            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=threadIndex;
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_INDEX]=threadIndex;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=threadId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=threadIndex==0;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=startRecording;
@@ -207,7 +207,7 @@ function unzipFile(file, messageId) {
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SENDER_ID]=senderId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID]=recipientId;
-            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_COUNT]=threadIndex;
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_INDEX]=threadIndex;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=threadId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=threadIndex==0;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=startRecording;
@@ -259,7 +259,7 @@ function unzipFile(file, messageId) {
                     console.log('archiver has been finalized and the output file descriptor has closed.');
 
 
-                        newBlobService.createBlockBlobFromFile("messages2"
+                        newBlobService.createBlockBlobFromFile(config.azure.blobStorageShard.s1.container
                             , messageId
                             , './downloaded/chat.zip'
                             , function(error){

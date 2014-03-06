@@ -16,25 +16,7 @@ var SASHelper=(function() {
         if(blobService===undefined) {
             var account = config.azure.blobStorageShard[shardKey].storage_name; //config["STORAGE_NAME"];
             var access_key = config.azure.blobStorageShard[shardKey].storage_key //config["STORAGE_KEY"];
-
             blobService = azure.createBlobService(account,access_key);
-            blobService.createContainerIfNotExists("messages", function(error) {
-                if(!error) {
-                }
-                else{
-                    console.log("failed to connect to blob service: " + error);
-                    blobService = null;
-                }
-            });
-
-            blobService.createContainerIfNotExists("pictures", function(error) {
-                if(!error) {
-                }
-                else {
-                    console.log("failed to connect to blob service: " + error);
-                    blobService = null;
-                }
-            });
         }
         return blobService;
     }
@@ -46,15 +28,6 @@ var SASHelper=(function() {
             var access_key = config.azure.nonShardedBlobStorage.storage_key //config["STORAGE_KEY"];
 
             blobService = azure.createBlobService(account,access_key);
-            blobService.createContainerIfNotExists(config.azure.nonShardedBlobStorage.container, function(error) {
-                if(!error) {
-
-                }
-                else{
-                    console.log("failed to connect to blob service: " + error);
-                    blobService = null;
-                }
-            });
         }
         return blobService;
     }
@@ -77,7 +50,8 @@ var SASHelper=(function() {
             }
         };
 
-        return getBlobServiceForShard(shard_key).getBlobUrl("messages2", message_id, sharedAccessPolicy);
+        var container_name = config.azure.blobStorageShard[shard_key].container;
+        return getBlobServiceForShard(shard_key).getBlobUrl(container_name, message_id, sharedAccessPolicy);
     }
 
     function getWriteSharedAccessPolicyForProfilePicture(user_id) {

@@ -3,24 +3,26 @@ module.exports = {
         "mongodb": "mongodb://chatwala-sandbox:RKjUdLzWpOWD1G1F0a2xgluwt6YJSc9uzACAmP9z5VQ-@ds031088.mongolab.com:31088/chatwala-sandbox"
     },
     "azure": { 
-        "partition_key": "chatwalasandbox",
+        "partition_key": "chatwalanonprod",
         "currentShardKey":"s1",
         "blobStorageShard" : {
             "s1":{
-                "storage_name":"chatwalasandbox",
-                "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
-                "base_url": "https://chatwalasandbox.blob.core.windows.net/messages2/"
+                "storage_name":"chatwalanonprod",
+                "storage_key": "ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
+                "container": "sandbox-messages",
+                "base_url": "http://chatwalanonprod.blob.core.windows.net/sandbox-messages/"
             }
         },
         "oldStorage": {
             "storage_name":"chatwalasandbox",
-            "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww=="
+            "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
+            "container": "messages"
         },
         "nonShardedBlobStorage" : {
-            "storage_name":"chatwalaprofilepictures",
-            "storage_key":"rAP6UjP+lB9+ApoIJ6KyNTLfrvzkdOPPWaWKoeoCLdu0dG36J8CogDdhPjjxc/5nByMV/nxkTHUCF+FW2vuROg==",
-            "container":"sandbox",
-            "base_url": "https://chatwalaprofilepictures.blob.core.windows.net/sandbox/"
+            "storage_name":"chatwalanonprod",
+            "storage_key":"ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
+            "container":"sandbox-pictures",
+            "base_url": "https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/"
         },
         "hub_name" : "chatwala-dev-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
