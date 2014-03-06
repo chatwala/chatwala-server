@@ -1,6 +1,7 @@
 var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
+var SASHelper = require("../SASHelper.js");
 
 var StartReplyMessageSend=(function() {
 
@@ -33,12 +34,15 @@ var StartReplyMessageSend=(function() {
     var Response = function() {
         this.message_meta_data=undefined;
         this.response_code=undefined;
+        this.write_url=undefined;
     };
 
     var execute = function(request, callback) {
 
         console.log("request =");
         console.log(request);
+        //make sure the request is a number
+        request.start_recording = Number(request.start_recording);
         async.waterfall([
             //1. get replying_to_message
             function(waterfallCallback) {
@@ -206,6 +210,7 @@ var StartReplyMessageSend=(function() {
             }
             else {
                 response.response_code = responseCodes["success"];
+                response.write_url = SASHelper.getWriteSharedAccessPolicy(outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]);
                 response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(outboxMessageDocument, false);
             }
             callback(err, response);

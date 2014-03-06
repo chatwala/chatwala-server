@@ -72,7 +72,7 @@ function migrate() {
     initializeNewBlobService();
 
     oldBlobService.listBlobs("messages", function(error, blobs){
-        console.log("listBlobs");
+        console.log("listBlobs"+ blobs.length);
         if(!error){
             async.eachSeries(blobs, function(item, callback){
                 asyncCallback = callback;
@@ -147,6 +147,9 @@ function unzipFile(file, messageId) {
                                 if(!err) {
                                     console.log("message migrated to messagesTemp table");
                                 }
+                                else {
+                                    console.log(err);
+                                }
                             });
                     }
                 });
@@ -193,6 +196,9 @@ function unzipFile(file, messageId) {
                                 if(!err) {
                                     console.log("sender message migrated to messagesTemp table");
                                 }
+                                else {
+                                    console.log(err);
+                                }
                             });
                     }
                 });
@@ -234,6 +240,9 @@ function unzipFile(file, messageId) {
                                 if(!err) {
                                     console.log("recipient message migrated to messagesTemp table");
                                 }
+                                else {
+                                    console.log(err);
+                                }
                             });
                     }
                 });
@@ -272,7 +281,7 @@ function unzipFile(file, messageId) {
                 });
 
                 archive.on('error', function(err) {
-                    throw err;
+                   console.log(err);
                 });
 
                 archive.pipe(output);
@@ -292,6 +301,7 @@ function unzipFile(file, messageId) {
     }
     catch(e) {
         console.log("error found " + e);
+        asyncCallback(null,null);
     }
 
 

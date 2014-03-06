@@ -86,11 +86,11 @@ var ChatwalaMessageDocuments=(function() {
 
 
         this.generateMessageInstanceId=function() {
-            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined) {
-                throw "unknown_recipient_starter, message_id and owner_user_id must be defined";
+            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_ROLE]===undefined) {
+                throw "unknown_recipient_starter, message_id, owner_user_id and owner_role must be defined";
             }
 
-            this.properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID] + (this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
+            this.properties[MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] + "." + this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID] + "."+ this.properties[MESSAGE_PROPERTIES.OWNER_ROLE] + (this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===true ? ".UNKNOWN_RECIPIENT_STARTER": "");
         }
 
         this.generateThreadInformation=function() {
