@@ -57,7 +57,8 @@ var StartReplyMessageSend=(function() {
 
                         collection.findOne(query,
                             function (err, doc) {
-
+                                console.log("Error finding replying_to_message");
+                                console.log(err);
 
                                 if (!err) {
                                     if(doc==null){
@@ -107,6 +108,7 @@ var StartReplyMessageSend=(function() {
                     console.log("trying to add to outbox");
                     console.log(message.properties);
                     CWMongoClient.getConnection(function (err, db) {
+                        console.log(err);
                         if (err) {
                             return waterfallCallback(err, null);
                         } else {
@@ -120,7 +122,7 @@ var StartReplyMessageSend=(function() {
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
-                                    console.log("*****error=******");
+                                    console.log("error trying to add to outbox");
                                     console.log(err);
                                     if (!err) {
                                         waterfallCallback(null, message.properties);
@@ -179,7 +181,7 @@ var StartReplyMessageSend=(function() {
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
-                                    console.log("*****error=******");
+                                    console.log("*****erro adding to inboxr ******");
                                     console.log(err);
                                     if (!err) {
                                         waterfallCallback(null, outboxMessageDocument, message.properties);
@@ -196,6 +198,7 @@ var StartReplyMessageSend=(function() {
             }
         ],
         function(err, outboxMessageDocument, inboxMessageDocument) {
+            console.log("Error at the end of the waterfall to follow:")
             console.log(err);
             var response = new Response();
             if(err) {
