@@ -39,6 +39,8 @@ var StartReplyMessageSend=(function() {
 
         console.log("request =");
         console.log(request);
+        //make sure the request is a number
+        request.start_recording = Number(request.start_recording);
         async.waterfall([
             //1. get replying_to_message
             function(waterfallCallback) {

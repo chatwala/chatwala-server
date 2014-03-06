@@ -146,7 +146,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"a11111111-11111-1111-1111-111111111111"}' \
+-d '{"user_id":"69678C86-5437-4695-AA83-642CD4813144"}' \
 "http://localhost:1337/messages/userInbox";
 
 HTTP/1.1 200 OK
