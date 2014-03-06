@@ -11,7 +11,7 @@ function postStartUnknownRecipientMessageSend(req, res) {
         res.send(200, response);
        }
        else {
-        res.send(500, response);
+        res.send(400, response);
        }
     });
 }
@@ -26,7 +26,7 @@ function postCompleteUnknownRecipientMessageSend(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -42,7 +42,7 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -57,7 +57,7 @@ function postGetReadURLForMessage(req,res){
             res.send(200, response);
         }
         else{
-            res.send(500, response);
+            res.send(400, response);
         }
     })
 }
@@ -82,7 +82,7 @@ function postStartReplyMessageSend(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -96,7 +96,7 @@ function postCompleteReplyMessageSend(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -111,7 +111,7 @@ function postRenewWriteUrlForMessage(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -132,7 +132,7 @@ function postGetUserInbox(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -149,7 +149,7 @@ function postRegisterPushToken(req, res) {
             res.send(200, response);
         }
         else {
-            res.send(500, response);
+            res.send(400, response);
         }
     });
 }
@@ -197,7 +197,7 @@ function postUserProfilePicture(req, res){
             res.send(200,response);
         }
         else{
-            res.send(500, response);
+            res.send(400, response);
         }
     })
 
