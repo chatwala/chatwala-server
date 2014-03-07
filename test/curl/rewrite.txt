@@ -1,0 +1,5 @@
+-----REGISTER USER------
+curl -i \
+-X GET \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+"http://localhost:1337/rewriteTimestamp/D84CF7CA-1214-4411-B175-265C6E2747EB";

@@ -10,6 +10,10 @@ var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";
 
 var utility = require('../utility');
+var rimraf = require('rimraf');
+
+var AdmZip = require('adm-zip');
+var archiver = require('archiver');
 
 function compareMessageMetadata(a, b) {
     if (a.timestamp < b.timestamp)
@@ -403,6 +407,180 @@ function putMessage(req, res) {
     });
 }
 
+
+function rewriteTimestamp(req, res){
+    // get message_id parameter
+    var message_id = req.params.message_id
+    var recipient_id = req.params.recipient_id;
+
+    //create blob services
+
+    var tempLocation = getTempLocation(message_id);
+    createTempLocation(tempLocation, function(error, result){
+        var file = getTempLocation(message_id) + "/oldWala.zip";
+        utility.getBlobService().getBlobToStream("messages"
+        , message_id
+        , fs.createWriteStream(file)
+        , function(error){
+            if(!error){
+                // Wrote blob to stream
+                console.log("wrote blob");
+                rewriteWala(file, message_id, function(err, result){
+                    //now send push
+                    console.log("rewriteWala completed");
+                    rimraf(tempLocation, function (err) {
+                        console.log(err);
+                    });
+
+
+                    if(recipient_id) {
+                        sendPushNotification(recipient_id, false, function(err,result) {
+                            console.log("push sent");
+                            res.send(200);
+                        });
+                    }
+                    else {
+                        res.send(200);
+                    }
+                });
+            }
+            else {
+                console.log("download error " + error);
+            }
+        });
+    });
+
+}
+function getTempLocation(message_id) {
+    return utility.getBaseDir()+ "/temp/rewrites/"+ message_id;
+}
+
+function createTempLocation(path, callback) {
+
+    fs.mkdir(path, function(error){
+       if(!error) {
+           callback(null, null);
+       }
+       else {
+        console.log(error);
+        callback(error, null);
+       }
+    });
+};
+
+function rewriteWala(file, message_id, callback) {
+    var zip = new AdmZip(file);
+    var metaDataJSON = JSON.parse(zip.readAsText("metadata.json"));
+
+    //if metadata file timestamp isNan than create new metadata file
+    var timestamp = null;
+    var timestampName = "timeStamp";
+    if(metaDataJSON["timeStamp"]) {
+        timestamp = metaDataJSON["timeStamp"];
+        timestampName = "timeStamp";
+    }
+    else if(metaDataJSON["timestamp"]) {
+        timestamp = metaDataJSON["timestamp"];
+        timestampName = "timestamp";
+    }
+
+
+    var isFuckedUpTime = false;
+    //now check if timestamp is an integer
+    if(isNaN(timestamp)) { //its probably objective c crap timestamp
+        console.log("crap timestamp found")
+        var date = new Date();
+        timestamp = date.getTime();
+
+        isFuckedUpTime = true;
+    }
+
+    if(isFuckedUpTime) {
+        metaDataJSON[timestampName] = timestamp;
+        var tempLocation = getTempLocation(message_id);
+        zip.extractAllTo(tempLocation + "/oldWala", true);
+        console.log(metaDataJSON);
+
+        fs.writeFile(tempLocation + '/metadata.json', JSON.stringify(metaDataJSON, null, 4), function(err) {
+            if(!err) {
+                console.log("new meta data file created and saved somewhere");
+
+                var output = fs.createWriteStream(tempLocation + "/newWala.zip");
+                var archive = archiver('zip');
+
+                output.on('close', function() {
+                    console.log(archive.pointer() + ' total bytes');
+                    console.log('archiver has been finalized and the output file descriptor has closed.');
+
+
+                    utility.getBlobService().createBlockBlobFromFile("messages"
+                        , message_id
+                        , tempLocation + "/newWala.zip"
+                        , function(error){
+                            if(!error){
+                                console.log("FILE HAS BEEN UPLOADED!");
+                            }
+                            callback(null, null);
+                        })
+
+                });
+
+                archive.on('error', function(err) {
+                    console.log(err);
+                    callback(null,null);
+                });
+
+                archive.pipe(output);
+
+                archive
+                    .append(fs.createReadStream(tempLocation + '/metadata.json'), { name: 'metadata.json' })
+                    .append(fs.createReadStream(tempLocation + '/oldWala/video.mp4'), { name: 'video.mp4' })
+                    .finalize();
+
+
+            }
+            else {
+                console.log(err);
+            }
+        });
+    }
+    else {
+        callback(null, null);
+    }
+}
+/*
+function getTimestamp(metaDataJSON) {
+    var timestamp = null;
+    if(metaDataJSON["timestamp"]) {
+        timestamp = metaDataJSON["timestamp"];
+    }
+    else if(metaDataJSON["timeStamp"]) {
+        timestamp = metaDataJSON["timeStamp"];
+    }
+
+    //now check if timestamp is an integer
+    if(isNaN(timestamp)) { //its probably UTC
+        console.log("UTC");
+        var date = new Date(timestamp);
+        console.log(date);
+        timestamp = date.getTime();
+    }
+    else { //its an integer, now check if its in seconds or millis
+        var now = new Date();
+
+        if(timestamp*1000>now.getTime()) { //its in millis
+            //do nothing
+            console.log("MILLIS");
+        }
+        else { //its in seconds
+            console.log("SECONDS");
+            timestamp = timestamp*1000; //now its in millis
+        }
+    }
+    console.log("timestamp = " + timestamp);
+    return timestamp;
+}
+*/
 exports.submitMessageMetadata = submitMessageMetadata;
 exports.putMessage = putMessage;
 exports.getMessage = getMessage
@@ -410,3 +588,4 @@ exports.postMessage = postMessage;
 exports.getUserMessages = getUserMessages;
 exports.getUploadURL = getUploadURL;
 exports.postFinalize = postFinalize;
+exports.rewriteTimestamp = rewriteTimestamp;
