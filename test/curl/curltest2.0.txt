@@ -99,6 +99,17 @@ curl -i \
 -d '{"user_id":"m19"}' \
 "http://localhost:1337/user/postGetReadURLForUserProfilePicture";
 
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 167
+Date: Sat, 08 Mar 2014 20:05:21 GMT
+Connection: keep-alive
+
+{"response_code":{"code":1,"message":"The profile_url has been successfully sent."},"profile_url":"https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/m19"}
+
+
 
 ----convertUnknownRecipientMessageToKnownRecipient----
 curl -i \
