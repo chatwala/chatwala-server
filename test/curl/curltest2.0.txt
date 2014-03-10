@@ -135,7 +135,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m20"}' \
+-d '{"message_id":"d240d63b-1b5c-4136-abaa-9c62301dcf82"}' \
 "http://localhost:1337/messages/completeReplyMessageSend";
 
 response:
@@ -146,8 +146,10 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"69678C86-5437-4695-AA83-642CD4813144"}' \
+-d '{"user_id":"ec593795-8e5b-4028-abde-26ee3ec33752"}' \
 "http://localhost:1337/messages/userInbox";
+
+ec593795-8e5b-4028-abde-26ee3ec33752
 
 HTTP/1.1 200 OK
 X-Powered-By: Express
