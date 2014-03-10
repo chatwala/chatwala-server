@@ -82,13 +82,32 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m19", "shard_key":"s1"}' \
+-d '{"share_url_id":"s1.m19"}' \
 "http://localhost:1337/messages/postGetReadURLForMessage";
 
 
 response:
 
 
+
+
+-----postGetReadURLForUserProfilePic-------
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"user_id":"m19"}' \
+"http://localhost:1337/user/postGetReadURLForUserProfilePicture";
+
+response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 167
+Date: Sat, 08 Mar 2014 20:05:21 GMT
+Connection: keep-alive
+
+{"response_code":{"code":1,"message":"The profile_url has been successfully sent."},"profile_url":"https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/m19"}
 
 
 
