@@ -72,7 +72,7 @@ function Migrate() {
     var currentSplit=[];
     var currentStartIndex=0;
     var fullList=null;
-    var maxSize=100;
+    var maxSize=50;
     var marker=null;
     var numBlobs=0;
 
@@ -173,6 +173,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
 
     this.do = function() {
         console.log("MigrateSingleWala.do");
+        messageId = currentItem.name;
         async.series([
             setSeriesCallback,
             checkForExistance,
@@ -243,7 +244,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
             startRecording = getStartRecording(metaDataJSON);
             threadIndex = getThreadIndex(metaDataJSON);
             threadId = getThreadId(metaDataJSON);
-            messageId = currentItem.name;
+
 
             if(threadId==null) {
                 threadId= messageId;
@@ -263,16 +264,26 @@ function MigrateSingleWala(currentItem, doneCallback) {
             if (err) {
                 seriesCallback(err, null);
             } else {
-                var collection = db.collection('messages');
+                var collection = db.collection('messagesTemp');
                 var query = {};
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+                console.log("messageId="+ messageId);
                 collection.find(
                     query,
                     function(err, cursor) {
+                        console.log("********************CHECKFOREXISTANCE*******************");
+                        console.log(err);
                         if(!err) {
                             cursor.nextObject(function(err, document) {
-                                console.log("Message already in database, so go fuck off!");
-                                seriesCallback("failure",null);
+                                console.log(document);
+                                console.log("********************ENDCHECKFOREXISTANCE*******************");
+                                if(document){
+                                    console.log("Message already in database, so go fuck off!");
+                                    seriesCallback("failure",null);
+                                }
+                                else {
+                                    seriesCallback();
+                                }
                             });
                         }
                         else{
