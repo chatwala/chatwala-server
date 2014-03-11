@@ -10,12 +10,12 @@ module.exports = {
                 "storage_name":"chatwalanonprod",
                 "storage_key": "ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
                 "container": "dev-messages",
-                "base_url": "http://chatwalanonprod.blob.core.windows.net/sandbox-messages/"
+                "base_url": "http://chatwalanonprod.blob.core.windows.net/dev-messages/"
             }
         },
         "oldStorage": {
-            "storage_name":"chatwalaqa",
-            "storage_key": "7XPBy0ojEUrW+AZAi2YRGs26UAR4c/f+zLwHZbvsJIrx7LP9KQ1pV4xjvYyOVSIjCnTJ6bO2qld9BzrXBa51Cg==",
+            "storage_name":"chatwaladev",
+            "storage_key": "4f+gAOTgCVGswb1CUSe5N13Xo3bFW1LYwoNweBgeeVRdOpjoMzE69cpUPUVpEmxd0R+FHxxfLdF0fVfQNmil0A==",
             "container": "messages"
         },
         "nonShardedBlobStorage" : {
@@ -29,5 +29,5 @@ module.exports = {
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
     },
-    "share_base_url": "http://chatwala.com/sandbox/?"
+    "share_base_url": "http://chatwala.com/dev/?"
 };

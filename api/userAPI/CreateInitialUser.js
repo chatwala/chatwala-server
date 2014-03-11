@@ -42,8 +42,10 @@ var CreateInitialUser = (function(){
     };
 
 
-    function execute(user_message_document, callback){
-        
+    function execute(user_message_documents, callback){
+       console.log(user_message_documents);
+        callback(null,user_message_documents)
+       /*
         var user_id = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID];
         var other_user_id = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID];
         var user_type = UserHelper.ASSOCIATION_TYPE_FRIEND;
@@ -91,7 +93,7 @@ var CreateInitialUser = (function(){
 
 
             }
-        });
+        });*/
     }
 
 

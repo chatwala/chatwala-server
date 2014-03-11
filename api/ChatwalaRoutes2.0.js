@@ -103,8 +103,8 @@ function postCompleteReplyMessageSend(req, res) {
 
 function postRenewWriteUrlForMessage(req, res) {
     var request = new ChatwalaApi.Messages.RenewWriteSASURL.Request();
-    request.message_id = req.body.message_id;
-
+    request.share_url_id = req.body.share_url_id;
+    console.log(req.body.share_url_id);
     ChatwalaApi.Messages.RenewWriteSASURL.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
