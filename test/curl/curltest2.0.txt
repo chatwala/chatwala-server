@@ -3,7 +3,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m19", "sender_id":"b11111111-11111-1111-1111-111111111111"}' \
+-d '{"message_id":"km22", "sender_id":"km11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/startUnknownRecipientMessageSend";
 
 response:
@@ -45,7 +45,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m19"}' \
+-d '{"message_id":"km22"}' \
 "http://localhost:1337/messages/completeUnknownRecipientMessageSend";
 
 response:
@@ -82,13 +82,23 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"share_url_id":"s1.m19"}' \
+-d '{"share_url_id":"s1.km22"}' \
 "http://localhost:1337/messages/postGetReadURLForMessage";
 
 
 response:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 697
+Date: Mon, 10 Mar 2014 22:41:21 GMT
+Connection: keep-alive
 
-
+{"response_code":{
+        "code":1,
+        "message":"The read_url has been successfully sent."
+        },
+ "read_url":"http://chatwalanonprod.blob.core.windows.net/sandbox-messages/km22"}
 
 
 -----postGetReadURLForUserProfilePic-------
@@ -96,7 +106,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"m19"}' \
+-d '{"user_id":"km22"}' \
 "http://localhost:1337/user/postGetReadURLForUserProfilePicture";
 
 response:
@@ -107,7 +117,8 @@ Content-Length: 167
 Date: Sat, 08 Mar 2014 20:05:21 GMT
 Connection: keep-alive
 
-{"response_code":{"code":1,"message":"The profile_url has been successfully sent."},"profile_url":"https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/m19"}
+{"response_code":{"code":1,"message":"The profile_url has been successfully sent."},
+"profile_url":"https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/km22"}
 
 
 
@@ -116,7 +127,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m19", "recipient_id":"a11111111-11111-1111-1111-111111111111"}' \
+-d '{"message_id":"km22", "recipient_id":"d11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/addUnknownRecipientMessageToInbox";
 
 response:
@@ -137,7 +148,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m20", "user_id":"b11111111-11111-1111-1111-111111111111", "replying_to_message_id":"m19", "start_recording": 0}' \
+-d '{"message_id":"km23", "user_id":"d11111111-11111-1111-1111-111111111111", "replying_to_message_id":"km22", "start_recording": 0}' \
 "http://localhost:1337/messages/startReplyMessageSend";
 
 response:
@@ -148,27 +159,60 @@ Content-Length: 742
 Date: Tue, 04 Mar 2014 20:23:38 GMT
 Connection: keep-alive
 
+{
+    "message_meta_data": {
+        "message_id": "km23",
+        "sender_id": "d11111111-11111-1111-1111-111111111111",
+        "recipient_id": "km11111111-11111-1111-1111-111111111111",
+        "timestamp": 1394491474067,
+        "thread_id": "km22.km11111111-11111-1111-1111-111111111111.d11111111-11111-1111-1111-111111111111",
+        "thread_index": 1,
+        "group_id": "c723895d-ca79-65c4-c00a-21e0c059ec03",
+        "start_recording": 0,
+        "replying_to_message_id": "km22",
+        "read_url": "http://chatwalanonprod.blob.core.windows.net/sandbox-messages/km23",
+        "thumbnail_url": "https://chatwalanonprod.blob.core.windows.net/sandbox-pictures/d11111111-11111-1111-1111-111111111111",
+        "share_url": "http://chatwala.com/sandbox/?s1.km23"
+    },
+    "response_code": {
+        "code": 1,
+        "message": "The message has been successfully saved"
+    },
+    "write_url": "https://chatwalanonprod.blob.core.windows.net:443/sandbox-messages/km23?se=2014-03-10T22%3A54%3A34Z&sp=rw&sr=b&sv=2012-02-12&sig=v8gqTQm2NSAi4GnQ8AEM5vadDHROqqwuVgzvlYqpxAI%3D"
+}
+
 
 ----CompleteReplyMessageSend----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
+<<<<<<< HEAD
 -d '{"message_id":"d240d63b-1b5c-4136-abaa-9c62301dcf82"}' \
+=======
+-d '{"message_id":"km23"}' \
+>>>>>>> e91d33000d98a092f4e295d808d43841c96a75f5
 "http://localhost:1337/messages/completeReplyMessageSend";
 
 response:
 
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 94
+Date: Mon, 10 Mar 2014 22:45:42 GMT
+Connection: keep-alive
+
+{"response_code":{"code":1,"message":"The message has been successfully marked as uploaded."}}
 
 ----GetUserInbox----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"ec593795-8e5b-4028-abde-26ee3ec33752"}' \
+-d '{"user_id":"d11111111-11111-1111-1111-111111111111"}' \
 "http://localhost:1337/messages/userInbox";
 
-ec593795-8e5b-4028-abde-26ee3ec33752
 
 HTTP/1.1 200 OK
 X-Powered-By: Express
@@ -232,7 +276,7 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"m19"}' \
+-d '{"message_id":"km23"}' \
 "http://localhost:1337/messages/renewWriteUrlForMessage";
 
 
