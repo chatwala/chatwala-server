@@ -1,4 +1,5 @@
 var ChatwalaApi = require("./ChatwalaApi.js");
+var MigrateHelper = require("./migrate/MigrateHelper.js");
 
 /******* START UNKNOWN RECIPIENT ROUTES*************/
 function postStartUnknownRecipientMessageSend(req, res) {
@@ -215,7 +216,21 @@ function postUserProfilePicture(req, res){
         }
     })
 
-} 
+}
+
+function migrateMessage(req, res){
+    var messageId = req.body.message_id;
+    MigrateHelper.migrateSingleWala(messageId, function(err){
+        if(!err){
+            res.send(200,{});
+        }
+        else{
+            res.send(400,{});
+        }
+    });
+}
+
+
 
 
 /******** END USER ROUTES***********************/
@@ -231,6 +246,7 @@ function setRoutes(app) {
     app.post("/user/postUserProfilePicture", postUserProfilePicture);
     app.post("/user/registerPushToken", postRegisterPushToken);
     app.post("/user/postGetReadURLForUserProfilePicture", postGetReadURLForUserProfilePicture);
+    app.post("/messages/migrateMessage", migrateMessage);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
