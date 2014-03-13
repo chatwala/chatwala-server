@@ -19,10 +19,10 @@ module.exports = {
             "container": "messages"
         },
         "nonShardedBlobStorage" : {
-            "storage_name":"chatwalanonprod",
-            "storage_key":"ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
-            "container":"dev-pictures",
-            "base_url": "https://chatwalanonprod.blob.core.windows.net/dev-pictures/"
+            "storage_name": "chatwaladeveast",
+            "storage_key": "4f+gAOTgCVGswb1CUSe5N13Xo3bFW1LYwoNweBgeeVRdOpjoMzE69cpUPUVpEmxd0R+FHxxfLdF0fVfQNmil0A==",
+            "container": "pictures",
+            "base_url": "http://chatwaladeveast.blob.core.windows.net/pictures/"
         },
         "hub_name" : "chatwala-dev-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
