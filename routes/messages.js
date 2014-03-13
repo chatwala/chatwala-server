@@ -5,6 +5,7 @@ var os = require("os");
 var CWMongoClient = require('../cw_mongo.js');
 var config = require('../config.js')();
 var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure.hub_endpoint, config.azure.hub_keyname, config.azure.hub_key);
+var request = require('request');
 
 var NO_FILES = "files not found";
 var NO_BODY = "no post information found for POST /messages";
@@ -193,6 +194,8 @@ function postFinalize(req, res) {
             sendPushNotification(recipient_id, doSilentPush, function (err) {
                 if(!err) {
                     res.send(200, {"status": "OK", "message": "finalize successfully completed"});
+                    sendMigrationRequest(message_id);
+
                 }
                 else {
                     res.send(200, {"status": "OK", "message": "add to DB succeeded but push failed."});
@@ -202,6 +205,37 @@ function postFinalize(req, res) {
     });
 
 
+}
+
+
+function sendMigrationRequest(message_id){
+    console.log("message id in migration request " + message_id);
+    var request_url = config.migration_url + '/messages/migrateMessage';
+    var request_body = {
+        'message_id' : message_id
+    }
+
+    var headers = {
+        'x-chatwala':'58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a',
+        'Content-Type' : 'application/json'
+    }
+
+    var options = {
+        'url' : request_url,
+        'method' : 'POST',
+        'headers' : headers,
+        'json' : request_body
+    }
+
+    request(options, function(error){
+        if(!error){
+            console.log('successfully migrated wala for ' + message_id);
+        }
+        else{
+            console.log('there was an error migrating the wala file');
+            console.log(error);
+        }
+    })
 }
 
 /**
@@ -253,7 +287,7 @@ function storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, cal
     };
 
     saveOutGoingMessage(message_metadata, function (err) {
-        callback(err, createChatwalaRedirectURL(message_metadata.message_id));
+        callback(err, createChatwalaRedirectURL(message_metadata.message_id), message_metadata);
     });
 }
 
