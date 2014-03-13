@@ -32,8 +32,8 @@ var GetUserInbox=(function() {
     var Response = function() {
         this.response_code=undefined;
         this.messages = undefined;
-        this.continue = undefined;
-        this.first_id = undefined;
+        this.continue = undefined; //if more messages exist beyond the current page, continue is set to true
+        this.first_id = undefined; //if continue is set to true, the next message in the list is returned in first_id
     };
 
     var page_size = 5;
@@ -78,25 +78,35 @@ var GetUserInbox=(function() {
                             callback(err, response);
                         }
                         else {
+                            console.log("the cursor: ");
+                            console.log(cursor);
                             cursor.toArray(function(err, documents) {
-                                console.log(documents);
-                                var messagesArray = [];
-                                var response = new Response();
-                                response.response_code = responseCodes["success"];
-                                response.continue =false;
+                                if(documents){
+                                    console.log(documents);
+                                    var messagesArray = [];
+                                    var response = new Response();
+                                    response.response_code = responseCodes["success"];
+                                    response.continue =false;
 
-                                if(documents.length> page_size) {
-                                    var lastElement = documents.pop();
-                                    response.continue=true;
-                                    response.first_id = lastElement["_id"];
+                                    if(documents.length> page_size) {
+                                        var lastElement = documents.pop();
+                                        response.continue=true;
+                                        response.first_id = lastElement["_id"];
+                                    }
+
+                                    for(var i=0; i<documents.length;i++) {
+                                        messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i], true));
+                                    }
+
+                                    response.messages = messagesArray;
+                                    callback(null, response);
                                 }
-
-                                for(var i=0; i<documents.length;i++) {
-                                    messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i], true));
+                                else{
+                                    var response = new Response();
+                                    response.response_code = responseCodes["success"];
+                                    response.continue = false;
+                                    callback(null, response)
                                 }
-
-                                response.messages = messagesArray;
-                                callback(null, response);
                             });
 
                         }
