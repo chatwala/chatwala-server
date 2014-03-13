@@ -117,6 +117,10 @@ app.get('/monitor', function (req, res) {
 
 app.get('/', routes.index);
 
+
+
+app.get("/rewriteTimestamp/:message_id", messages.rewriteTimestamp);
+
 //Deprecated
 app.get('/register', users.registerNewUser);
 

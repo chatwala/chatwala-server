@@ -41,6 +41,10 @@ function getBlobService()
         return blobService;
 }
 
+function getBaseDir() {
+    return __dirname;
+}
+
 function createTempFilePath()
 {
         var tempFileName =  GUIDUtil.GUID();
@@ -49,3 +53,4 @@ function createTempFilePath()
 
 exports.createTempFilePath = createTempFilePath;
 exports.getBlobService = getBlobService;
+exports.getBaseDir= getBaseDir;
