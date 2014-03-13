@@ -352,6 +352,7 @@ function saveOutGoingMessage(message_metadata, callback) {
                             callback(null);
                         }
                         else {
+                            console.log("unable to save outbound message - cannot find recipient: " + recipient_id);
                             callback("unable to save outbound message - cannot find recipient: ", recipient_id);
                         }
                     }
@@ -370,7 +371,6 @@ function sendPushNotification(recipient_id, doSilentPush, callback) {
         tag = recipient_id + ".silent";
     }*/
 
-    console.log("sendPushNotification: doSilentPush=" + doSilentPush);
     console.log("sendPushNotification: tag=" + tag);
 
     hub.send(tag, templateVariables, function (err, result, responseObject) {
