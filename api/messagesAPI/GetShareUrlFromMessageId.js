@@ -39,7 +39,7 @@ var GetShareUrlFromMessageId = (function(){
         }
 
         response.response_code = responseCodes["success"];
-        var shard_key = azure.currentShardKey;
+        var shard_key = config.azure.currentShardKey;
 
         response.share_url = config.share_base_url + shard_key + "." + message_id;
 
