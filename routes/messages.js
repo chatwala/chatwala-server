@@ -179,6 +179,7 @@ function postFinalize(req, res) {
 
     if(recipient_id === "unknown_recipient") {
         res.send(200, {"status": "OK", "message": "finalize called for unknown recipient"});
+        sendMigrationRequest(message_id);
         return;
     }
 
