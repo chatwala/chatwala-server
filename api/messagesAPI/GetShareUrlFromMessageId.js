@@ -63,7 +63,7 @@ var GetShareUrlFromMessageId = (function(){
 
                         response.response_code = responseCodes["success"];
                         var shard_key = doc[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
-                        var url = config.azure.blobStorageShard[shard_key].base_url + message_id;
+                        var url = config.share_base_url + shard_key + "." + message_id;
 
                         response.share_url = url;
                         callback(null, response);
