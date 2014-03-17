@@ -110,6 +110,43 @@ var MigrateHelper=(function() {
         }
     }
 
+    function CountFull() {
+
+        var marker=null;
+        var numBlobs=0;
+
+        this.do=function(){
+            getBlobs(null);
+        }
+
+        var getBlobs=function(currentMarker) {
+            var options= {};
+            if(currentMarker) {
+                options.marker=currentMarker;
+            }
+            oldBlobService.listBlobs("messages",options,function(error, blobs, continuation, response){
+
+                if(!error){
+                    console.log("Number of Blobs in this batch "+ blobs.length);
+                    numBlobs+= blobs.length;
+                    console.log("marker before is " + marker)
+                    marker = continuation.nextMarker;
+                    console.log("marker after is " + marker);
+                    if(!marker){
+                        console.log("Total Number of BLOBS : " + numBlobs);
+                        return;
+                    }
+                    getBlobs(marker);
+                }
+                else{
+                    console.log(error);
+                }
+            });
+        }
+
+    }
+
+
     function MigrateListOfWalas(arrayOfWalaIds, doneCallback) {
 
         this.do=function() {
@@ -609,7 +646,11 @@ var MigrateHelper=(function() {
 
     }
 
-
+    function countOldBlobs(){
+        initializeOldBlobService();
+        var c = new CountFull();
+        c.do();
+    }
 
     function migrateSingleWala(messageId, callback) {
         initializeNewBlobService();
@@ -645,7 +686,8 @@ var MigrateHelper=(function() {
         "migrateListOfWalas": migrateListOfWalas,
         "migrateAllWalas": migrateAllWalas,
         "postMigrateMessageToQueue": postMigrateMessageToQueue,
-        "startListeningForMigrateMessages": startListeningForMigrateMessages
+        "startListeningForMigrateMessages": startListeningForMigrateMessages,
+        "countOldBlobs":countOldBlobs
     }
 
 }());

@@ -15,7 +15,7 @@ module.exports = {
         },
         "oldStorage": {
             "storage_name":"chatwalaqa",
-            "storage_key": "HMFwj6+oly8gx/Tsk3qpzx5/uXCbqgMEDITUASEJu3wJnAhD9f0QaC5G1xf+/WPNDIuD264Z+35x5t16un6kww==",
+            "storage_key": "7XPBy0ojEUrW+AZAi2YRGs26UAR4c/f+zLwHZbvsJIrx7LP9KQ1pV4xjvYyOVSIjCnTJ6bO2qld9BzrXBa51Cg==",
             "container": "messages"
         },
         "nonShardedBlobStorage" : {

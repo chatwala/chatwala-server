@@ -218,6 +218,9 @@ function postUserProfilePicture(req, res){
 
 }
 
+/******** END USER ROUTES***********************/
+
+/*******MIGRATION ROUTES***********************/
 function migrateMessage(req, res){
     var messageId = req.body.message_id;
     MigrateHelper.migrateSingleWala(messageId, function(err){
@@ -230,10 +233,12 @@ function migrateMessage(req, res){
     });
 }
 
+function countOldBlobMessages(req,res){
+    MigrateHelper.countOldBlobs();
+    res.send(200,{});
+}
 
 
-
-/******** END USER ROUTES***********************/
 function setRoutes(app) {
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
@@ -247,6 +252,7 @@ function setRoutes(app) {
     app.post("/user/registerPushToken", postRegisterPushToken);
     app.post("/user/postGetReadURLForUserProfilePicture", postGetReadURLForUserProfilePicture);
     app.post("/messages/migrateMessage", migrateMessage);
+    app.post("/messages/countOldBlobMessages", countOldBlobMessages);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
