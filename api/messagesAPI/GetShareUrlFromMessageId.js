@@ -13,14 +13,6 @@ var GetShareUrlFromMessageId = (function(){
             "code":1,
             "message":"The share has been successfully sent."
         },
-        "failureDBOpen": {
-            "code":-201,
-            "message": "Unable to retrieve message from db."
-        },
-        "failureDBFind" : {
-            "code":-202,
-            "message":"Unable to find message in db. "
-        },
         "failureInvalidRequest": {
             "code":-101,
             "message":"Invalid request parameters provided."
@@ -46,41 +38,13 @@ var GetShareUrlFromMessageId = (function(){
             return;
         }
 
-        CWMongoClient.getConnection(function (err, db) {
-            var response = new Response();
-            if (!err) {
+        response.response_code = responseCodes["success"];
+        var shard_key = azure.currentShardKey;
+        var url = config.share_base_url + shard_key + "." + message_id;
+        response.share_url = url;
+        callback(null, response);
 
-                var collection = db.collection("messages");
-
-                var query = {};
-                query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = message_id;
-
-                var return_parameters = {}
-                return_parameters[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] = 1;
-
-                collection.findOne(query, return_parameters, function(db_err, doc){
-                    if(!db_err && doc){
-
-                        response.response_code = responseCodes["success"];
-                        var shard_key = doc[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
-                        var url = config.share_base_url + shard_key + "." + message_id;
-
-                        response.share_url = url;
-                        callback(null, response);
-                    }
-                    else{
-                        response.response_code = responseCodes["failureDBFind"];
-                        callback("failureDBFind", response);
-                    }
-                })
-            } else {
-                response.response_code = responseCodes["failureDBOpen"];
-                callback("failureDBSave", response)
-            }
-        })
-
-
-    }
+    };
 
     return{
         "responseCodes":responseCodes,
