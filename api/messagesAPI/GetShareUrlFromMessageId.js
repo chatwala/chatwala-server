@@ -30,9 +30,9 @@ var GetShareUrlFromMessageId = (function(){
 
     function execute(request, callback){
         var message_id = request.message_id;
+        var response = new Response();
 
         if(typeof message_id === 'undefined'){
-            var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest",response);
             return;
@@ -40,8 +40,9 @@ var GetShareUrlFromMessageId = (function(){
 
         response.response_code = responseCodes["success"];
         var shard_key = azure.currentShardKey;
-        var url = config.share_base_url + shard_key + "." + message_id;
-        response.share_url = url;
+
+        response.share_url = config.share_base_url + shard_key + "." + message_id;
+
         callback(null, response);
 
     };
