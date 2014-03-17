@@ -6,8 +6,10 @@ var CompleteReplyMessageSend = require("./CompleteReplyMessageSend.js");
 var GetUserInbox = require("./GetUserInbox.js");
 var RenewWriteSASURL = require("./RenewWriteSASURL.js");
 var GetReadURLForMessage = require("./GetReadURLForMessage.js");
+var GetShareUrlFromMessageId = require("./GetShareUrlFromMessageId.js");
 
 var MessagesApi = {
+    "GetShareUrlFromMessageId": GetShareUrlFromMessageId,
     "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
     "CompleteUnknownRecipientMessageSend":CompleteUnknownRecipientMessageSend,
     "ConvertUnknownRecipientMessageToKnownRecipient":ConvertUnknownRecipientMessageToKnownRecipient,

@@ -2,6 +2,20 @@ var ChatwalaApi = require("./ChatwalaApi.js");
 var MigrateHelper = require("./migrate/MigrateHelper.js");
 
 /******* START UNKNOWN RECIPIENT ROUTES*************/
+function getShareUrlFromMessageId(req,res){
+    var sendRequest = new ChatwalaApi.Messages.GetShareUrlFromMessageId.Request();
+    sendRequest.message_id = req.body.message_id;
+
+    ChatwalaApi.Messages.GetShareUrlFromMessageId.execute(sendRequest, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    })
+}
+
 function postStartUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.StartUnknownRecipientMessageSend.Request();
     sendRequest.message_id = req.body.message_id;
@@ -240,6 +254,7 @@ function countOldBlobMessages(req,res){
 
 
 function setRoutes(app) {
+    app.post("/messages/getShareUrlFromMessageId", getShareUrlFromMessageId);
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
