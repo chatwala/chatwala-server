@@ -75,19 +75,21 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.sender_id;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
+
+                    message.properties["last_modified"] = new Date().getTime();
+
                     collection.findAndModify(
                         query,
                         [['_id','asc']],
                         message.properties,
                         {"upsert":true, "multi":false, "new":true},
                         function (err, updated) {
-                            console.log(err);
+                            var response = new Response();
                             if (!err) {
-                                var response = new Response();
+                                console.log(err);
                                 response.response_code = responseCodes["success"];
                                 parallelCallback(null, response, updated);
                             } else {
-                                var response = new Response();
                                 response.response_code = responseCodes["failureDBSave"];
                                 parallelCallback("failureDBSave", response, updated);
                             }
@@ -139,6 +141,9 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.recipient_id;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
+
+                    message.properties["last_modified"] = new Date().getTime();
+
                     collection.findAndModify(
                         query,
                         [['_id','asc']],

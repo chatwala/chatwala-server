@@ -379,6 +379,8 @@ var MigrateHelper=(function() {
                     } else {
                         var collection = db.collection('messages');
 
+                        message.properties["last_modified"] = new Date().getTime();
+
                         collection.insert(message.properties,
                             function (err, doc) {
                                 if(err) {
@@ -426,6 +428,8 @@ var MigrateHelper=(function() {
                     } else {
                         var collection = db.collection('messages');
 
+                        message.properties["last_modified"] = new Date().getTime();
+
                         collection.insert(message.properties,
                             function (err, doc) {
                                 if(err) {
@@ -470,6 +474,8 @@ var MigrateHelper=(function() {
                         asyncPostCallback(err);
                     } else {
                         var collection = db.collection('messages');
+
+                        message.properties["last_modified"] = new Date().getTime();
 
                         collection.insert(message.properties,
                             function (err, doc) {
@@ -525,9 +531,15 @@ var MigrateHelper=(function() {
                     var collection = db.collection('messages');
                     var query = {};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+
+                    var update = {};
+                    update["uploaded"] = true;
+                    update["showable"] = true;
+                    update["last_modified"] = new Date().getTime();
+
                     collection.update(
                         query,
-                        {"$set":{"uploaded":true, "showable":true}},
+                        {"$set":update},
                         {"multi":true, "new":true},
                         function(err, numberTouched) {
                             console.log("documents marked as uploaded")
@@ -587,7 +599,7 @@ var MigrateHelper=(function() {
                 return null;
             }
             else {
-                return sender_id.toLowerCase();
+                return sender_id;
             }
 
         }
@@ -600,7 +612,7 @@ var MigrateHelper=(function() {
             else if(metaDataJSON.recipient) {
                 recipient_id = metaDataJSON.recipient;
             }
-            return recipient_id.toLowerCase();
+            return recipient_id;
         }
 
 
@@ -639,7 +651,7 @@ var MigrateHelper=(function() {
                 return null;
             }
             else {
-                return thread_id.toLowerCase();
+                return thread_id;
             }
 
         }

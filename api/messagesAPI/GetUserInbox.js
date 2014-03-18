@@ -78,10 +78,10 @@ var GetUserInbox=(function() {
                             callback(err, response);
                         }
                         else {
-                            console.log("the cursor: ");
-                            console.log(cursor);
+
                             cursor.toArray(function(err, documents) {
                                 if(documents){
+                                    console.log("result of inbox query:");
                                     console.log(documents);
                                     var messagesArray = [];
                                     var response = new Response();

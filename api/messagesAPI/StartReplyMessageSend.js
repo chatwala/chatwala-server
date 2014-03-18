@@ -122,6 +122,9 @@ var StartReplyMessageSend=(function() {
                             //we do an update so retries can succeed
                             var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
                             //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
+
+                            message.properties["last_modified"] = new Date().getTime();
+
                             collection.update(
                                 {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,
@@ -181,6 +184,9 @@ var StartReplyMessageSend=(function() {
                             //we do an update so retries can succeed
                             var propMessageInstanceId = ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID;
                             //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
+
+                            message.properties["last_modified"] = new Date().getTime();
+
                             collection.update(
                                 {propMessageInstanceId:message.properties[propMessageInstanceId]},
                                 message.properties,

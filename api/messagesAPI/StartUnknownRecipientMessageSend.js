@@ -43,6 +43,8 @@ var StartUnknownRecipientMessageSend=(function() {
                 } else {
                     var collection = db.collection('messages');
 
+                    message.properties["last_modified"] = new Date().getTime();
+
                     collection.insert(message.properties,
                         function (err, doc) {
                             console.log("err=" + err);

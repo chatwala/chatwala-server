@@ -57,10 +57,14 @@ var CompleteUnknownRecipientMessageSend=(function() {
                 var query = {};
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
 
+                var update = {};
+                update["uploaded"] = true;
+                update["last_modified"] = new Date().getTime();
+
                 collection.findAndModify(
                     query,
                     [['_id','asc']],
-                    {"$set":{"uploaded":true}},
+                    {"$set":update},
                     {"upsert":false, "multi": false},
                     function (err, docs) {
                         console.log(docs);

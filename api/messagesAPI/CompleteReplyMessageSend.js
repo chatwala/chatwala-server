@@ -54,9 +54,15 @@ var CompleteReplyMessageSend=(function() {
                         var collection = db.collection('messages');
                         var query = {};
                         query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = request.message_id;
+
+                        var update = {}
+                        update["uploaded"] = true;
+                        update["showable"] = true;
+                        update["last_modified"] = new Date().getTime();
+
                         collection.update(
                             query,
-                            {"$set":{"uploaded":true, "showable":true}},
+                            {"$set":update},
                             {"multi":true, "new":true},
                             function(err, numberTouched) {
                                 seriesCallback(numberTouched==0?"failure":null, true);

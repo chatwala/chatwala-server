@@ -378,6 +378,8 @@ function MigrateSingleWala(currentItem, doneCallback) {
                 } else {
                     var collection = db.collection('messages');
 
+                    message.properties["last_modified"] = new Date().getTime();
+
                     collection.insert(message.properties,
                         function (err, doc) {
                             if(!err) {
@@ -428,6 +430,8 @@ function MigrateSingleWala(currentItem, doneCallback) {
                 } else {
                     var collection = db.collection('messages');
 
+                    message.properties["last_modified"] = new Date().getTime();
+
                     collection.insert(message.properties,
                         function (err, doc) {
                             if(!err) {
@@ -475,6 +479,8 @@ function MigrateSingleWala(currentItem, doneCallback) {
                     asyncPostCallback(err);
                 } else {
                     var collection = db.collection('messages');
+
+                    message.properties["last_modified"] = new Date().getTime();
 
                     collection.insert(message.properties,
                         function (err, doc) {
@@ -533,12 +539,18 @@ function MigrateSingleWala(currentItem, doneCallback) {
                 var collection = db.collection('messages');
                 var query = {};
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+
+                var update = {};
+                update["uploaded"] = true;
+                update["showable"] = true;
+                update["last_modified"] = new Date().getTime();
+
                 collection.update(
                     query,
-                    {"$set":{"uploaded":true, "showable":true}},
+                    {"$set":update},
                     {"multi":true, "new":true},
                     function(err, numberTouched) {
-                        console.log("documents marked as uploaded")
+                        console.log("documents marked as uploaded " + numberTouched);
                         seriesCallback();
                     }
                 );
@@ -602,7 +614,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
             return null;
         }
         else {
-            return sender_id.toLowerCase();
+            return sender_id;
         }
 
     }
@@ -616,7 +628,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
             recipient_id = metaDataJSON.recipient;
         }
         console.log("Recipient=" + recipient_id);
-        return recipient_id.toLowerCase();
+        return recipient_id;
     }
 
 
@@ -657,7 +669,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
             return null;
         }
         else {
-            return thread_id.toLowerCase();
+            return thread_id;
         }
 
     }
