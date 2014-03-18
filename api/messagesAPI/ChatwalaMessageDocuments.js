@@ -135,11 +135,6 @@ var ChatwalaMessageDocuments=(function() {
                }
            }
 
-            //check id's generated client side to ensure they're all lowercase
-           if(this.properties[MESSAGE_PROPERTIES.MESSAGE_ID].toLowerCase() !== this.properties[MESSAGE_PROPERTIES.MESSAGE_ID] && this.properties[MESSAGE_PROPERTIES.SENDER_ID].toLowerCase() !== this.properties[MESSAGE_PROPERTIES.SENDER_ID] && this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID].toLowerCase() !== this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]){
-               return false;
-           }
-
            return true;
         }
 
