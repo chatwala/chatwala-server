@@ -215,7 +215,7 @@ function postFinalize(req, res) {
 
 function sendMigrationRequest(message_id){
     console.log("message id in migration request " + message_id);
-    var request_url = config.migration_url + '/messages/migrateMessage';
+    var request_url = config.migration_url + 'messages/migrateMessage';
     var request_body = {
         'message_id' : message_id
     }

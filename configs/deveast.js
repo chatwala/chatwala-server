@@ -11,5 +11,5 @@ module.exports = {
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
     },
-    "migration_url":"http://chatwala-deveast-20.azurewebsites.net"
+    "migration_url":"http://chatwala-deveast-20.azurewebsites.net/"
 };

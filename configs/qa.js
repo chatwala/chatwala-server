@@ -10,5 +10,6 @@ module.exports = {
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "gePyfv/kICC7LLYzvoZHmjO4yXZQoED1xUkjb5mHqsQ="
-    }
+    },
+    "migration_url":"http://chatwala-qa-20.azurewebsites.net/"
 };
