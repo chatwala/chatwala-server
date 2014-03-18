@@ -271,7 +271,7 @@ var MigrateHelper=(function() {
                 if (err) {
                     seriesCallback(err, null);
                 } else {
-                    var collection = db.collection('messagesTemp');
+                    var collection = db.collection('messages');
                     var query = {};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
 
@@ -377,7 +377,7 @@ var MigrateHelper=(function() {
                         console.log("error connecting to db");
                         asyncPostCallback(err);
                     } else {
-                        var collection = db.collection('messagesTemp');
+                        var collection = db.collection('messages');
 
                         collection.insert(message.properties,
                             function (err, doc) {
@@ -424,7 +424,7 @@ var MigrateHelper=(function() {
                         console.log("error connecting to db");
                         asyncPostCallback(err);
                     } else {
-                        var collection = db.collection('messagesTemp');
+                        var collection = db.collection('messages');
 
                         collection.insert(message.properties,
                             function (err, doc) {
@@ -469,7 +469,7 @@ var MigrateHelper=(function() {
                         console.log("error connecting to db");
                         asyncPostCallback(err);
                     } else {
-                        var collection = db.collection('messagesTemp');
+                        var collection = db.collection('messages');
 
                         collection.insert(message.properties,
                             function (err, doc) {

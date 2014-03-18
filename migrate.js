@@ -264,7 +264,7 @@ function MigrateSingleWala(currentItem, doneCallback) {
             if (err) {
                 seriesCallback(err, null);
             } else {
-                var collection = db.collection('messagesTemp');
+                var collection = db.collection('messages');
                 var query = {};
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
                 console.log("messageId="+ messageId);
@@ -376,12 +376,12 @@ function MigrateSingleWala(currentItem, doneCallback) {
                     console.log("error connecting to db");
                     asyncPostCallback(err);
                 } else {
-                    var collection = db.collection('messagesTemp');
+                    var collection = db.collection('messages');
 
                     collection.insert(message.properties,
                         function (err, doc) {
                             if(!err) {
-                                console.log("message migrated to messagesTemp table");
+                                console.log("message migrated to messages table");
                             }
                             else {
                                 console.log(err);
@@ -426,12 +426,12 @@ function MigrateSingleWala(currentItem, doneCallback) {
                     console.log("error connecting to db");
                     asyncPostCallback(err);
                 } else {
-                    var collection = db.collection('messagesTemp');
+                    var collection = db.collection('messages');
 
                     collection.insert(message.properties,
                         function (err, doc) {
                             if(!err) {
-                                console.log("sender message migrated to messagesTemp table");
+                                console.log("sender message migrated to messages table");
                             }
                             else {
                                 console.log(err);
@@ -474,12 +474,12 @@ function MigrateSingleWala(currentItem, doneCallback) {
                     console.log("error connecting to db");
                     asyncPostCallback(err);
                 } else {
-                    var collection = db.collection('messagesTemp');
+                    var collection = db.collection('messages');
 
                     collection.insert(message.properties,
                         function (err, doc) {
                             if(!err) {
-                                console.log("recipient message migrated to messagesTemp table");
+                                console.log("recipient message migrated to messages table");
                             }
                             else {
                                 console.log(err);

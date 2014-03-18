@@ -61,8 +61,7 @@ var StartReplyMessageSend=(function() {
 
                         collection.findOne(query,
                             function (err, doc) {
-                                console.log("Error finding replying_to_message");
-                                console.log(err);
+
 
                                 if (!err) {
                                     if(doc==null){
@@ -72,6 +71,8 @@ var StartReplyMessageSend=(function() {
                                         waterfallCallback(null, doc);
                                     }
                                 } else {
+                                    console.log("Error finding replying_to_message");
+                                    console.log(err);
                                     waterfallCallback(err, null);
                                 }
                             });
@@ -126,11 +127,11 @@ var StartReplyMessageSend=(function() {
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
-                                    console.log("error trying to add to outbox");
-                                    console.log(err);
                                     if (!err) {
                                         waterfallCallback(null, message.properties);
                                     } else {
+                                        console.log("error trying to add to outbox");
+                                        console.log(err);
                                         waterfallCallback(err, null);
                                     }
                                 });
@@ -185,11 +186,12 @@ var StartReplyMessageSend=(function() {
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
-                                    console.log("*****erro adding to inboxr ******");
-                                    console.log(err);
+
                                     if (!err) {
                                         waterfallCallback(null, outboxMessageDocument, message.properties);
                                     } else {
+                                        console.log("*****error adding to inbox ******");
+                                        console.log(err);
                                         waterfallCallback(err, null, null);
                                     }
                                 });
@@ -202,10 +204,11 @@ var StartReplyMessageSend=(function() {
             }
         ],
         function(err, outboxMessageDocument, inboxMessageDocument) {
-            console.log("Error at the end of the waterfall to follow:")
-            console.log(err);
+
             var response = new Response();
             if(err) {
+                console.log("Error at the end of the waterfall to follow:")
+                console.log(err);
                 response.response_code = responseCodes["failure"];
             }
             else {
