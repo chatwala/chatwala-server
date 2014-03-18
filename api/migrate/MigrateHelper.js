@@ -370,6 +370,7 @@ var MigrateHelper=(function() {
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY] = SASHelper.getCurrentShardKey();
 
             newMetaData = ChatwalaMessageDocuments.createMetaDataJSON(message.properties, false);
+            newMetaData[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.VERSION_OLD;
 
             if(message.isValid()) {
                 CWMongoClient.getConnection(function (err, db) {
@@ -419,6 +420,8 @@ var MigrateHelper=(function() {
             message.generateMessageInstanceId();
 
             newMetaData = ChatwalaMessageDocuments.createMetaDataJSON(message.properties, false);
+            newMetaData[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.VERSION_OLD;
+
 
             if(message.isValid()) {
                 CWMongoClient.getConnection(function (err, db) {
