@@ -35,7 +35,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
-    MESSAGE_PROPERTIES.VERSION="version";
+    MESSAGE_PROPERTIES.VERSION="version_id";
 
     //dynamic properties: these are created only when the metadata file is asked for
     MESSAGE_PROPERTIES.SHARE_URL="share_url";
