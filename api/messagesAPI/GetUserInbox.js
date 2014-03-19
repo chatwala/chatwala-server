@@ -70,7 +70,8 @@ var GetUserInbox=(function() {
                 //always grab 1 extra record so we know there are more pages
                 collection.find(
                     query,
-                    {"limit": page_size+1, "sort":{"_id":-1}},
+                    //{"limit": page_size+1, "sort":{"_id":-1}},
+                    {"sort":{"_id":-1}},
                     function(err, cursor) {
                         if(err) {
                             var response = new Response();
