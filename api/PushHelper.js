@@ -8,7 +8,7 @@ var hub = azure.createNotificationHubService(config.azure.hub_name, config.azure
 
 var PushHelper=(function() {
 
-    var REPLY_MESSAGE = "You have received a new Chatwala reply.";
+    var REPLY_MESSAGE = "You have a new message. Downloading now...";
 
     function registerPushToken(platform_type, user_id, push_token, callback) {
 
