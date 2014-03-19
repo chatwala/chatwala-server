@@ -88,11 +88,11 @@ var GetUserInbox=(function() {
                                     response.response_code = responseCodes["success"];
                                     response.continue =false;
 
-                                    if(documents.length> page_size) {
+                                    /*if(documents.length> page_size) {
                                         var lastElement = documents.pop();
                                         response.continue=true;
                                         response.first_id = lastElement["_id"];
-                                    }
+                                    }*/
 
                                     for(var i=0; i<documents.length;i++) {
                                         messagesArray.push(ChatwalaMessageDocuments.createMetaDataJSON(documents[i], true));
