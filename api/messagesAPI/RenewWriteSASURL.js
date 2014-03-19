@@ -22,7 +22,8 @@ var RenewWriteSASURL=(function() {
 
 
     var Request = function() {
-        this.share_url_id = undefined;
+        this.message_id = undefined;
+        this.shard_key = undefined;
     };
 
     var Response = function() {
@@ -35,12 +36,6 @@ var RenewWriteSASURL=(function() {
      */
     var execute = function(request, callback) {
 
-        var shard_key = request.share_url_id.split('.')[0];
-        var message_id = request.share_url_id.split('.')[1];
-
-        console.log("message_id="+request.message_id);
-        console.log("shard_key="+request.shard_key);
-
         if(typeof request.message_id === 'undefined' || typeof request.shard_key === 'undefined' ) {
             var response = new Response();
             response.message_meta_data = {};
@@ -49,7 +44,13 @@ var RenewWriteSASURL=(function() {
             return;
         }
 
-        var write_url = SASHelper.getWriteSharedAccessPolicy(request.shard_key, request.message_id);
+        console.log("message_id : " + request.message_id);
+        console.log("message_id : " + request.shard_key);
+
+        var shard_key = request.shard_key;
+        var message_id = request.message_id;
+
+        var write_url = SASHelper.getWriteSharedAccessPolicy(shard_key, message_id);
         var response = new Response();
         response.responseCode = responseCodes["success"];
         response.write_url = write_url;

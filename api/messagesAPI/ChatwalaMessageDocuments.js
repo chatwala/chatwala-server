@@ -134,7 +134,7 @@ var ChatwalaMessageDocuments=(function() {
                    return false;
                }
            }
-
+           console.log("message OK");
            return true;
         }
 
@@ -155,6 +155,7 @@ var ChatwalaMessageDocuments=(function() {
         metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
         metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
         metaDataJSON[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
 
         if(blnShowBoxProperties) {
             metaDataJSON[MESSAGE_PROPERTIES.VIEWED]=properties[MESSAGE_PROPERTIES.VIEWED];
@@ -171,8 +172,10 @@ var ChatwalaMessageDocuments=(function() {
     }
 
     function createNewStarterUnknownRecipientMessage(message_id, sender_id) {
+        console.log("create new starter unknown recipient message...")
+        console.log("message_id= " + message_id)
+        console.log("sender_id = " + sender_id);
 
-        console.log("message_id=" + message_id + " sender_id =" + sender_id);
         var message = new Message();
         message.properties[MESSAGE_PROPERTIES.MESSAGE_ID]= message_id;
         message.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]=sender_id;
@@ -186,8 +189,6 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
         message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
 
-        console.log("message=");
-        console.log(message.properties);
 
         try {
             message.generateBlobShardKey();
@@ -195,7 +196,6 @@ var ChatwalaMessageDocuments=(function() {
             message.generateThreadInformation();
             message.generateGroupId();
             message.generateTimeStamp();
-            console.log(message.properties);
             return message;
         }
         catch(e) {

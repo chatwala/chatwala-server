@@ -70,7 +70,7 @@ var MigrateHelper=(function() {
                 options.marker=currentMarker;
             }
             oldBlobService.listBlobs("messages",options,function(error, blobs, continuation, response){
-                console.log("listBlobs"+ blobs.length);
+                console.log("Old blob count: "+ blobs.length);
                 if(!error){
                     fullList = blobs;
                     numBlobs+= fullList.length;
@@ -90,7 +90,7 @@ var MigrateHelper=(function() {
         }
 
         var migrateNext=function() {
-            console.log("Migrate.migrateNext startIndex=" + currentStartIndex)
+            console.log("Migrate.migrateNext startIndex= " + currentStartIndex)
             var list = getShortenedList(fullList, currentStartIndex);
             currentStartIndex+=maxSize;
             if(list.length==0) {  //all done, go to next marker
@@ -99,7 +99,7 @@ var MigrateHelper=(function() {
                     getBlobs(marker);
                 }
                 else {
-                    console.log("done migrating, numBlobs=" +numBlobs + " numMigrated=" + numMigrated);
+                    console.log("done migrating, numBlobs= " +numBlobs + " numMigrated= " + numMigrated);
                 }
             }
             else {
@@ -129,9 +129,7 @@ var MigrateHelper=(function() {
                 if(!error){
                     console.log("Number of Blobs in this batch "+ blobs.length);
                     numBlobs+= blobs.length;
-                    console.log("marker before is " + marker)
                     marker = continuation.nextMarker;
-                    console.log("marker after is " + marker);
                     if(!marker){
                         console.log("Total Number of BLOBS : " + numBlobs);
                         return;
@@ -148,7 +146,7 @@ var MigrateHelper=(function() {
 
 
     function MigrateListOfWalas(arrayOfWalaIds, doneCallback) {
-
+        console.log("Migrating List of Walas");
         this.do=function() {
             async.each(arrayOfWalaIds,
                 function(messageId, nextCallback){
@@ -194,7 +192,7 @@ var MigrateHelper=(function() {
                 deleteFiles
             ],
                 function(err, results) {
-                    console.log("MigrateSingleWala, done");
+                    console.log("MigrateSingleWala Done");
                     doneCallback();
                 });
 
@@ -206,7 +204,45 @@ var MigrateHelper=(function() {
             seriesCallback();
         }
 
+        var checkForExistance=function() {
+            console.log("Checking for Existance")
+            CWMongoClient.getConnection(function (err, db) {
+                if (err) {
+                    seriesCallback(err, null);
+                } else {
+                    var collection = db.collection('messages');
+                    var query = {};
+                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+
+                    collection.find(
+                        query,
+                        function(err, cursor) {
+
+                            if(!err) {
+                                cursor.nextObject(function(err, document) {
+                                    console.log(document);
+                                    if(document){
+                                        console.log("wala exists in 2.0 already!");
+                                        seriesCallback("failure",null);
+                                    }
+                                    else {
+                                        console.log("wala does not exist in 2.0...");
+                                        seriesCallback();
+                                    }
+                                });
+                            }
+                            else{
+                                seriesCallback();
+                            }
+                        }
+                    );
+                }
+            });
+        }
+
+
         var createTempFolder= function() {
+            console.log("Creating temp folder");
             tempFolder = './downloaded/' + GUIDUtil.GUID();
             fs.mkdir(tempFolder, function(error){
                 if(!error) {
@@ -220,6 +256,7 @@ var MigrateHelper=(function() {
         }
 
         var downloadBlob = function()  {
+            console.log("Downloading Blob");
             file =  tempFolder + "/" + messageId + ".zip";
             oldBlobService.getBlobToStream(config.azure.oldStorage.container
                 , messageId
@@ -227,7 +264,7 @@ var MigrateHelper=(function() {
                 , function(error){
                     if(!error){
                         // Wrote blob to stream
-                        console.log("downloaded blob");
+                        console.log("Blob Downloaded!");
                         seriesCallback();
                     }
                     else {
@@ -240,10 +277,10 @@ var MigrateHelper=(function() {
 
         var prepare=function() {
             try {
-                console.log("MigrateSingleWala.prepare  id=" + messageId);
+                console.log("MigrateSingleWala.prepare id= " + messageId);
                 zip = new AdmZip(file);
                 var metaDataJSON = JSON.parse(zip.readAsText("metadata.json"));
-
+                console.log("MetaData JSON of old wala:");
                 console.log(metaDataJSON);
                 timestamp = getTimestamp(metaDataJSON);
                 senderId = getSenderId(metaDataJSON);
@@ -266,46 +303,46 @@ var MigrateHelper=(function() {
             }
         }
 
-        var checkForExistance=function() {
-            CWMongoClient.getConnection(function (err, db) {
-                if (err) {
-                    seriesCallback(err, null);
-                } else {
-                    var collection = db.collection('messages');
-                    var query = {};
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
 
-                    collection.find(
-                        query,
-                        function(err, cursor) {
+        var postToDB=function() {
 
-                            if(!err) {
-                                cursor.nextObject(function(err, document) {
+            console.log("MigrateSingleWala.postToDB");
+            var postFunctionArray = [setAsyncPostCallback];
 
 
-                                    if(document){
+            if(recipientId=="unknown_recipient") {
+                //if recipient is unknown, just create 1 entry and call it unknown recipient starter
+                postFunctionArray.push(createNewStarter);
+            }
+            else {
+                //create two entries for each message - 1 for the sender, 1 for the recipient, showable =true, uploaded=true
+                //create entry 1:
+                //if threadIndex is 0 call it threadstarter, showable=false
 
-                                        seriesCallback("failure",null);
-                                    }
-                                    else {
-                                        seriesCallback();
-                                    }
-                                });
-                            }
-                            else{
-                                seriesCallback();
-                            }
-                        }
-                    );
+                //sender
+                postFunctionArray.push(createSender());
+
+                //recipient
+                postFunctionArray.push(createRecipient());
+            }
+
+
+
+            async.series(
+                postFunctionArray,
+                function(err) {
+                    seriesCallback(err);
                 }
-            });
+            );
+
         }
 
         var createNewZip=function() {
             console.log("MigrateSingleWala.createNewZip");
             //extract the blob
             zip.extractAllTo(tempFolder + "/old", true);
-
+            console.log("Writing to zip file: ");
+            console.log(newMetaData);
             fs.writeFile(tempFolder + '/metadata.json', JSON.stringify(newMetaData, null, 4), function(err) {
                 if(!err) {
 
@@ -348,6 +385,36 @@ var MigrateHelper=(function() {
                 , function(error){
                     seriesCallback();
                 })
+
+        }
+
+
+        var markAsUploaded=function() {
+            console.log("MigrateSingleWala.markAsUploaded");
+            CWMongoClient.getConnection(function (err, db) {
+                if (err) {
+                    seriesCallback(err, null);
+                } else {
+                    var collection = db.collection('messages');
+                    var query = {};
+                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+
+                    var update = {};
+                    update["uploaded"] = true;
+                    update["showable"] = true;
+                    update["last_modified"] = new Date().getTime();
+
+                    collection.update(
+                        query,
+                        {"$set":update},
+                        {"multi":true, "new":true},
+                        function(err, numberTouched) {
+                            console.log("Documents have been marked as uploaded")
+                            seriesCallback();
+                        }
+                    );
+                }
+            });
 
         }
 
@@ -492,67 +559,8 @@ var MigrateHelper=(function() {
             }
         }
 
-        var postToDB=function() {
-
-            console.log("---MigrateSingleWala.postToDB");
-            var postFunctionArray = [setAsyncPostCallback];
 
 
-            if(recipientId=="unknown_recipient") {
-                //if recipient is unknown, just create 1 entry and call it unknown recipient starter
-                postFunctionArray.push(createNewStarter);
-            }
-            else {
-                //create two entries for each message - 1 for the sender, 1 for the recipient, showable =true, uploaded=true
-                //create entry 1:
-                //if threadIndex is 0 call it threadstarter, showable=false
-
-                //sender
-                postFunctionArray.push(createSender());
-
-                //recipient
-                postFunctionArray.push(createRecipient());
-            }
-
-
-
-            async.series(
-                postFunctionArray,
-                function(err) {
-                    seriesCallback(err);
-                }
-            );
-
-        }
-
-        var markAsUploaded=function() {
-            console.log("--MigrateSingleWala.markAsUploaded");
-            CWMongoClient.getConnection(function (err, db) {
-                if (err) {
-                    seriesCallback(err, null);
-                } else {
-                    var collection = db.collection('messages');
-                    var query = {};
-                    query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
-
-                    var update = {};
-                    update["uploaded"] = true;
-                    update["showable"] = true;
-                    update["last_modified"] = new Date().getTime();
-
-                    collection.update(
-                        query,
-                        {"$set":update},
-                        {"multi":true, "new":true},
-                        function(err, numberTouched) {
-                            console.log("documents marked as uploaded")
-                            seriesCallback();
-                        }
-                    );
-                }
-            });
-
-        }
 
         var deleteFiles=function() {
             console.log("--MigrateSingleWala.deleteFiles");
