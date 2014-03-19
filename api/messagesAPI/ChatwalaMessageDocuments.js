@@ -7,8 +7,8 @@ var ChatwalaMessageDocuments=(function() {
     var ROLE_SENDER = "SENDER";
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
-    var VERSION = 2.0;
-    var VERSION_OLD=1.0;
+    var VERSION = "2.0";
+    var VERSION_OLD="1.0";
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
