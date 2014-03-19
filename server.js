@@ -117,6 +117,10 @@ app.get('/monitor', function (req, res) {
 
 app.get('/', routes.index);
 
+
+
+//app.get("/rewriteTimestamp/:message_id", messages.rewriteTimestamp);
+
 //Deprecated
 app.get('/register', users.registerNewUser);
 
@@ -141,7 +145,7 @@ app.post('/messages/:message_id/finalize', messages.postFinalize);
 app.get('/messages/:message_id/uploadURL', messages.getUploadURL);
 
 //deprecated, old put message call, put directly to storage instead
-app.put('/messages/:message_id', messages.putMessage);
+//app.put('/messages/:message_id', messages.putMessage);
 
 //deprecated
 app.post('/messages', messages.submitMessageMetadata);
