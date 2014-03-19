@@ -191,6 +191,9 @@ function postFinalize(req, res) {
     console.log("app_version=" + app_version);
     console.log("doSilentPush=" + doSilentPush);
 
+    sendMigrationRequest(message_id);
+
+
     storeMessageMetadataInDB(message_id, recipient_id, sender_id, host, function (err, url) {
         if (err) {
             res.send(500, {"status": "FAIL", "message": "could not store message metadata"});
@@ -199,7 +202,6 @@ function postFinalize(req, res) {
             sendPushNotification(recipient_id, doSilentPush, function (err) {
                 if(!err) {
                     res.send(200, {"status": "OK", "message": "finalize successfully completed"});
-                    sendMigrationRequest(message_id);
 
                 }
                 else {
