@@ -9,7 +9,7 @@ module.exports = {
                 "storage_name":"chatwalaprodshard1",
                 "storage_key": "lBfjsBY8UN/PoS2UemfLml1I1suTdz2SLotdRoetJ709wh5ObA9ZaF1qPPSERV6CmklrRV198UqffDCrwtO3EA==",
                 "container":"messages",
-                "base_url": "https://chatwalaprodshard1.blob.core.windows.net/messages/"
+                "base_url": "https://chatwalaprods1.blob.core.windows.net/messages/"
             }
         },
         "nonShardedBlobStorage" : {
