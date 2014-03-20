@@ -100,6 +100,8 @@ var MigrateHelper=(function() {
                 }
                 else {
                     console.log("done migrating, numBlobs= " +numBlobs + " numMigrated= " + numMigrated);
+                    var timenow = new Date().getTime();
+                    console.log("The time completed: " + timenow);
                 }
             }
             else {

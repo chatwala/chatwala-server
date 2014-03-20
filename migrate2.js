@@ -46,6 +46,8 @@ CWMongoClient.getConnection(function (err, db) {
 
 
 function migrate() {
+    var timenow = new Date().getTime();
+    console.log("Start Time: " + timenow);
     MigrateHelper.migrateAllWalas();
 }
 
