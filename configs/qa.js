@@ -24,7 +24,7 @@ module.exports = {
             "container":"pictures",
             "base_url": "https://chatwalaqa.blob.core.windows.net/pictures/"
         },
-        "hub_name" : "chatwala-dev-push",
+        "hub_name" : "chatwala-qa-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "gePyfv/kICC7LLYzvoZHmjO4yXZQoED1xUkjb5mHqsQ="
