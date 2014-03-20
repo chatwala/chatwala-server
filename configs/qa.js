@@ -19,8 +19,8 @@ module.exports = {
             "container": "messages"
         },
         "nonShardedBlobStorage" : {
-            "storage_name":"chatwalanonprod",
-            "storage_key":"ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
+            "storage_name":"chatwalaqa",
+            "storage_key":"7XPBy0ojEUrW+AZAi2YRGs26UAR4c/f+zLwHZbvsJIrx7LP9KQ1pV4xjvYyOVSIjCnTJ6bO2qld9BzrXBa51Cg==",
             "container":"pictures",
             "base_url": "https://chatwalaqa.blob.core.windows.net/pictures/"
         },
