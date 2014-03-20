@@ -70,7 +70,6 @@ var MigrateHelper=(function() {
                 options.marker=currentMarker;
             }
             oldBlobService.listBlobs("messages",options,function(error, blobs, continuation, response){
-                console.log("Old blob count: "+ blobs.length);
                 if(!error){
                     fullList = blobs;
                     numBlobs+= fullList.length;
@@ -90,7 +89,6 @@ var MigrateHelper=(function() {
         }
 
         var migrateNext=function() {
-            console.log("Migrate.migrateNext startIndex= " + currentStartIndex)
             var list = getShortenedList(fullList, currentStartIndex);
             currentStartIndex+=maxSize;
             if(list.length==0) {  //all done, go to next marker
@@ -126,7 +124,7 @@ var MigrateHelper=(function() {
             if(currentMarker) {
                 options.marker=currentMarker;
             }
-            oldBlobService.listBlobs("messages",options,function(error, blobs, continuation, response){
+            newBlobService.listBlobs("qa-messages",options,function(error, blobs, continuation, response){
 
                 if(!error){
                     console.log("Number of Blobs in this batch "+ blobs.length);
@@ -148,11 +146,9 @@ var MigrateHelper=(function() {
 
 
     function MigrateListOfWalas(arrayOfWalaIds, doneCallback) {
-        console.log("Migrating List of Walas");
         this.do=function() {
             async.each(arrayOfWalaIds,
                 function(messageId, nextCallback){
-                    console.log('handling item');
                     var migrateSingleWala = new MigrateSingleWala(messageId, nextCallback);
                     migrateSingleWala.do();
                 },
@@ -180,7 +176,6 @@ var MigrateHelper=(function() {
         var zip;
 
         this.do = function() {
-            console.log("MigrateSingleWala.do");
             async.series([
                 setSeriesCallback,
                 checkForExistance,
@@ -194,7 +189,6 @@ var MigrateHelper=(function() {
                 deleteFiles
             ],
                 function(err, results) {
-                    console.log("MigrateSingleWala Done");
                     doneCallback();
                 });
 
@@ -207,7 +201,6 @@ var MigrateHelper=(function() {
         }
 
         var checkForExistance=function() {
-            console.log("Checking for Existance")
             CWMongoClient.getConnection(function (err, db) {
                 if (err) {
                     seriesCallback(err, null);
@@ -222,13 +215,11 @@ var MigrateHelper=(function() {
 
                             if(!err) {
                                 cursor.nextObject(function(err, document) {
-                                    console.log(document);
                                     if(document){
                                         console.log("wala exists in 2.0 already!");
                                         seriesCallback("failure",null);
                                     }
                                     else {
-                                        console.log("wala does not exist in 2.0...");
                                         seriesCallback();
                                     }
                                 });
@@ -244,7 +235,6 @@ var MigrateHelper=(function() {
 
 
         var createTempFolder= function() {
-            console.log("Creating temp folder");
             tempFolder = './downloaded/' + GUIDUtil.GUID();
             fs.mkdir(tempFolder, function(error){
                 if(!error) {
@@ -258,7 +248,6 @@ var MigrateHelper=(function() {
         }
 
         var downloadBlob = function()  {
-            console.log("Downloading Blob");
             file =  tempFolder + "/" + messageId + ".zip";
             oldBlobService.getBlobToStream(config.azure.oldStorage.container
                 , messageId
@@ -266,7 +255,6 @@ var MigrateHelper=(function() {
                 , function(error){
                     if(!error){
                         // Wrote blob to stream
-                        console.log("Blob Downloaded!");
                         seriesCallback();
                     }
                     else {
@@ -279,11 +267,9 @@ var MigrateHelper=(function() {
 
         var prepare=function() {
             try {
-                console.log("MigrateSingleWala.prepare id= " + messageId);
                 zip = new AdmZip(file);
                 var metaDataJSON = JSON.parse(zip.readAsText("metadata.json"));
-                console.log("MetaData JSON of old wala:");
-                console.log(metaDataJSON);
+
                 timestamp = getTimestamp(metaDataJSON);
                 senderId = getSenderId(metaDataJSON);
                 recipientId = getRecipientId(metaDataJSON);
@@ -308,7 +294,6 @@ var MigrateHelper=(function() {
 
         var postToDB=function() {
 
-            console.log("MigrateSingleWala.postToDB");
             var postFunctionArray = [setAsyncPostCallback];
 
 
@@ -340,11 +325,8 @@ var MigrateHelper=(function() {
         }
 
         var createNewZip=function() {
-            console.log("MigrateSingleWala.createNewZip");
             //extract the blob
             zip.extractAllTo(tempFolder + "/old", true);
-            console.log("Writing to zip file: ");
-            console.log(newMetaData);
             fs.writeFile(tempFolder + '/metadata.json', JSON.stringify(newMetaData, null, 4), function(err) {
                 if(!err) {
 
@@ -380,7 +362,6 @@ var MigrateHelper=(function() {
 
         var postToStorage=function() {
 
-            console.log("MigrateSingleWala.postStorage");
             newBlobService.createBlockBlobFromFile(config.azure.blobStorageShard.s1.container
                 , messageId
                 , tempFolder+"/chat.zip"
@@ -392,7 +373,6 @@ var MigrateHelper=(function() {
 
 
         var markAsUploaded=function() {
-            console.log("MigrateSingleWala.markAsUploaded");
             CWMongoClient.getConnection(function (err, db) {
                 if (err) {
                     seriesCallback(err, null);
@@ -411,7 +391,6 @@ var MigrateHelper=(function() {
                         {"$set":update},
                         {"multi":true, "new":true},
                         function(err, numberTouched) {
-                            console.log("Documents have been marked as uploaded")
                             seriesCallback();
                         }
                     );
@@ -430,7 +409,6 @@ var MigrateHelper=(function() {
 
         var createNewStarter= function() {
 
-            console.log("MigrateSingleWala.createNewStarter");
             var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(messageId, senderId);
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID]=threadId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=threadId;
@@ -465,7 +443,6 @@ var MigrateHelper=(function() {
 
         var createSender= function() {
 
-            console.log("MigrateSingleWala.createSender");
             var message = new ChatwalaMessageDocuments.Message();
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=messageId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=senderId;
@@ -515,7 +492,6 @@ var MigrateHelper=(function() {
         }
 
         var createRecipient= function()  {
-            console.log("MigrateSingleWala.createRecipient");
             var message = new ChatwalaMessageDocuments.Message();
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=messageId;
             message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=recipientId;
@@ -565,7 +541,6 @@ var MigrateHelper=(function() {
 
 
         var deleteFiles=function() {
-            console.log("--MigrateSingleWala.deleteFiles");
             rimraf(tempFolder, function (err) {
                 seriesCallback();
             });
@@ -672,7 +647,7 @@ var MigrateHelper=(function() {
     }
 
     function countOldBlobs(){
-        initializeOldBlobService();
+        initializeNewBlobService();
         var c = new CountFull();
         c.do();
     }

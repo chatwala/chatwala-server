@@ -220,10 +220,10 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                             }
                         }
                     );
-                },
-                function(messageDocuments, waterfallCallback){
+                }
+                /*function(messageDocuments, waterfallCallback){
                     ThreadApi.CreateThreadsFromMessageDocuments.execute(messageDocuments, waterfallCallback);
-                }/*,
+                },
                 function(messageDocuments, waterfallCallback){
                     UserApi.CreateInitialUser.execute(messageDocuments, waterfallCallback);
                 }*/
