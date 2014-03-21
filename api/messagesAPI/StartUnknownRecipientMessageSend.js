@@ -43,7 +43,9 @@ var StartUnknownRecipientMessageSend=(function() {
                 } else {
                     var collection = db.collection('messages');
 
-                    message.properties["last_modified"] = new Date().getTime();
+                    var current_time = new Date().getTime();
+                    message.properties["last_modified"] = current_time;
+                    message.properties["created_time"] = current_time;
 
                     collection.insert(message.properties,
                         function (err, doc) {
