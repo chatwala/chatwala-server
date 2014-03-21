@@ -124,8 +124,8 @@ var MigrateHelper=(function() {
             if(currentMarker) {
                 options.marker=currentMarker;
             }
+            //oldBlobService.listBlobs(config.azure.oldStorage.container,options,function(error, blobs, continuation, response){
             newBlobService.listBlobs(config.azure.blobStorageShard.s1.container,options,function(error, blobs, continuation, response){
-
                 if(!error){
                     console.log("Number of Blobs in this batch "+ blobs.length);
                     numBlobs+= blobs.length;
@@ -664,6 +664,7 @@ var MigrateHelper=(function() {
 
     function countOldBlobs(){
         initializeNewBlobService();
+        //initializeOldBlobService();
         var c = new CountFull();
         c.do();
     }
