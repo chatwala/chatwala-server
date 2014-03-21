@@ -124,7 +124,7 @@ var MigrateHelper=(function() {
             if(currentMarker) {
                 options.marker=currentMarker;
             }
-            newBlobService.listBlobs("qa-messages",options,function(error, blobs, continuation, response){
+            newBlobService.listBlobs(config.azure.blobStorageShard.s1.container,options,function(error, blobs, continuation, response){
 
                 if(!error){
                     console.log("Number of Blobs in this batch "+ blobs.length);
@@ -174,6 +174,7 @@ var MigrateHelper=(function() {
         var newMetaData;
         var tempFolder;
         var zip;
+        var storedMessage;
 
         this.do = function() {
             async.series([
@@ -208,6 +209,7 @@ var MigrateHelper=(function() {
                     var collection = db.collection('messages');
                     var query = {};
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID] = messageId;
+                    //query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UPLOADED] = false;
 
                     collection.find(
                         query,
@@ -216,8 +218,14 @@ var MigrateHelper=(function() {
                             if(!err) {
                                 cursor.nextObject(function(err, document) {
                                     if(document){
-                                        console.log("wala exists in 2.0 already!");
-                                        seriesCallback("failure",null);
+                                        if(document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UPLOADED]===true) {
+                                            seriesCallback("failure",null);
+                                            console.log("wala exists in 2.0 already!");
+                                        }
+                                        else {
+                                            storedMessage = document;
+                                            seriesCallback();
+                                        }
                                     }
                                     else {
                                         seriesCallback();
@@ -293,6 +301,13 @@ var MigrateHelper=(function() {
 
 
         var postToDB=function() {
+
+
+            //the message is already stored in the database, but it failed to upload, so dont restore it, just put to blob
+            if(storedMessage) {
+                seriesCallback();
+                return;
+            }
 
             var postFunctionArray = [setAsyncPostCallback];
 
