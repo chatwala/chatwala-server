@@ -21,6 +21,8 @@ var MigrateHelper=(function() {
     var oldBlobService = null;
     var newBlobService = null;
 
+    var errArray = [];
+
     function initializeOldBlobService() {
         if (oldBlobService == null) {
             var account = config.azure.oldStorage.storage_name;
@@ -100,6 +102,8 @@ var MigrateHelper=(function() {
                     console.log("done migrating, numBlobs= " +numBlobs + " numMigrated= " + numMigrated);
                     var timenow = new Date().getTime();
                     console.log("The time completed: " + timenow);
+                    console.log("errArray: ");
+                    console.log(errArray);
                 }
             }
             else {
@@ -220,9 +224,10 @@ var MigrateHelper=(function() {
                                     if(document){
                                         if(document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UPLOADED]===true) {
                                             seriesCallback("failure",null);
-                                            console.log("wala exists in 2.0 already!");
+
                                         }
                                         else {
+                                            errArray.push({"cause":"exists & uploaded=false","message_id":messageId});
                                             storedMessage = document;
                                             seriesCallback();
                                         }
@@ -267,6 +272,7 @@ var MigrateHelper=(function() {
                     }
                     else {
                         console.log("download error " + error);
+                        errArray.push({"cause":"download error","message_id":messageId});
                         seriesCallback(error);
                     }
                 });
@@ -305,7 +311,6 @@ var MigrateHelper=(function() {
 
             //the message is already stored in the database, but it failed to upload, so dont restore it, just put to blob
             if(storedMessage) {
-                console.log("postToDB: Message is already in db!... just put to blob");
                 seriesCallback();
                 return;
             }
@@ -382,7 +387,10 @@ var MigrateHelper=(function() {
                 , messageId
                 , tempFolder+"/chat.zip"
                 , function(error){
-                    seriesCallback();
+                    if(error){
+                        errArray.push({"cause":"failure to put", "message_id":messageId});
+                    }
+                     seriesCallback();
                 })
 
         }
