@@ -12,6 +12,8 @@ var PushHelper=(function() {
 
     function registerPushToken(platform_type, user_id, push_token, callback) {
 
+        console.log("In registerPushToken...");
+        console.log("user_id is: " + user_id);
 
         // Function called when registration is completed.
         var registrationComplete = function(error, registration) {
@@ -29,8 +31,10 @@ var PushHelper=(function() {
 
         // Get existing registrations.
         hub.listRegistrationsByTag(user_id, function (error, existingRegs) {
+            console.log("list registrations by tag error: ");
+            console.log(error);
             var firstRegistration = true;
-            if (existingRegs.length > 0) {
+            if (existingRegs && existingRegs.length > 0) {
                 for (var i = 0; i < existingRegs.length; i++) {
                     if (firstRegistration) {
                         existingRegs[i].DeviceToken = push_token;

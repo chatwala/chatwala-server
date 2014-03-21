@@ -216,7 +216,8 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                                 //get info from results
                                 var senderDocument = results[0][1];
                                 var recipientDocument = results[1][1];
-                                waterfallCallback(null, [senderDocument, recipientDocument])
+                                waterfallCallback(null, null)
+                                //waterfallCallback(null, [senderDocument, recipientDocument])
                             }
                         }
                     );
@@ -229,20 +230,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     UserApi.CreateInitialUser.execute(messageDocuments, waterfallCallback);
                 }*/
             ],
-            function(err, responseArray) {
-                var success = true;
-                for(var i=0; responseArray && i<responseArray.length; i++) {
-                    if(responseArray[i].response_code.code!=1) {
-                        success=false;
-                    }
-                }
+            function(err, results) {
 
-                if(responseArray==null) {
-                    success=false;
-                }
 
                 var response = new Response();
-                if(success) {
+                if(!err) {
                     response.response_code = responseCodes["success"];
                 }
                 else {
