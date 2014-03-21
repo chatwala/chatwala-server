@@ -224,9 +224,10 @@ var MigrateHelper=(function() {
                                     if(document){
                                         if(document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UPLOADED]===true) {
                                             seriesCallback("failure",null);
-                                            errArray.push({"cause":"exists & uploaded=true","message_id":messageId});
+
                                         }
                                         else {
+                                            errArray.push({"cause":"exists & uploaded=false","message_id":messageId});
                                             storedMessage = document;
                                             seriesCallback();
                                         }
