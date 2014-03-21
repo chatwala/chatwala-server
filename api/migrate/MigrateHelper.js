@@ -104,6 +104,8 @@ var MigrateHelper=(function() {
                     console.log("The time completed: " + timenow);
                     console.log("errArray: ");
                     console.log(errArray);
+                    
+                    return;
                 }
             }
             else {
