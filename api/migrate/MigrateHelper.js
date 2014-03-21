@@ -305,6 +305,7 @@ var MigrateHelper=(function() {
 
             //the message is already stored in the database, but it failed to upload, so dont restore it, just put to blob
             if(storedMessage) {
+                console.log("postToDB: Message is already in db!... just put to blob");
                 seriesCallback();
                 return;
             }
