@@ -1,7 +1,8 @@
 var ChatwalaApi = require("./ChatwalaApi.js");
 var MigrateHelper = require("./migrate/MigrateHelper.js");
 
-/******* START UNKNOWN RECIPIENT ROUTES*************/
+/******* SHARE/READ/URLS ***************************/
+
 function getShareUrlFromMessageId(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetShareUrlFromMessageId.Request();
     sendRequest.message_id = req.body.message_id;
@@ -17,6 +18,26 @@ function getShareUrlFromMessageId(req,res){
         }
     })
 }
+
+function getReadUrlFromShort(req,res){
+    var sendRequest = new ChatwalaApi.Messages.GetReadUrlFromShort.Request();
+    sendRequest.short = req.body.short;
+
+    console.log(req.body)
+
+    ChatwalaApi.Messages.GetReadUrlFromShort.execute(sendRequest, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    })
+}
+
+/******* END ***************************************/
+
+/******* START UNKNOWN RECIPIENT ROUTES*************/
 
 function postStartUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.StartUnknownRecipientMessageSend.Request();
@@ -258,6 +279,7 @@ function countOldBlobMessages(req,res){
 
 function setRoutes(app) {
     app.post("/messages/getShareUrlFromMessageId", getShareUrlFromMessageId);
+    app.post("/messages/getReadUrlFromShort", getReadUrlFromShort);
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
