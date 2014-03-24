@@ -117,7 +117,6 @@ var ChatwalaMessageDocuments=(function() {
 
 
         this.isValid=function() {
-            console.log("validating message");
 
             //clear any weird or invalid props that may have been added by creating a new properties document
             var newProps = this.getTemplate();
@@ -134,7 +133,6 @@ var ChatwalaMessageDocuments=(function() {
                    return false;
                }
            }
-           console.log("message OK");
            return true;
         }
 
