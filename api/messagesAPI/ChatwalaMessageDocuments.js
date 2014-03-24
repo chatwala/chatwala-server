@@ -170,9 +170,6 @@ var ChatwalaMessageDocuments=(function() {
     }
 
     function createNewStarterUnknownRecipientMessage(message_id, sender_id) {
-        console.log("create new starter unknown recipient message...")
-        console.log("message_id= " + message_id)
-        console.log("sender_id = " + sender_id);
 
         var message = new Message();
         message.properties[MESSAGE_PROPERTIES.MESSAGE_ID]= message_id;
