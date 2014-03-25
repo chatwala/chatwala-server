@@ -163,9 +163,19 @@ var ChatwalaMessageDocuments=(function() {
             metaDataJSON[MESSAGE_PROPERTIES.REPLIED]=properties[MESSAGE_PROPERTIES.REPLIED];
         }
 
+        var version_id_num = parseFloat(properties[MESSAGE_PROPERTIES.VERSION]);
+
+        if(version_id_num >= 2.1){
+            //return the thumnail url as the message thumbnail
+            metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getMessageThumbnailUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY],properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
+        }
+        else{
+            //return the thumbnail url as a users profile picture
+            metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
+        }
+
         //Dynamic Properties
         metaDataJSON[MESSAGE_PROPERTIES.READ_URL]=SASHelper.getMessageReadUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
-        metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
         metaDataJSON[MESSAGE_PROPERTIES.SHARE_URL]=  SASHelper.getShareUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
 
         return metaDataJSON;

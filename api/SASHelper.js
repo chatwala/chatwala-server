@@ -90,6 +90,10 @@ var SASHelper=(function() {
         return config.azure.nonShardedBlobStorage.base_url + sender_user_id;
     }
 
+    function getMessageThumbnailUrl(shard_key, message_id){
+        return config.azure.blobStorageShard[shard_key].base_url + config.azure.blobStorageShard[shard_key].message_thumbnail_container + "/" + message_id;
+    }
+
     function getMessageThumbnailWriteUrl(shard_key, message_id){
 
         //create a SAS that expires in 10 min
@@ -112,7 +116,8 @@ var SASHelper=(function() {
         "getThumbnailUrl":getThumbnailUrl,
         "getMessageReadUrl":getMessageReadUrl,
         "getShareUrl":getShareUrl,
-        "getMessageThumbnailWriteUrl":getMessageThumbnailWriteUrl
+        "getMessageThumbnailWriteUrl":getMessageThumbnailWriteUrl,
+        "getMessageThumbnailUrl":getMessageThumbnailUrl
     };
 
 }());
