@@ -31,7 +31,7 @@ var GetShortUrlFromMessageId = (function(){
 
     var Response = function() {
         this.response_code=undefined;
-        this.share_url=undefined;
+        this.short_url=undefined;
     };
 
     function execute(request, callback){
@@ -143,7 +143,7 @@ var GetShortUrlFromMessageId = (function(){
             }
             else {
                 response.response_code = responseCodes["success"];
-                response.share_url = config.share_base_url + short;
+                response.short_url = config.short_base_url + short;
             }
             callback(err, response);
         }
