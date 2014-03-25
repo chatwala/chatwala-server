@@ -58,7 +58,7 @@ var CompleteReplyMessageSend=(function() {
                         var update = {}
                         update["uploaded"] = true;
                         update["showable"] = true;
-                        var current_time = new Date().getTIme();
+                        var current_time = new Date().getTime();
                         update["uploaded_time"] = current_time;
                         update["last_modified"] = current_time;
 
