@@ -7,10 +7,12 @@ var GetUserInbox = require("./GetUserInbox.js");
 var RenewWriteSASURL = require("./RenewWriteSASURL.js");
 var GetReadURLForMessage = require("./GetReadURLForMessage.js");
 var GetShareUrlFromMessageId = require("./GetShareUrlFromMessageId.js");
+var GetShortUrlFromMessageId = require("./GetShortUrlFromMessageId.js");
 var GetReadUrlFromShort = require("./GetReadUrlFromShort.js");
 
 var MessagesApi = {
     "GetShareUrlFromMessageId": GetShareUrlFromMessageId,
+    "GetShortUrlFromMessageId": GetShortUrlFromMessageId,
     "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
     "CompleteUnknownRecipientMessageSend":CompleteUnknownRecipientMessageSend,
     "ConvertUnknownRecipientMessageToKnownRecipient":ConvertUnknownRecipientMessageToKnownRecipient,

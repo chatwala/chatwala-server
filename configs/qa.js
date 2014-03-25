@@ -29,5 +29,7 @@ module.exports = {
         "hub_keyname" : "DefaultFullSharedAccessSignature",
         "hub_key" : "gePyfv/kICC7LLYzvoZHmjO4yXZQoED1xUkjb5mHqsQ="
     },
-    "share_base_url": "http://chatwala.com/qa/?"
+    "share_base_url": "http://chatwala.com/qa/?",
+    "short_base_url": "http://chatwala.com/qa/?"
+
 };

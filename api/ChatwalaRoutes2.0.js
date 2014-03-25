@@ -19,6 +19,23 @@ function getShareUrlFromMessageId(req,res){
     })
 }
 
+function getShortUrlFromMessageId(req,res){
+    var sendRequest = new ChatwalaApi.Messages.GetShortUrlFromMessageId.Request();
+    sendRequest.message_id = req.body.message_id;
+
+    console.log(req.body)
+
+    ChatwalaApi.Messages.GetShortUrlFromMessageId.execute(sendRequest, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    })
+}
+
+
 function getReadUrlFromShort(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetReadUrlFromShort.Request();
     sendRequest.short = req.body.short;
@@ -279,6 +296,7 @@ function countOldBlobMessages(req,res){
 
 function setRoutes(app) {
     app.post("/messages/getShareUrlFromMessageId", getShareUrlFromMessageId);
+    app.post("/messages/getShortUrlFromMessageId", getShortUrlFromMessageId);
     app.post("/messages/getReadUrlFromShort", getReadUrlFromShort);
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
