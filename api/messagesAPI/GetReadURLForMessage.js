@@ -38,7 +38,7 @@ var GetReadURLForMessage = (function(){
             callback("failureInvalidRequest",response);
         }
 
-        var read_url_for_message = config.azure.blobStorageShard[shard_key].base_url + message_id;
+        var read_url_for_message = config.azure.blobStorageShard[shard_key].base_url + config.azure.blobStorageShard[shard_key].container + "/" + message_id;
 
         var response = new Response();
         response.response_code = responseCodes["success"];

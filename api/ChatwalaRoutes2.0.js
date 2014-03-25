@@ -171,6 +171,21 @@ function postRenewWriteUrlForMessage(req, res) {
     });
 }
 
+function postGetMessageThumbnailWriteUrl(req, res){
+    var request = new ChatwalaApi.Messages.GetMessageThumbnailWriteUrl.Request();
+    request.message_id = req.body.message_id;
+    request.shard_key = req.body.shard_key;
+
+    ChatwalaApi.Messages.GetMessageThumbnailWriteUrl.execute(request, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    })
+}
+
 /******* END KNOWN RECIPIENT ROUTES*************/
 
 
@@ -311,6 +326,7 @@ function setRoutes(app) {
     app.post("/user/postGetReadURLForUserProfilePicture", postGetReadURLForUserProfilePicture);
     app.post("/messages/migrateMessage", migrateMessage);
     app.post("/messages/countOldBlobMessages", countOldBlobMessages);
+    app.post("/messages/getMessageThumbnailWriteUrl", postGetMessageThumbnailWriteUrl);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }

@@ -9,6 +9,8 @@ var SASHelper=(function() {
         return config.azure.currentShardKey;
     }
 
+
+
     function getBlobServiceForShard(shardKey)
     {
 
@@ -21,6 +23,8 @@ var SASHelper=(function() {
         return blobService;
     }
 
+
+
     function getBlobServiceForProfilePicture(){
         var blobService = nonShardedBlobService;
         if(blobService===undefined) {
@@ -32,13 +36,19 @@ var SASHelper=(function() {
         return blobService;
     }
 
+
+
     function getMessageReadUrl(shard_key, message_id) {
-        return config.azure.blobStorageShard[shard_key].base_url + message_id;
+        return config.azure.blobStorageShard[shard_key].base_url + config.azure.blobStorageShard[shard_key].container + "/" + message_id;
     }
+
+
 
     function getShareUrl(shard_key, message_id){
         return config.share_base_url + shard_key + "." + message_id;
     }
+
+
 
     function getWriteSharedAccessPolicy(shard_key, message_id) {
 
@@ -54,6 +64,8 @@ var SASHelper=(function() {
         return getBlobServiceForShard(shard_key).getBlobUrl(container_name, message_id, sharedAccessPolicy);
     }
 
+
+
     function getWriteSharedAccessPolicyForProfilePicture(user_id) {
         //create a SAS that expires in 10 min
         var sharedAccessPolicy = {
@@ -66,12 +78,31 @@ var SASHelper=(function() {
     }
 
 
+
+
     function getProfilePictureUploadURL(user_id) {
         return getWriteSharedAccessPolicyForProfilePicture(user_id);
     }
 
+
+
     function getThumbnailUrl(sender_user_id) {
         return config.azure.nonShardedBlobStorage.base_url + sender_user_id;
+    }
+
+    function getMessageThumbnailWriteUrl(shard_key, message_id){
+
+        //create a SAS that expires in 10 min
+        var sharedAccessPolicy = {
+            AccessPolicy: {
+                Permissions: 'rw',
+                Expiry: azure.date.minutesFromNow(10)
+            }
+        };
+
+        var container_name = config.azure.blobStorageShard[shard_key].message_thumbnail_container;
+        return getBlobServiceForShard(shard_key).getBlobUrl(container_name, message_id, sharedAccessPolicy);
+
     }
 
     return {
@@ -80,7 +111,8 @@ var SASHelper=(function() {
         "getProfilePictureUploadURL":getProfilePictureUploadURL,
         "getThumbnailUrl":getThumbnailUrl,
         "getMessageReadUrl":getMessageReadUrl,
-        "getShareUrl":getShareUrl
+        "getShareUrl":getShareUrl,
+        "getMessageThumbnailWriteUrl":getMessageThumbnailWriteUrl
     };
 
 }());

@@ -1,5 +1,5 @@
 /****
-Created by Kevin Miller on 3/4/14
+Created by Kevin Miller on 3/25/14
 ****/
 var SASHelper = require('../SASHelper.js');
 
@@ -9,11 +9,11 @@ var GetMessageThumbnailWriteUrl = (function(){
     var responseCodes = {
 	    "success": {
 	        "code":1,
-	        "message":"The profile picture SAS Url has been provided"
+	        "message":"The message thumbnail SAS Url has been provided"
 	    },
 	    "failure": {
 	        "code":-100,
-	        "message":"A failure occurred while trying to retrieve a SAS URL"
+	        "message":"A failure occurred while trying to retrieve a thumbnail write SAS URL"
 	    },
 	    "failureInvalidRequest": {
 	        "code":-101,
@@ -23,7 +23,8 @@ var GetMessageThumbnailWriteUrl = (function(){
     };
 
 	var Request = function() {
-        this.user_id=undefined;
+        this.message_id=undefined;
+        this.shard_key=undefined;
     };
 
     var Response = function() {
@@ -33,15 +34,15 @@ var GetMessageThumbnailWriteUrl = (function(){
 
 
 	var execute = function(request, callback){
-		
-		if(typeof request.user_id === 'undefined'){
+
+		if(typeof request.message_id === 'undefined' || typeof request.shard_key === 'undefined'){
 			var response = new Response();
 			response.response_code = responseCodes['failureInvalidRequest'];
 			callback("failureInvalidRequest", response);
 			return;
 		}
 
-		var write_url = SASHelper.getProfilePictureUploadURL(request.user_id);
+		var write_url = SASHelper.getMessageThumbnailWriteUrl(request.shard_key,request.message_id);
 
 		if(typeof write_url !== "undefined"){
 			var response = new Response();
