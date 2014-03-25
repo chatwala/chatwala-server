@@ -33,7 +33,7 @@ var GetShortUrlFromMessageId = (function(){
         this.short_url=undefined;
     };
 
-    var _crcTable;
+
     var makeCRCTable = function(){
         var c;
         var crcTable = [];
@@ -47,12 +47,13 @@ var GetShortUrlFromMessageId = (function(){
         return crcTable;
     }
 
+    var _crcTable = makeCRCTable();
+
     var crc32 = function(str) {
-        var crcTable = _crcTable || (_crcTable = makeCRCTable());
         var crc = 0 ^ (-1);
 
         for (var i = 0; i < str.length; i++ ) {
-            crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+            crc = (crc >>> 8) ^ _crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
         }
 
         return (crc ^ (-1)) >>> 0;
