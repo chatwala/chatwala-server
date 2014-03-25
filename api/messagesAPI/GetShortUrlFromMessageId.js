@@ -5,7 +5,6 @@
 var config = require('./../../config.js');
 var CWMongoClient = require('./../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
-var crc = require('crc');
 var async = require('async');
 
 var GetShortUrlFromMessageId = (function(){
@@ -34,6 +33,31 @@ var GetShortUrlFromMessageId = (function(){
         this.short_url=undefined;
     };
 
+    var _crcTable;
+    var makeCRCTable = function(){
+        var c;
+        var crcTable = [];
+        for(var n =0; n < 256; n++){
+            c = n;
+            for(var k =0; k < 8; k++){
+                c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+            }
+            crcTable[n] = c;
+        }
+        return crcTable;
+    }
+
+    var crc32 = function(str) {
+        var crcTable = _crcTable || (_crcTable = makeCRCTable());
+        var crc = 0 ^ (-1);
+
+        for (var i = 0; i < str.length; i++ ) {
+            crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+        }
+
+        return (crc ^ (-1)) >>> 0;
+    };
+
     function execute(request, callback){
         console.log("start");
         var message_id = request.message_id;
@@ -46,9 +70,11 @@ var GetShortUrlFromMessageId = (function(){
         }
 
         //1. create shortened url
-        var checksum = crc.crc32(message_id);
-        var shortbase = ""+ crc.hex32(checksum);
-        console.log("shortbase="+ shortbase);
+        var checksum = crc32(message_id);
+
+        var radix36=checksum.toString(36);
+
+        var shortbase = radix36;
 
 
         //2. find increment and save to db
@@ -103,7 +129,7 @@ var GetShortUrlFromMessageId = (function(){
                 console.log("storing in db, increment = " + increment);
                 var short = shortbase;
                 if(increment>0) {
-                    var hexInc = increment.toString(32);
+                    var hexInc = increment.toString(36);
                     short = hexInc +"" + shortbase;
                 }
 
