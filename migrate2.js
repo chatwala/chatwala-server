@@ -130,6 +130,6 @@ function checkExists(messages_array, index, notExist, callback){
 
 }
 
-//migrate();
-checkWalasForUserId("d80ba84b-7785-c219-5ee5-74130eff8e2a");
+migrate();
+//checkWalasForUserId("d80ba84b-7785-c219-5ee5-74130eff8e2a");
 
