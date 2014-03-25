@@ -39,8 +39,10 @@ var ChatwalaMessageDocuments=(function() {
 
     //dynamic properties: these are created only when the metadata file is asked for
     MESSAGE_PROPERTIES.SHARE_URL="share_url";
+    MESSAGE_PROPERTIES.SHORT_URL="short_url";
     MESSAGE_PROPERTIES.READ_URL="read_url";
     MESSAGE_PROPERTIES.THUMBNAIL_URL = "thumbnail_url";
+    MESSAGE_PROPERTIES.USER_THUMBNAIL_URL = "user_thumbnail_url";
 
     function Message() {
 
@@ -163,6 +165,8 @@ var ChatwalaMessageDocuments=(function() {
             metaDataJSON[MESSAGE_PROPERTIES.REPLIED]=properties[MESSAGE_PROPERTIES.REPLIED];
         }
 
+        metaDataJSON[MESSAGE_PROPERTIES.USER_THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
+
         var version_id_num = parseFloat(properties[MESSAGE_PROPERTIES.VERSION]);
 
         if(version_id_num >= 2.1){
@@ -171,7 +175,7 @@ var ChatwalaMessageDocuments=(function() {
         }
         else{
             //return the thumbnail url as a users profile picture
-            metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getThumbnailUrl(properties[MESSAGE_PROPERTIES.SENDER_ID]);
+            metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=metaDataJSON[MESSAGE_PROPERTIES.USER_THUMBNAIL_URL];
         }
 
         //Dynamic Properties
