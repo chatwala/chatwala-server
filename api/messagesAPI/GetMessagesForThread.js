@@ -42,7 +42,7 @@ var GetMessagesForThread=(function() {
     var page_size = 5;
 
     var execute = function(request, callback) {
-        console.log("execute");
+
         if(request.thread_id===undefined) {
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
@@ -51,8 +51,8 @@ var GetMessagesForThread=(function() {
         }
 
         CWMongoClient.getConnection(function (err, db) {
-            console.log(err);
             if (err) {
+                console.log(err);
                 var response = new Response();
                 response.response_code = responseCodes["failure"];
                 callback("failure", response);
@@ -67,8 +67,6 @@ var GetMessagesForThread=(function() {
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.user_id;
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_ID] = request.thread_id;
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE] = true;
-
-                console.log(query);
 
                 //always grab 1 extra record so we know there are more pages
                 collection.find(

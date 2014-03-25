@@ -44,9 +44,6 @@ var RenewWriteSASURL=(function() {
             return;
         }
 
-        console.log("message_id : " + request.message_id);
-        console.log("message_id : " + request.shard_key);
-
         var shard_key = request.shard_key;
         var message_id = request.message_id;
 

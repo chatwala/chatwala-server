@@ -30,8 +30,7 @@ var GetReadURLForMessage = (function(){
     function execute(request, callback){
         var shard_key = request.share_url_id.split('.')[0];
         var message_id = request.share_url_id.split('.')[1];
-        console.log("shard_key" + shard_key);
-        console.log("message id" + message_id);
+
         if(typeof message_id === 'undefined' || typeof shard_key === 'undefined'){
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];

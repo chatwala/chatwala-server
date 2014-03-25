@@ -43,7 +43,7 @@ var CreateInitialUser = (function(){
 
 
     function execute(user_message_documents, callback){
-       console.log(user_message_documents);
+
         callback(null,user_message_documents)
        /*
         var user_id = user_message_document[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID];

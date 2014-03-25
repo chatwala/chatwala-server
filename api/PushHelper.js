@@ -12,14 +12,11 @@ var PushHelper=(function() {
 
     function registerPushToken(platform_type, user_id, push_token, callback) {
 
-        console.log("In registerPushToken...");
-        console.log("user_id is: " + user_id);
-
         // Function called when registration is completed.
         var registrationComplete = function(error, registration) {
             if (!error) {
                 // Return the registration.
-                console.log("Successfully registered user device for push notifications.");
+                console.log("Successfully registered users device for push notifications.");
                 callback(null);
             }
             else {
@@ -31,8 +28,10 @@ var PushHelper=(function() {
 
         // Get existing registrations.
         hub.listRegistrationsByTag(user_id, function (error, existingRegs) {
-            console.log("list registrations by tag error: ");
-            console.log(error);
+            if(error){
+                console.log("list registrations by tag error: ");
+                console.log(error);
+            }
             var firstRegistration = true;
             if (existingRegs && existingRegs.length > 0) {
                 for (var i = 0; i < existingRegs.length; i++) {
@@ -48,13 +47,13 @@ var PushHelper=(function() {
             } else {
                 // Create a new registration.
                 if (platform_type === 'ios') {
-                    console.log("Starting APNS registration.");
+
                     var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"1\"}}';
                     hub.apns.createTemplateRegistration(push_token,
                         [user_id], template, registrationComplete);
                 }
                 else if (platform_type === 'android') {
-                    console.log("Starting GCM registration.");
+
                     var template = '{\"message\":\"$(message)\"}';
                     hub.gcm.createTemplateRegistration(push_token,
                         [user_id], template, registrationComplete);

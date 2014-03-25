@@ -34,7 +34,7 @@ var CompleteReplyMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
-        console.log("message_id="+request.message_id);
+
         if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
@@ -42,7 +42,7 @@ var CompleteReplyMessageSend=(function() {
             callback("failureInvalidServerMessageId", response);
             return;
         }
-        console.log(request);
+
         async.waterfall([
             //update to say "uploaded"
 

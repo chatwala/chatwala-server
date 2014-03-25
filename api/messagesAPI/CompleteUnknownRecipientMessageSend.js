@@ -37,7 +37,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
-        console.log(request);
+
         if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
@@ -70,7 +70,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
                     {"$set":update},
                     {"upsert":false, "multi": false},
                     function (err, docs) {
-                        console.log(docs);
+
                     if (!err) {
                         var response = new Response();
                         response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(docs);

@@ -71,8 +71,10 @@ var GetThreadBox=(function() {
                     query,
                     {"limit": page_size+1, "sort":{"_id":1}},
                     function(err, cursor) {
-                        console.log(err, cursor);
+
                         if(err) {
+                            console.log(err);
+                            console.log(cursor)
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
                             callback(err, response);

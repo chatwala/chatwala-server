@@ -49,7 +49,7 @@ var StartUnknownRecipientMessageSend=(function() {
 
                     collection.insert(message.properties,
                         function (err, doc) {
-                            console.log("err=" + err);
+
                             if (!err) {
                                 var response = new Response();
                                 response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(doc[0], false);
@@ -59,6 +59,8 @@ var StartUnknownRecipientMessageSend=(function() {
                                 response.response_code = responseCodes["success"];
                                 callback(null, response);
                             } else {
+                                console.log("Error in Start Unknown Recipient Message Send");
+                                console.log(err);
                                 var response = new Response();
                                 response.message_meta_data = {};
                                 response.response_code = responseCodes["failureDBSave"];
