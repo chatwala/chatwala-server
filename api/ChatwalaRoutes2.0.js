@@ -326,7 +326,7 @@ function setRoutes(app) {
     app.post("/user/postGetReadURLForUserProfilePicture", postGetReadURLForUserProfilePicture);
     app.post("/messages/migrateMessage", migrateMessage);
     app.post("/messages/countOldBlobMessages", countOldBlobMessages);
-    app.post("/messages/getMessageThumbnailWriteUrl", postGetMessageThumbnailWriteUrl);
+    app.post("/messages/renewWriteUrlForMessageThumbnail", postGetMessageThumbnailWriteUrl);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
