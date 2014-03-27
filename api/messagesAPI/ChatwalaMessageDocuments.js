@@ -7,7 +7,7 @@ var ChatwalaMessageDocuments=(function() {
     var ROLE_SENDER = "SENDER";
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
-    var VERSION = "2.0";
+    var VERSION = "2.1";
     var VERSION_OLD="1.0";
 
     var MESSAGE_PROPERTIES = {};
@@ -36,6 +36,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.THREAD_STARTER="thread_starter";
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
     MESSAGE_PROPERTIES.VERSION="version_id";
+    MESSAGE_PROPERTIES.DELETED="deleted"
 
     //dynamic properties: these are created only when the metadata file is asked for
     MESSAGE_PROPERTIES.SHARE_URL="share_url";
@@ -66,6 +67,7 @@ var ChatwalaMessageDocuments=(function() {
             template[MESSAGE_PROPERTIES.DELIVERED]=false;
             template[MESSAGE_PROPERTIES.VIEWED]=false;
             template[MESSAGE_PROPERTIES.REPLIED]= false;
+            template[MESSAGE_PROPERTIES.DELETED]= false;
             template[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=null;
             template[MESSAGE_PROPERTIES.SHOWABLE]=false;
             template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
@@ -170,7 +172,7 @@ var ChatwalaMessageDocuments=(function() {
         var version_id_num = parseFloat(properties[MESSAGE_PROPERTIES.VERSION]);
 
         if(version_id_num >= 2.1){
-            //return the thumnail url as the message thumbnail
+            //return the thumbnail url as the message thumbnail
             metaDataJSON[MESSAGE_PROPERTIES.THUMBNAIL_URL]=SASHelper.getMessageThumbnailUrl(properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY],properties[MESSAGE_PROPERTIES.MESSAGE_ID]);
         }
         else{

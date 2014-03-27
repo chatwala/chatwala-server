@@ -1,13 +1,29 @@
 var ChatwalaApi = require("./ChatwalaApi.js");
 var MigrateHelper = require("./migrate/MigrateHelper.js");
 
+
+/******* MESSAGE STATES ****************************/
+function markMessageAsDeleted(req,res){
+    var sendRequest = new ChatwalaApi.Messages.MarkMessageAsDeleted.Request();
+    sendRequest.message_id = req.body.message_id;
+    sendRequest.user_id = req.body.user_id;
+
+    ChatwalaApi.Messages.MarkMessageAsDeleted.execute(sendRequest, function(err, response){
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    })
+}
+/******* END MESSAGE STATES ************************/
+
 /******* SHARE/READ/URLS ***************************/
 
 function getShareUrlFromMessageId(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetShareUrlFromMessageId.Request();
     sendRequest.message_id = req.body.message_id;
-
-    console.log(req.body)
 
     ChatwalaApi.Messages.GetShareUrlFromMessageId.execute(sendRequest, function(err, response){
         if(!err) {
@@ -327,6 +343,7 @@ function setRoutes(app) {
     app.post("/messages/migrateMessage", migrateMessage);
     app.post("/messages/countOldBlobMessages", countOldBlobMessages);
     app.post("/messages/getMessageThumbnailWriteUrl", postGetMessageThumbnailWriteUrl);
+    app.post("/messages/markMessageAsDeleted", markMessageAsDeleted);
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }
