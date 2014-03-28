@@ -50,6 +50,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
@@ -118,6 +119,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID] = request.recipient_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
         message.generateMessageInstanceId();

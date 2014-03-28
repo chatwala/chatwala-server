@@ -35,7 +35,7 @@ var StartReplyMessageSend=(function() {
         this.message_meta_data=undefined;
         this.response_code=undefined;
         this.write_url=undefined;
-        this.user_thumbnail_write_url=undefined;
+        this.message_thumbnail_write_url=undefined;
     };
 
     var execute = function(request, callback) {
@@ -221,7 +221,7 @@ var StartReplyMessageSend=(function() {
             else {
                 response.response_code = responseCodes["success"];
                 response.write_url = SASHelper.getWriteSharedAccessPolicy(outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]);
-                response.user_thumbnail_write_url = SASHelper.getMessageThumbnailWriteUrl(outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]);
+                response.message_thumbnail_write_url = SASHelper.getMessageThumbnailWriteUrl(outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY], outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]);
                 response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(outboxMessageDocument, false);
             }
             callback(err, response);

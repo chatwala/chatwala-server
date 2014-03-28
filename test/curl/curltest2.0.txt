@@ -318,6 +318,13 @@ curl -i \
 "http://localhost:1337/messages/messagesForThread";
 
 
+----MarkMessageAsDeleted----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"message_id":"0FA94FEC-9EDE-4940-B974-B4DF9FB3F5D5", "user_id":"7476C688-9CD6-4746-AB19-F7B67992F2B2"}' \
+"http://localhost:1337/messages/markMessageAsDeleted";
 
 
 
