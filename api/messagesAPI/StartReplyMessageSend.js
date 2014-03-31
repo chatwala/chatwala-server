@@ -29,6 +29,7 @@ var StartReplyMessageSend=(function() {
         this.message_id=undefined;
         this.replying_to_message_id=undefined;
         this.start_recording=undefined;
+        this.client_version_id=undefined;
     };
 
     var Response = function() {
@@ -87,6 +88,7 @@ var StartReplyMessageSend=(function() {
                 console.log(originalMessageDocument);
 
                 var message = new ChatwalaMessageDocuments.Message();
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.owner_user_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_SENDER;
@@ -150,7 +152,7 @@ var StartReplyMessageSend=(function() {
             //3. put message in the recipients inbox
             function(outboxMessageDocument, waterfallCallback) {
                 var message = new ChatwalaMessageDocuments.Message();
-
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.RECIPIENT_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE]=ChatwalaMessageDocuments.ROLE_RECIPIENT;

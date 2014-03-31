@@ -76,6 +76,7 @@ function postStartUnknownRecipientMessageSend(req, res) {
     var sendRequest = new ChatwalaApi.Messages.StartUnknownRecipientMessageSend.Request();
     sendRequest.message_id = req.body.message_id;
     sendRequest.sender_id = req.body.sender_id;
+    sendRequest.client_version_id = req.headers["x-chatwala-appversion"];
 
     ChatwalaApi.Messages.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
        if(!err) {
@@ -106,6 +107,9 @@ function postConvertUnknownRecipientMessageToKnownRecipient(req, res) {
     var convertRequest = new ChatwalaApi.Messages.ConvertUnknownRecipientMessageToKnownRecipient.Request();
     convertRequest.message_id = req.body.message_id;
     convertRequest.recipient_id = req.body.recipient_id;
+    convertRequest.client_version_id = req.headers["x-chatwala-appversion"];
+
+
 
 
     ChatwalaApi.Messages.ConvertUnknownRecipientMessageToKnownRecipient.execute(convertRequest, function(err, response){
@@ -145,6 +149,8 @@ function postStartReplyMessageSend(req, res) {
     request.message_id = req.body.message_id;
     request.owner_user_id = req.body.user_id;
     request.start_recording = req.body.start_recording;
+    request.client_version_id = req.headers["x-chatwala-appversion"];
+
 
 
     ChatwalaApi.Messages.StartReplyMessageSend.execute(request, function(err, response){

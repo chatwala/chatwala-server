@@ -23,6 +23,7 @@ var StartUnknownRecipientMessageSend=(function() {
     var Request = function() {
         this.sender_id=undefined;
         this.message_id=undefined;
+        this.client_version_id=undefined;
     };
 
     var Response = function() {
@@ -35,6 +36,7 @@ var StartUnknownRecipientMessageSend=(function() {
     var execute = function(request, callback) {
 
         var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.message_id, request.sender_id);
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
         if(message.isValid()) {
             CWMongoClient.getConnection(function (err, db) {
                 if (err) {

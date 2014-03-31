@@ -8,7 +8,7 @@ var ChatwalaMessageDocuments=(function() {
     var ROLE_RECIPIENT = "RECIPIENT";
     var RECIPIENT_UNKNOWN = "RECIPIENT_UNKNOWN";
     var VERSION = "2.1";
-    var VERSION_OLD="1.0";
+    var VERSION_OLD="2.0";
 
     var MESSAGE_PROPERTIES = {};
     MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID="message_instance_id";
@@ -221,6 +221,16 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
+    function getVersionIdByClientVersion(client_version_id){
+
+        if(client_version_id === "1.5.0" || client_version_id === "1.5.1" || client_version_id.substring(0,3) === "1.4"){
+            return VERSION_OLD;
+        }
+        else{
+            return VERSION;
+        }
+    }
+
     return {
         "Message": Message,
         "ROLE_SENDER": ROLE_SENDER,
@@ -229,6 +239,7 @@ var ChatwalaMessageDocuments=(function() {
         "createNewStarterUnknownRecipientMessage": createNewStarterUnknownRecipientMessage,
         //"createNewKnownRecipientMessage": createNewKnownRecipientMessage,
         "createMetaDataJSON": createMetaDataJSON,
+        "getVersionIdByClientVersion":getVersionIdByClientVersion,
         "MESSAGE_PROPERTIES":MESSAGE_PROPERTIES,
         "VERSION_OLD": VERSION_OLD
     };
