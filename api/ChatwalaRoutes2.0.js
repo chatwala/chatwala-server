@@ -1,6 +1,6 @@
 var ChatwalaApi = require("./ChatwalaApi.js");
 var MigrateHelper = require("./migrate/MigrateHelper.js");
-
+var cwlog = require("./../logs/CW_Logger.js");
 
 /******* MESSAGE STATES ****************************/
 function markMessageAsDeleted(req,res){
@@ -78,6 +78,9 @@ function postStartUnknownRecipientMessageSend(req, res) {
     sendRequest.message_id = req.body.message_id;
     sendRequest.sender_id = req.body.sender_id;
     sendRequest.client_version_id = req.headers["x-chatwala-appversion"];
+
+    cwlog.info("From info:");
+    cwlog.info(req.body);
 
     ChatwalaApi.Messages.StartUnknownRecipientMessageSend.execute(sendRequest, function(err, response){
        if(!err) {
