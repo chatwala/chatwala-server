@@ -218,7 +218,7 @@ var ChatwalaMessageDocuments=(function() {
 
     function getVersionIdByClientVersion(client_version_id){
 
-        if(client_version_id === "1.5.0" || client_version_id === "1.5.1" || client_version_id.substring(0,3) === "1.4"){
+        if(client_version_id === undefined || typeof client_version_id === "undefined" || client_version_id === "1.5.0" || client_version_id === "1.5.1" || client_version_id.substring(0,3) === "1.4"){
             return VERSION_OLD;
         }
         else{
