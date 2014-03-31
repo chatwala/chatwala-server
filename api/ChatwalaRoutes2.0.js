@@ -26,6 +26,7 @@ function getShareUrlFromMessageId(req,res){
     sendRequest.message_id = req.body.message_id;
 
     ChatwalaApi.Messages.GetShareUrlFromMessageId.execute(sendRequest, function(err, response){
+
         if(!err) {
             res.send(200, response);
         }
@@ -277,7 +278,7 @@ function getThreadsForUser(req, res) {
 }
 
 function getMessagesForThread(req, res) {
-    console.log("getMessagesForThread");
+
     var request = new ChatwalaApi.GetMessagesForThread.Request();
     request.thread_id = req.body.thread_id;
     request.user_id = req.body.user_id;

@@ -40,8 +40,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     };
 
     function saveSenderDocument(originalDocument, request, parallelCallback) {
-        console.log("originalDocument=");
-        console.log(originalDocument);
+
         var message = new ChatwalaMessageDocuments.Message();
         message.setPropsFromDictionary(originalDocument);
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
@@ -56,20 +55,20 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
-        console.log("message.properties=");
-        console.log(message.properties);
+
         if(message.isValid()) {
-            console.log("message is valid");
+
 
             CWMongoClient.getConnection(function (err, db) {
-                console.log("got connection");
+
                 if (err) {
-                    console.log("we have an error!");
+                    console.log("error on save sender document");
+                    console.log(err);
                     var res = new Response();
                     res.response_code = responseCodes["failureDBConnect"];
                     return parallelCallback("failureDBConnect", res);
                 } else {
-                    console.log("getting the collection");
+
                     var collection = db.collection('messages');
 
                     var query={};
@@ -89,10 +88,10 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                         function (err, updated) {
                             var response = new Response();
                             if (!err) {
-                                console.log(err);
                                 response.response_code = responseCodes["success"];
                                 parallelCallback(null, response, updated);
                             } else {
+                                console.log(err);
                                 response.response_code = responseCodes["failureDBSave"];
                                 parallelCallback("failureDBSave", response, updated);
                             }
@@ -101,7 +100,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             });
         }
         else {
-            console.log("MESSAGE IS NOT VALID");
+            console.log("Error message not valid in save sender document");
             var response = new Response();
             response.messageDocument = {};
             response.response_code = responseCodes["failureInvalidMessageDocument"];
@@ -126,12 +125,11 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
         message.generateMessageInstanceId();
         message.generateThreadInformation();
-        console.log("message.properties=");
-        console.log(message.properties);
+
         if(message.isValid()) {
-            console.log("message is valid");
+
             CWMongoClient.getConnection(function (err, db) {
-                console.log("get connection");
+
                 if (err) {
                     var res = new Response();
                     res.responseCode = responseCodes["failureDBConnect"];
@@ -168,7 +166,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
             });
         }
         else {
-            console.log("MESSAGE IS NOT VALID");
+            console.log("Error message is not valid in save recipient document");
             var response = new Response();
             response.response_code = responseCodes["failureInvalidMessageDocument"];
             parallelCallback("failureInvalidMessageDocument", response, null);
@@ -218,9 +216,10 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                             }
                             else{
                                 //get info from results
-                                var senderDocument = results[0][1];
-                                var recipientDocument = results[1][1];
-                                waterfallCallback(null, [senderDocument, recipientDocument])
+                                //var senderDocument = results[0][1];
+                                //var recipientDocument = results[1][1];
+                                waterfallCallback(null, null)
+                                //waterfallCallback(null, [senderDocument, recipientDocument])
                             }
                         }
                     );
@@ -233,26 +232,19 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     UserApi.CreateInitialUser.execute(messageDocuments, waterfallCallback);
                 }*/
             ],
-            function(err, responseArray) {
-                var success = true;
-                for(var i=0; responseArray && i<responseArray.length; i++) {
-                    if(responseArray[i].response_code.code!=1) {
-                        success=false;
-                    }
-                }
+            function(err, results) {
 
-                if(responseArray==null) {
-                    success=false;
-                }
 
                 var response = new Response();
-                if(success) {
+                if(!err) {
                     response.response_code = responseCodes["success"];
                 }
                 else {
+                    console.log("Error in convert unknown recipient message to known recipient");
+                    console.log(err);
                     response.response_code = responseCodes["failure"];
                 }
-                console.log(response);
+
                 callback(err, response);
             }
         );

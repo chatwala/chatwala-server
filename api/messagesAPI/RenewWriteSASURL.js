@@ -44,15 +44,12 @@ var RenewWriteSASURL=(function() {
             return;
         }
 
-        console.log("message_id : " + request.message_id);
-        console.log("message_id : " + request.shard_key);
-
         var shard_key = request.shard_key;
         var message_id = request.message_id;
 
         var write_url = SASHelper.getWriteSharedAccessPolicy(shard_key, message_id);
         var response = new Response();
-        response.responseCode = responseCodes["success"];
+        response.response_code = responseCodes["success"];
         response.write_url = write_url;
         callback(null, response);
     };

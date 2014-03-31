@@ -37,7 +37,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
     Set uploaded to true on the original document
      */
     var execute = function(request, callback) {
-        console.log(request);
+
         if(request.message_id === undefined) {
             var response = new Response();
             response.message_meta_data = {};
@@ -59,7 +59,10 @@ var CompleteUnknownRecipientMessageSend=(function() {
 
                 var update = {};
                 update["uploaded"] = true;
-                update["last_modified"] = new Date().getTime();
+
+                var current_time = new Date().getTime();
+                update["uploaded_time"] = current_time;
+                update["last_modified"] = current_time;
 
                 collection.findAndModify(
                     query,
@@ -67,7 +70,7 @@ var CompleteUnknownRecipientMessageSend=(function() {
                     {"$set":update},
                     {"upsert":false, "multi": false},
                     function (err, docs) {
-                        console.log(docs);
+
                     if (!err) {
                         var response = new Response();
                         response.message_meta_data = ChatwalaMessageDocuments.createMetaDataJSON(docs);

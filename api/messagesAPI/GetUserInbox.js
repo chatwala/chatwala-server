@@ -39,8 +39,8 @@ var GetUserInbox=(function() {
     var page_size = 5;
 
     var execute = function(request, callback) {
-        console.log("execute");
-        if(request.user_id===undefined) {
+
+        if(typeof request.user_id === 'undefined') {
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest", response);
@@ -48,8 +48,9 @@ var GetUserInbox=(function() {
         }
 
         CWMongoClient.getConnection(function (err, db) {
-            console.log(err);
+
             if (err) {
+                console.log(err);
                 var response = new Response();
                 response.response_code = responseCodes["failure"];
                 callback("failure", response);
@@ -65,8 +66,6 @@ var GetUserInbox=(function() {
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] = ChatwalaMessageDocuments.ROLE_RECIPIENT;
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE] = true;
 
-                console.log(query);
-
                 //always grab 1 extra record so we know there are more pages
                 collection.find(
                     query,
@@ -74,6 +73,7 @@ var GetUserInbox=(function() {
                     {"sort":{"_id":-1}},
                     function(err, cursor) {
                         if(err) {
+                            console.log(err);
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
                             callback(err, response);
@@ -82,8 +82,6 @@ var GetUserInbox=(function() {
 
                             cursor.toArray(function(err, documents) {
                                 if(documents){
-                                    console.log("result of inbox query:");
-                                    console.log(documents);
                                     var messagesArray = [];
                                     var response = new Response();
                                     response.response_code = responseCodes["success"];

@@ -6,8 +6,8 @@ module.exports = {
         "currentShardKey":"s1",
         "blobStorageShard" : {
             "s1":{
-                "storage_name":"chatwalaprodshard1",
-                "storage_key": "lBfjsBY8UN/PoS2UemfLml1I1suTdz2SLotdRoetJ709wh5ObA9ZaF1qPPSERV6CmklrRV198UqffDCrwtO3EA==",
+                "storage_name":"chatwalaprods1",
+                "storage_key": "E9Q1MfTebnbLDp4QnqhtfJwsTv/WJ2kOC4r3Hm9a5IE9UzAVThj9d4kERyIC53m2kZOTJTICU1s7dCpcTgeeSQ==",
                 "container":"messages",
                 "message_thumbnail_container":"thumbnails",
                 "base_url": "https://chatwalaprods1.blob.core.windows.net/"

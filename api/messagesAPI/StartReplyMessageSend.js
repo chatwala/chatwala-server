@@ -41,8 +41,7 @@ var StartReplyMessageSend=(function() {
 
     var execute = function(request, callback) {
 
-        console.log("request =");
-        console.log(request);
+
         //make sure the request is a number
         request.start_recording = Number(request.start_recording);
         async.waterfall([
@@ -84,8 +83,6 @@ var StartReplyMessageSend=(function() {
 
             //2. put the message in the senders outbox
             function(originalMessageDocument, waterfallCallback) {
-                console.log("originalMessage=");
-                console.log(originalMessageDocument);
 
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
@@ -113,11 +110,11 @@ var StartReplyMessageSend=(function() {
                 message.generateTimeStamp();
 
                 if(message.isValid()) {
-                    console.log("trying to add to outbox");
-                    console.log(message.properties);
+
                     CWMongoClient.getConnection(function (err, db) {
-                        console.log(err);
+
                         if (err) {
+                            console.log(err);
                             return waterfallCallback(err, null);
                         } else {
                             var collection = db.collection('messages');
@@ -171,13 +168,11 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.TIMESTAMP];
 
-                console.log("message=");
-                console.log(message.properties);
                 //unknown_recipient_starter, message_id and owner_user_id
                 message.generateMessageInstanceId();
 
                 if(message.isValid()) {
-                    console.log("trying to add to inbox");
+
                     CWMongoClient.getConnection(function (err, db) {
                         if (err) {
                             return waterfallCallback(err, null);
@@ -199,7 +194,7 @@ var StartReplyMessageSend=(function() {
                                     if (!err) {
                                         waterfallCallback(null, outboxMessageDocument, message.properties);
                                     } else {
-                                        console.log("*****error adding to inbox ******");
+                                        console.log("Error adding to inbox");
                                         console.log(err);
                                         waterfallCallback(err, null, null);
                                     }

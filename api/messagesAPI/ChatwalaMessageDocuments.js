@@ -121,7 +121,6 @@ var ChatwalaMessageDocuments=(function() {
 
 
         this.isValid=function() {
-            console.log("validating message");
 
             //clear any weird or invalid props that may have been added by creating a new properties document
             var newProps = this.getTemplate();
@@ -138,7 +137,6 @@ var ChatwalaMessageDocuments=(function() {
                    return false;
                }
            }
-           console.log("message OK");
            return true;
         }
 
@@ -188,9 +186,6 @@ var ChatwalaMessageDocuments=(function() {
     }
 
     function createNewStarterUnknownRecipientMessage(message_id, sender_id) {
-        console.log("create new starter unknown recipient message...")
-        console.log("message_id= " + message_id)
-        console.log("sender_id = " + sender_id);
 
         var message = new Message();
         message.properties[MESSAGE_PROPERTIES.MESSAGE_ID]= message_id;

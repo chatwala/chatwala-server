@@ -12,12 +12,11 @@ var PushHelper=(function() {
 
     function registerPushToken(platform_type, user_id, push_token, callback) {
 
-
         // Function called when registration is completed.
         var registrationComplete = function(error, registration) {
             if (!error) {
                 // Return the registration.
-                console.log("Successfully registered user device for push notifications.");
+                console.log("Successfully registered users device for push notifications.");
                 callback(null);
             }
             else {
@@ -29,8 +28,12 @@ var PushHelper=(function() {
 
         // Get existing registrations.
         hub.listRegistrationsByTag(user_id, function (error, existingRegs) {
+            if(error){
+                console.log("list registrations by tag error: ");
+                console.log(error);
+            }
             var firstRegistration = true;
-            if (existingRegs.length > 0) {
+            if (existingRegs && existingRegs.length > 0) {
                 for (var i = 0; i < existingRegs.length; i++) {
                     if (firstRegistration) {
                         existingRegs[i].DeviceToken = push_token;
@@ -44,13 +47,13 @@ var PushHelper=(function() {
             } else {
                 // Create a new registration.
                 if (platform_type === 'ios') {
-                    console.log("Starting APNS registration.");
+
                     var template = '{\"aps\":{\"alert\":\"$(message)\", \"content-available\":\"1\"}}';
                     hub.apns.createTemplateRegistration(push_token,
                         [user_id], template, registrationComplete);
                 }
                 else if (platform_type === 'android') {
-                    console.log("Starting GCM registration.");
+
                     var template = '{\"message\":\"$(message)\"}';
                     hub.gcm.createTemplateRegistration(push_token,
                         [user_id], template, registrationComplete);
