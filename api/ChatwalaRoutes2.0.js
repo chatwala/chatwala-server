@@ -152,13 +152,8 @@ function postStartReplyMessageSend(req, res) {
     request.start_recording = req.body.start_recording;
     request.client_version_id = req.headers["x-chatwala-appversion"];
 
-    console.log("start reply message send request: ");
-    console.log(request);
-
     ChatwalaApi.Messages.StartReplyMessageSend.execute(request, function(err, response){
-        console.log("START REPLY MESSAGE SEND RESPONSE: ");
-        console.log(err);
-        console.log(response);
+        
         if(!err) {
             res.send(200, response);
         }
