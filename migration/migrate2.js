@@ -3,23 +3,23 @@
  */
 
 console.log("Initializing node: " + new Date());
-var config = require('./config.js');
+var config = require('./../config.js');
 var azure = require("azure");
 var fs=require('fs');
 var async = require('async');
-var ChatwalaMessageDocuments = require('./api/messagesAPI/ChatwalaMessageDocuments.js');
-var SASHelper = require('./api/SASHelper.js');
+var ChatwalaMessageDocuments = require('./../api/messagesAPI/ChatwalaMessageDocuments.js');
+var SASHelper = require('./../api/SASHelper.js');
 var GUIDUtil = require('GUIDUtil');
 
 var rimraf = require('rimraf');
 var AdmZip = require('adm-zip');
 var archiver = require('archiver');
 var request = require('request');
-var MigrateHelper = require('./api/migrate/MigrateHelper.js');
+var MigrateHelper = require('./../api/migrate/MigrateHelper.js');
 
 "use strict";
 
-var CWMongoClient = require('./cw_mongo.js');
+var CWMongoClient = require('./../cw_mongo.js');
 
 
 
