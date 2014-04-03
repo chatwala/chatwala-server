@@ -106,7 +106,8 @@ var GetShortUrlFromMessageId = (function(){
                                 else {
                                     if(document) {
                                         if(document["message_id"]==message_id) {
-                                            waterfallCallback(null, document["short"]);
+                                            console.log("message found");
+                                            waterfallCallback("messagefound", document["short"]);
                                         }
                                         else {
                                             var increment = document["increment"];
@@ -165,14 +166,21 @@ var GetShortUrlFromMessageId = (function(){
         function (err, short) {
             console.log("finish");
             var response = new Response();
-            if(err) {
+            if(err=="messagefound") {
+                console.log("duplicate");
+                response.response_code = responseCodes["success"];
+                response.short_url = config.short_base_url + short;
+                callback(null, response);
+            }
+            else if(err) {
                 response.response_code = responseCodes["failure"];
+                callback(err, response);
             }
             else {
                 response.response_code = responseCodes["success"];
                 response.short_url = config.short_base_url + short;
+                callback(null, response);
             }
-            callback(err, response);
         }
         );
 

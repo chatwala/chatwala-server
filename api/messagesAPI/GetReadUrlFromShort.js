@@ -34,14 +34,33 @@ var GetReadUrlFromShort = (function(){
     };
 
     function execute(request, callback){
-        var short = request.short;
+        var share_id = request.share_id;
 
-        if(typeof short === 'undefined'){
+        if(typeof share_id === 'undefined'){
             var response = new Response();
             response.response_code = responseCodes["failureInvalidRequest"];
             callback("failureInvalidRequest",response);
             return;
         }
+
+        //look for old formats:
+        var shareSplit = share_id.split(".");
+        if(shareSplit.length==2) { //contains a shardKey
+            var response = new Response();
+            response.response_code = responseCodes["success"];
+            response.read_url = SASHelper.getMessageReadUrl(shareSplit[0], shareSplit[1]);
+            callback(null,response);
+            return;
+        }
+        else if(share_id.length > 30) { //its a full message_id
+            var response = new Response();
+            response.response_code = responseCodes["success"];
+            response.read_url = SASHelper.getMessageReadUrl("s1", share_id);
+            callback(null,response);
+            return;
+        }
+
+        //its a new format:
 
         //1. lookup messageshort document using short as the index
         CWMongoClient.getConnection(function (err, db) {
@@ -54,7 +73,7 @@ var GetReadUrlFromShort = (function(){
                 console.log("db call");
                 var collection = db.collection('messageshorts');
                 var query = {};
-                query["short"] = short;
+                query["short"] = share_id;
 
                 collection.findOne(
                     query,

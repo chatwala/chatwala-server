@@ -300,13 +300,13 @@ curl -i \
 "http://localhost:1337/messages/getShortUrlFromMessageId";
 
 
-----GetReadUrlFromShort----
+----GetReadUrlFromShareId----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"short":"9D341FBA"}' \
-"http://localhost:1337/messages/getReadUrlFromShort";
+-d '{"share_id":"1g8hee4"}' \
+"http://localhost:1337/messages/getReadUrlFromShareId";
 
 
 ---- Get Messages for Thread -----

@@ -55,7 +55,7 @@ function getShortUrlFromMessageId(req,res){
 
 function getReadUrlFromShort(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetReadUrlFromShort.Request();
-    sendRequest.short = req.body.short;
+    sendRequest.share_id = req.body.share_id;
 
     console.log(req.body)
 
@@ -334,7 +334,7 @@ function countOldBlobMessages(req,res){
 function setRoutes(app) {
     app.post("/messages/getShareUrlFromMessageId", getShareUrlFromMessageId);
     app.post("/messages/getShortUrlFromMessageId", getShortUrlFromMessageId);
-    app.post("/messages/getReadUrlFromShort", getReadUrlFromShort);
+    app.post("/messages/getReadUrlFromShareId", getReadUrlFromShort);
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
