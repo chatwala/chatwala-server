@@ -90,7 +90,7 @@ var ChatwalaMessageDocuments=(function() {
 
 
         this.generateMessageInstanceId=function() {
-            if(this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]===undefined || this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.OWNER_ROLE]===undefined) {
+            if(typeof this.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER] === 'undefined' || typeof this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]==='undefined' || typeof this.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]==='undefined' || typeof this.properties[MESSAGE_PROPERTIES.OWNER_ROLE]==='undefined') {
                 throw "unknown_recipient_starter, message_id, owner_user_id and owner_role must be defined";
             }
 
@@ -98,7 +98,7 @@ var ChatwalaMessageDocuments=(function() {
         }
 
         this.generateThreadInformation=function() {
-            if(this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]===undefined || this.properties[MESSAGE_PROPERTIES.SENDER_ID]===undefined || this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]===undefined ) {
+            if(typeof this.properties[MESSAGE_PROPERTIES.MESSAGE_ID]==='undefined' || typeof this.properties[MESSAGE_PROPERTIES.SENDER_ID]==='undefined' || typeof this.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]==='undefined' ) {
                 throw "message_id, sender_id and recipient_id must be defined"
             }
 
@@ -132,7 +132,7 @@ var ChatwalaMessageDocuments=(function() {
 
             //check for undefined values
            for(var property in this.properties) {
-               if(this.properties[property]===undefined) {
+               if(typeof this.properties[property]==='undefined') {
                    console.log("undefined found for " + property);
                    return false;
                }
