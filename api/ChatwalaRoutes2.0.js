@@ -218,7 +218,7 @@ function postGetUserInbox(req, res) {
     var request = new ChatwalaApi.Messages.GetUserInbox.Request();
     request.user_id = req.body.user_id;
     request.first_id = req.body.first_id;
-
+    console.log("get user inbox: " + request.user_id);
     ChatwalaApi.Messages.GetUserInbox.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
