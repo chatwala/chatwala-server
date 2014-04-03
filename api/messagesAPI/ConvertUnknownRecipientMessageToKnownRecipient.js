@@ -43,7 +43,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
 
         var message = new ChatwalaMessageDocuments.Message();
         message.setPropsFromDictionary(originalDocument);
-        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION];
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = originalDocument.sender_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] = ChatwalaMessageDocuments.ROLE_SENDER;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID] = request.recipient_id;
@@ -112,7 +112,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     function saveRecipientDocument(originalDocument, request, parallelCallback) {
         var message = new ChatwalaMessageDocuments.Message();
         message.setPropsFromDictionary(originalDocument);
-        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION];
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID] = request.recipient_id;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_ROLE] = ChatwalaMessageDocuments.ROLE_RECIPIENT;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OTHER_USER_ID] = originalDocument.sender_id;
