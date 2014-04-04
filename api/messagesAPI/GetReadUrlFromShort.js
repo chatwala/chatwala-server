@@ -31,6 +31,7 @@ var GetReadUrlFromShort = (function(){
     var Response = function() {
         this.response_code=undefined;
         this.read_url=undefined;
+        this.message_id=undefined;
     };
 
     function execute(request, callback){
@@ -92,6 +93,7 @@ var GetReadUrlFromShort = (function(){
                                 var response = new Response();
                                 response.response_code = responseCodes["success"];
                                 response.read_url = SASHelper.getMessageReadUrl(document["blob_storage_shard_key"], document["message_id"]);
+                                response.message_id=document["message_id"];
                                 callback(null,response);
                                 return;
                             }

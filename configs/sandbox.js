@@ -10,7 +10,7 @@ module.exports = {
                 "storage_name":"chatwalanonprod",
                 "storage_key": "ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
                 "container": "sandbox-messages",
-                "base_url": "https://chatwalanonprod.blob.core.windows.net/sandbox-messages/"
+                "base_url": "https://chatwalanonprod.blob.core.windows.net/"
             }
         },
         "oldStorage": {
