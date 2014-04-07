@@ -34,6 +34,25 @@ var GetShortUrlFromMessageId = (function(){
     };
 
 
+    var toBase = function (decimal, base) {
+        var symbols =
+            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-".split("");
+
+        var conversion = "";
+
+        if (base > symbols.length || base <= 1) {
+            return false;
+        }
+
+        while (decimal >= 1) {
+            conversion = symbols[(decimal - (base * Math.floor(decimal / base)))] +
+                conversion;
+            decimal = Math.floor(decimal / base);
+        }
+
+        return (base < 11) ? parseInt(conversion) : conversion;
+    }
+
     var makeCRCTable = function(){
         var c;
         var crcTable = [];
@@ -73,10 +92,7 @@ var GetShortUrlFromMessageId = (function(){
         //1. create shortened url
         var checksum = crc32(message_id);
 
-        var radix36=checksum.toString(36);
-
-        var shortbase = radix36;
-
+        var shortbase = toBase(checksum, 64);
 
         //2. find increment and save to db
         async.waterfall([
@@ -131,7 +147,7 @@ var GetShortUrlFromMessageId = (function(){
                 console.log("storing in db, increment = " + increment);
                 var short = shortbase;
                 if(increment>0) {
-                    var hexInc = increment.toString(36);
+                    var hexInc = toBase(increment, 64);
                     short = hexInc +"" + shortbase;
                 }
 

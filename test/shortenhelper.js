@@ -3,11 +3,30 @@
  */
 
 var GUIDUtil = require('GUIDUtil');
-var crc = require('crc');
 
 var guid = GUIDUtil.GUID();
 
 var _crcTable;
+
+var toBase = function (decimal, base) {
+    var symbols =
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("");
+    //var decimal = this;
+    var conversion = "";
+
+    if (base > symbols.length || base <= 1) {
+        return false;
+    }
+
+    while (decimal >= 1) {
+        conversion = symbols[(decimal - (base * Math.floor(decimal / base)))] +
+            conversion;
+        decimal = Math.floor(decimal / base);
+    }
+
+    return (base < 11) ? parseInt(conversion) : conversion;
+}
+
 var makeCRCTable = function(){
     var c;
     var crcTable = [];
@@ -45,7 +64,8 @@ if(hex.charAt(0)=='0' && hex.charAt(1)=='-') {
     hex = hex.substring(1);
 }*/
 
-var radix = dec.toString(36);
+//var radix = dec.toString(62);
+var radix = toBase(dec, 64);
 console.log("radix="+radix);
 
 
