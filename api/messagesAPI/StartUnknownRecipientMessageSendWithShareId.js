@@ -3,7 +3,7 @@ var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 var SASHelper = require('../SASHelper.js');
 
-var StartUnknownRecipientMessageSend=(function() {
+var StartUnknownRecipientMessageSendWithShareId=(function() {
 
     var responseCodes = {
         "success": {
@@ -24,7 +24,6 @@ var StartUnknownRecipientMessageSend=(function() {
         this.sender_id=undefined;
         this.message_id=undefined;
         this.client_version_id=undefined;
-        this.analytics_sender_category = null;
     };
 
     var Response = function() {
@@ -38,8 +37,6 @@ var StartUnknownRecipientMessageSend=(function() {
 
         var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.message_id, request.sender_id);
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
-        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]=request.analytics_sender_category ? request.analytics_sender_category : null;
-
         if(message.isValid()) {
             CWMongoClient.getConnection(function (err, db) {
                 if (err) {
@@ -89,6 +86,6 @@ var StartUnknownRecipientMessageSend=(function() {
     };
 }());
 
-module.exports = StartUnknownRecipientMessageSend;
+module.exports = StartUnknownRecipientMessageSendWithShareId;
 
 

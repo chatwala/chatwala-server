@@ -33,6 +33,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     var Request = function() {
         this.message_id = undefined;
         this.client_version_id=undefined;
+        this.analytics_recipient_category=null;
     };
 
     var Response = function() {
@@ -53,6 +54,8 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]= originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY];
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY]= request.analytics_recipient_category;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
 
@@ -122,6 +125,8 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY] = request.analytics_recipient_category;
+        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY] = originalDocument.analytics_sender_category;
 
         message.generateMessageInstanceId();
         message.generateThreadInformation();
@@ -195,6 +200,10 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
     }
 
     var execute = function(request, callback) {
+
+        if(!request.analytics_recipient_category) {
+            request.analytics_recipient_category=null;
+        }
         async.waterfall(
             [
                 function(waterfallCallback) {
