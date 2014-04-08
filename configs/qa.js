@@ -31,7 +31,8 @@ module.exports = {
         "hub_key" : "gePyfv/kICC7LLYzvoZHmjO4yXZQoED1xUkjb5mHqsQ="
     },
     "share_base_url": "http://chatwala.com/qa/?",
-    "short_base_url": "http://chatwala.com/qa/?"
+    "short_base_url": "http://chatwala.com/qa/?",
+    "returnShortUrls": true
 
 };
 
