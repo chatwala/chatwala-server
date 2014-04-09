@@ -10,6 +10,7 @@ module.exports = {
                 "storage_name":"chatwalanonprod",
                 "storage_key": "ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
                 "container": "sandbox-messages",
+                "message_thumbnail_container": "sandbox-pictures",
                 "base_url": "https://chatwalanonprod.blob.core.windows.net/"
             }
         },
@@ -30,5 +31,6 @@ module.exports = {
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
     },
     "share_base_url": "http://chatwala.com/sandbox/?",
-    "short_base_url": "http://chatwala.com/sandbox/?"
+    "short_base_url": "http://chatwala.com/sandbox/?",
+    "returnShortUrls": true
 };

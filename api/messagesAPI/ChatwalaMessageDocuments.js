@@ -37,6 +37,8 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.START_RECORDING="start_recording";
     MESSAGE_PROPERTIES.VERSION="version_id";
     MESSAGE_PROPERTIES.DELETED="deleted"
+    MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY="analytics_sender_category";
+    MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY="analytics_recipient_category";
 
     //dynamic properties: these are created only when the metadata file is asked for
     MESSAGE_PROPERTIES.SHARE_URL="share_url";
@@ -73,6 +75,8 @@ var ChatwalaMessageDocuments=(function() {
             template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
             template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
             template[MESSAGE_PROPERTIES.START_RECORDING]=undefined;
+            template[MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]=null;
+            template[MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY]=null;
             template[MESSAGE_PROPERTIES.VERSION]=VERSION;
 
             return template;

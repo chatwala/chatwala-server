@@ -1,4 +1,4 @@
-var StartUnknownRecipientMessageSend = require("./StartUnknownRecipientMessageSend.js");
+var StartUnknownRecipientMessageSend = require("./StartUnknownRecipientMessageSendWithShareId.js");
 var CompleteUnknownRecipientMessageSend = require("./CompleteUnknownRecipientMessageSend.js");
 var ConvertUnknownRecipientMessageToKnownRecipient = require("./ConvertUnknownRecipientMessageToKnownRecipient.js");
 var StartReplyMessageSend = require("./StartReplyMessageSend.js");
