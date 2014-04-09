@@ -32,5 +32,6 @@ module.exports = {
         "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
     },
     "share_base_url": "http://chatwala.com/dev/?",
-    "short_base_url": "http://chatwala.com/dev/?"
+    "short_base_url": "http://chatwala.com/dev/?",
+    "returnShortUrls": true
 };
