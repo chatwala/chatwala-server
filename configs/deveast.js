@@ -33,5 +33,5 @@ module.exports = {
     },
     "share_base_url": "http://chatwala.com/dev/?",
     "short_base_url": "http://chatwala.com/dev/?",
-    "returnShortUrls": false
+    "returnShortUrls": true
 };
