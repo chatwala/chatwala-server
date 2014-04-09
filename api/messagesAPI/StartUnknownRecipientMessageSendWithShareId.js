@@ -41,22 +41,17 @@ var StartUnknownRecipientMessageSendWithShareId=(function() {
         async.waterfall(
             [
                 function(waterfallCallback) {
-                    if(config.returnShortUrls===true) {
-                        var getShortRequest = new GetShortURLFromMessageId.Request();
-                        getShortRequest.message_id = request.message_id;
+                    var getShortRequest = new GetShortURLFromMessageId.Request();
+                    getShortRequest.message_id = request.message_id;
 
-                        GetShortURLFromMessageId.execute(getShortRequest, function(err, response) {
-                            if(err) {
-                                waterfallCallback(null, null);
-                            }
-                            else {
-                                waterfallCallback(err, response);
-                            }
-                        });
-                    }
-                    else {
-                        waterfallCallback(null, null);
-                    }
+                    GetShortURLFromMessageId.execute(getShortRequest, function(err, response) {
+                        if(err) {
+                            waterfallCallback(null, null);
+                        }
+                        else {
+                            waterfallCallback(err, response);
+                        }
+                    });
                 }
             ],
             function(err, getShortUrlResponse) {
@@ -88,7 +83,7 @@ var StartUnknownRecipientMessageSendWithShareId=(function() {
 
                                         //override share url with short url if there is one
                                         if(getShortUrlResponse!=null) {
-                                            response.message_meta_data.share_url = getShortUrlResponse.short_url;
+                                            response.message_meta_data.share_url = getShortUrlResponse.share_url;
                                         }
 
                                         response.write_url = SASHelper.getWriteSharedAccessPolicy(
