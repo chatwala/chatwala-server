@@ -50,6 +50,7 @@ var GetReadUrlFromShort = (function(){
             var response = new Response();
             response.response_code = responseCodes["success"];
             response.read_url = SASHelper.getMessageReadUrl(shareSplit[0], shareSplit[1]);
+            response.message_id = shareSplit[1];
             callback(null,response);
             return;
         }
@@ -57,6 +58,7 @@ var GetReadUrlFromShort = (function(){
             var response = new Response();
             response.response_code = responseCodes["success"];
             response.read_url = SASHelper.getMessageReadUrl("s1", share_id);
+            response.message_id = share_id;
             callback(null,response);
             return;
         }
