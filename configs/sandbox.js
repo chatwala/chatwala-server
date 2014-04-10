@@ -28,7 +28,12 @@ module.exports = {
         "hub_name" : "chatwala-dev-push",
         "hub_endpoint" : "sb://chatwala-dev-push-ns.servicebus.windows.net/",
         "hub_keyname" : "DefaultFullSharedAccessSignature",
-        "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw="
+        "hub_key" : "JafmIo0Vf5WEDxikPZZupFNxHvp13nJ5bGXIGrFs/mw=",
+        "groundControl" : {
+            "storage_name":"chatwalanonprod",
+            "storage_key":"ygOmUO60gJd/zJNbgmvO6D3TsOgqfy506oYXQFr6gPUtt8WTFaeF8PUW831UINLr1Aig+jkVPCQSuX4986Kxrw==",
+            "container": "sandbox-configs"
+        }
     },
     "share_base_url": "http://chatwala.com/sandbox/?",
     "short_base_url": "http://chatwala.com/sandbox/?",
