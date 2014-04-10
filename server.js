@@ -4,6 +4,7 @@
 
 console.log("Initializing node: " + new Date());
 var config = require('./config.js');
+var cors = require('cors')
 
 "use strict";
 var express = require('express');
@@ -41,6 +42,7 @@ mongoClient.getConnection(function (err, db) {
 app.set('port', process.env.PORT || 1337);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.use(cors());
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
