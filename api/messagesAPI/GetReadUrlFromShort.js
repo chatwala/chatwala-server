@@ -25,7 +25,7 @@ var GetReadUrlFromShort = (function(){
     };
 
     var Request = function() {
-        this.message_id=undefined;
+        this.share_id=undefined;
     };
 
     var Response = function() {
