@@ -54,7 +54,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.THREAD_STARTER]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
-        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]= originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY];
+
+        if(!originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]) {
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]=null;
+        }
+        else {
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]= originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY];
+        }
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY]= request.analytics_recipient_category;
         message.generateMessageInstanceId();
         message.generateThreadInformation();
@@ -126,7 +132,13 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
         message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_RECIPIENT_CATEGORY] = request.analytics_recipient_category;
-        message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY] = originalDocument.analytics_sender_category;
+
+        if(!originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]) {
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY] = null;
+        }
+        else {
+            message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY] = originalDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY];
+        }
 
         message.generateMessageInstanceId();
         message.generateThreadInformation();
