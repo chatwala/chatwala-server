@@ -18,6 +18,10 @@ var MarkMessageAsDeleted = (function(){
             "code":-101,
             "message":"Invalid request parameters provided."
         },
+        "failureNoMessage" : {
+          "code":-103,
+            "message":"No message deleted for given user and message id"
+        },
         "failure": {
             "code":-102,
             "message":"A failure occurred while trying to delete."
@@ -71,7 +75,11 @@ var MarkMessageAsDeleted = (function(){
                             response.response_code = responseCodes["failure"];
                             callback(err, response);
                         }
-                        else {
+                        else if(numRecordsModified<1){
+                            response.response_code = responseCodes["failureNoMessage"];
+                            callback(err, response);
+                        }
+                        else{
                             response.response_code= responseCodes["success"];
                             callback(null, response);
                         }
