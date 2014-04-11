@@ -64,11 +64,13 @@ app.use(function (req, res, next) {
     var authHeaderValue = "";
     var idHeaderValue = "";
 
-    if (req.url === "/monitor") {
+
+    if (req.url === "/monitor" || req.path === "/messages/messageThumbnail" ) {
         // The one exception to the authorization logic
         next();
         return;
     }
+
 
     for (var item in req.headers) {
 
