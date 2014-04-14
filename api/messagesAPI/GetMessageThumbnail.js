@@ -33,6 +33,31 @@ var GetMessageThumbnail = (function(){
         console.log(request.share_id);
         var share_id = request.share_id;
 
+        if(typeof share_id === 'undefined'){
+            var response = new Response();
+            response.response_code = responseCodes["failure"];
+            callback("failure",response);
+            return;
+        }
+
+        //look for old formats:
+        var shareSplit = share_id.split(".");
+        if(shareSplit.length==2) { //contains a shardKey
+            var response = new Response();
+            response.response_code = responseCodes["success"];
+            response.message_thumbnail_url = SASHelper.getMessageThumbnailUrl(shareSplit[0], shareSplit[1]);
+            callback(null,response);
+            return;
+        }
+        else if(share_id.length > 30) { //its a full message_id
+            var response = new Response();
+            response.response_code = responseCodes["success"];
+            response.message_thumbnail_url = SASHelper.getMessageThumbnailUrl("s1", share_id);
+            callback(null,response);
+            return;
+        }
+
+
         //1. lookup messageshort document using short as the index
         CWMongoClient.getConnection(function (err, db) {
             if (err) {
