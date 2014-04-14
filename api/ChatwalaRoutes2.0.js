@@ -343,7 +343,7 @@ function GetMessageThumbnail(req, res){
         }
         else{
             console.log(err);
-            res.send(200, "http://chatwala.com/images/logo.gif");
+            res.send(200, "http://chatwala.com/images/logo_landing.gif");
         }
 
     })
