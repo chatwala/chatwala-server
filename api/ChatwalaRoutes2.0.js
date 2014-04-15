@@ -328,7 +328,29 @@ function countOldBlobMessages(req,res){
     MigrateHelper.countOldBlobs();
     res.send(200,{});
 }
+/******* END MIGRATION ROUTES ***********************/
 
+/****** MESSAGE THUMBNAIL ROUTE FOR LANDING PAGE ********/
+function GetMessageThumbnail(req, res){
+    var request = new ChatwalaApi.Messages.GetMessageThumbnail.Request();
+    request.share_id = req.query.share_id;
+
+    ChatwalaApi.Messages.GetMessageThumbnail.execute(request,function(err, response){
+
+        if(!err){
+            res.redirect(302, response.message_thumbnail_url);
+
+        }
+        else{
+            console.log(err);
+            res.send(200, "http://chatwala.com/images/logo_landing.gif");
+        }
+
+    })
+
+}
+
+/****** END MESSAGE THUMBNAIL ROUTE ********/
 
 function setRoutes(app) {
     app.post("/messages/getShareUrlFromMessageId", getShareUrlFromMessageId);
@@ -349,6 +371,7 @@ function setRoutes(app) {
     app.post("/messages/countOldBlobMessages", countOldBlobMessages);
     app.post("/messages/renewWriteUrlForMessageThumbnail", postGetMessageThumbnailWriteUrl);
     app.post("/messages/markMessageAsDeleted", markMessageAsDeleted);
+    app.get("/messages/messageThumbnail", GetMessageThumbnail)
   //  app.post("/messages/threadsForUser", getThreadsForUser);
   //  app.post("/messages/messagesForThread", getMessagesForThread);
 }

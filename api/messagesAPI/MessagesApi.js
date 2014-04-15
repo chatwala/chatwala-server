@@ -11,6 +11,7 @@ var GetShortUrlFromMessageId = require("./GetShortUrlFromMessageId.js");
 var GetReadUrlFromShort = require("./GetReadUrlFromShort.js");
 var GetMessageThumbnailWriteUrl = require("./GetMessageThumbnailWriteUrl.js");
 var MarkMessageAsDeleted = require("./MarkMessageAsDeleted.js");
+var GetMessageThumbnail = require("./GetMessageThumbnail.js");
 
 var MessagesApi = {
     "GetShareUrlFromMessageId": GetShareUrlFromMessageId,
@@ -25,7 +26,8 @@ var MessagesApi = {
     "GetReadURLForMessage":GetReadURLForMessage,
     "GetReadUrlFromShort":GetReadUrlFromShort,
     "GetMessageThumbnailWriteUrl":GetMessageThumbnailWriteUrl,
-    "MarkMessageAsDeleted": MarkMessageAsDeleted
+    "MarkMessageAsDeleted": MarkMessageAsDeleted,
+    "GetMessageThumbnail":GetMessageThumbnail
 };
 
 module.exports = MessagesApi;
