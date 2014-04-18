@@ -730,6 +730,64 @@ var MigrateHelper=(function() {
 
     }
 
+    var getBlobContainerCurrentSize = function(shard_key){
+        var account = config.azure.blobStorageShard[shard_key].storage_name;
+        var access_key = config.azure.blobStorageShard[shard_key].storage_key;
+        var bs = azure.createBlobService(account, access_key);
+
+        var currentMarker=1;
+        var blobSize = 0;
+
+        calcBlobSize(bs, currentMarker, blobSize, function(err, size){
+            if(!err){
+                console.log("total size of container: " + size);
+                var readable_size = bytesToSize(size);
+                console.log("or in readable : " + readable_size);
+            }
+            else{
+                console.log("There was an error!")
+                console.log(err);
+            }
+
+        })
+
+    }
+
+    var calcBlobSize = function(bs, currentMarker, blobSize, callback){
+        if(!currentMarker){
+            callback(null, blobSize);
+        }
+        else{
+            var options= {};
+            if(currentMarker!=1) {
+                options.marker=currentMarker;
+            }
+
+            bs.listBlobs("thumbnails",options,function(error, blobs, continuation, response){
+                if(!error){
+                    marker = continuation.nextMarker;
+                    for(var i=0;i<blobs.length;i++){
+
+                        blobSize += parseFloat(blobs[i].properties["content-length"]);
+                    }
+                    calcBlobSize(bs, marker, blobSize, callback);
+
+                }
+                else{
+                    callback(error);
+                }
+            });
+        }
+
+    }
+
+    function bytesToSize(bytes) {
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes == 0) return '0 Bytes';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    };
+
     return {
         "migrateSingleWala": migrateSingleWala,
         "migrateListOfWalas": migrateListOfWalas,
@@ -737,7 +795,8 @@ var MigrateHelper=(function() {
         "postMigrateMessageToQueue": postMigrateMessageToQueue,
         "startListeningForMigrateMessages": startListeningForMigrateMessages,
         "countOldBlobs":countOldBlobs,
-        "postSingleWalaToStorage":postSingleWalaToStorage
+        "postSingleWalaToStorage":postSingleWalaToStorage,
+        "getBlobContainerCurrentSize":getBlobContainerCurrentSize
     }
 
 }());
