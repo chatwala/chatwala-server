@@ -708,13 +708,36 @@ var MigrateHelper=(function() {
 
     }
 
+    var postSingleWalaToStorage=function(message_id) {
+
+        var account = config.azure.blobStorageShard.s1.storage_name;
+        var access_key = config.azure.blobStorageShard.s1.storage_key;
+        var bs = azure.createBlobService(account, access_key);
+
+        bs.createBlockBlobFromFile(config.azure.blobStorageShard.s1.container
+            , message_id
+            ,"./temp/" + message_id
+            , function(error){
+                if(error){
+                    console.log("Error uploading single wala");
+                    console.log(error);
+                }
+                else{
+                    console.log("Successfully uploaded single wala : " + message_id);
+                    return;
+                }
+            })
+
+    }
+
     return {
         "migrateSingleWala": migrateSingleWala,
         "migrateListOfWalas": migrateListOfWalas,
         "migrateAllWalas": migrateAllWalas,
         "postMigrateMessageToQueue": postMigrateMessageToQueue,
         "startListeningForMigrateMessages": startListeningForMigrateMessages,
-        "countOldBlobs":countOldBlobs
+        "countOldBlobs":countOldBlobs,
+        "postSingleWalaToStorage":postSingleWalaToStorage
     }
 
 }());
