@@ -57,7 +57,10 @@ var MarkMessageAsDeleted = (function(){
                 var query = {};
                 query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID] = message_instance_id;
 
+                var current_time = new Date().getTime();
+
                 var update={};
+                update["last_modified"] = current_time;
                 update[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED] = true;
                 update[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE] = false;
                 var setCommand={"$set":update};
