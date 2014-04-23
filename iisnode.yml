@@ -1,3 +1,2 @@
 devErrorsEnabled: true
 watchedFiles: *.js;iisnode.yml;node_modules\\*;views\\*.jade;views\\*.ejb;routes\\*.js;api\\*;configs\\*;web.config
-

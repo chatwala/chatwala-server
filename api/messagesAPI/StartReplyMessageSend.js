@@ -125,8 +125,11 @@ var StartReplyMessageSend=(function() {
 
                             message.properties["last_modified"] = new Date().getTime();
 
+                            var query={};
+                            query[propMessageInstanceId]=message.properties[propMessageInstanceId];
+
                             collection.update(
-                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
+                                query,
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
@@ -184,9 +187,10 @@ var StartReplyMessageSend=(function() {
                             //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
 
                             message.properties["last_modified"] = new Date().getTime();
-
+                            var query={};
+                            query[propMessageInstanceId]=message.properties[propMessageInstanceId];
                             collection.update(
-                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
+                                query,
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
