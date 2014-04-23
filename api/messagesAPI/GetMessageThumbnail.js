@@ -66,7 +66,6 @@ var GetMessageThumbnail = (function(){
                 callback("failure",response);
                 return;
             } else {
-                console.log("db call");
                 var collection = db.collection('messageshorts');
                 var query = {};
                 query["short"] = share_id;

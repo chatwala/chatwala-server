@@ -35,7 +35,6 @@ var GetShortUrlFromMessageId = (function(){
     };
 
     function execute(request, callback){
-        console.log("start");
         var message_id = request.message_id;
         var response = new Response();
 
@@ -65,7 +64,6 @@ var GetShortUrlFromMessageId = (function(){
                         console.log("error!");
                         waterfallCallback(err, null);
                     } else {
-                        console.log("db call");
                         var collection = db.collection('messageshorts');
                         var query = {};
                         query["shortbase"] = shortbase;
@@ -76,7 +74,7 @@ var GetShortUrlFromMessageId = (function(){
                             null,
                             {"sort":[['increment','desc']]},
                             function(err, document) {
-                                console.log("collisions checked for");
+
                                 if(err) {
                                     console.log("error");
                                     waterfallCallback(err);
@@ -84,18 +82,17 @@ var GetShortUrlFromMessageId = (function(){
                                 else {
                                     if(document) {
                                         if(document["message_id"]==message_id) {
-                                            console.log("message found");
                                             waterfallCallback("messagefound", document["short"]);
                                         }
                                         else {
                                             var increment = document["increment"];
                                             var newIncrement = increment+1;
-                                            console.log("new increment =" + newIncrement);
+
                                             waterfallCallback(null, newIncrement);
                                         }
                                     }
                                     else {
-                                        console.log("document not found");
+
                                         waterfallCallback(null, 0);
                                     }
                                 }
@@ -106,7 +103,6 @@ var GetShortUrlFromMessageId = (function(){
             },
             //store in db
             function(increment, waterfallCallback) {
-                console.log("storing in db, increment = " + increment);
                 var short = shortbase;
                 if(increment>0) {
                     short = ShortenHelper.incrementShortId(shortbase, increment);
@@ -126,9 +122,6 @@ var GetShortUrlFromMessageId = (function(){
                             "increment": increment
                         };
 
-                        console.log("shortDoc = ");
-                        console.log(shortDoc);
-
                         collection.insert(shortDoc,
                             function (err, doc) {
                                 waterfallCallback(err, short);
@@ -140,7 +133,6 @@ var GetShortUrlFromMessageId = (function(){
             }
         ],
         function (err, short) {
-            console.log("finish");
             var response = new Response();
             if(err=="messagefound") {
                 console.log("duplicate");
