@@ -35,7 +35,7 @@ var GetReadUrlFromShort = (function(){
     };
 
     function execute(request, callback){
-        var share_id = request.share_id;
+        var share_id = request.short_id;
 
         if(typeof share_id === 'undefined'){
             var response = new Response();
