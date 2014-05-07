@@ -62,7 +62,7 @@ var StartUnknownRecipientMessageSendWithShareId=(function() {
                 var message = ChatwalaMessageDocuments.createNewStarterUnknownRecipientMessage(request.message_id, request.sender_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.ANALYTICS_SENDER_CATEGORY]=request.analytics_sender_category ? request.analytics_sender_category : null;
-                
+
                 if(message.isValid()) {
                     CWMongoClient.getConnection(function (err, db) {
                         if (err) {

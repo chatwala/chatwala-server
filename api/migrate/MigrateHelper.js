@@ -4,7 +4,7 @@
 
 var config = require('../../config.js');
 var CWMongoClient = require('../../cw_mongo.js');
-var azure = require("azure");
+var     azure = require("azure");
 var fs=require('fs');
 var async = require('async');
 var ChatwalaMessageDocuments = require("./../messagesAPI/ChatwalaMessageDocuments.js");
