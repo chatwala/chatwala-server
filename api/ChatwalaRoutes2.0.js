@@ -64,6 +64,7 @@ function getReadUrlFromShort(req,res){
             res.send(200, response);
         }
         else {
+            console.log(response);
             res.send(400, response);
         }
     })
