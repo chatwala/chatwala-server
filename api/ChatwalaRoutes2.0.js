@@ -55,8 +55,8 @@ function getShortUrlFromMessageId(req,res){
 
 function getReadUrlFromShort(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetReadUrlFromShort.Request();
-    sendRequest.share_id = req.body.share_id;
-
+    sendRequest.share_id = req.body.short_id;
+    console.log("In get read Url fRom short!")
     console.log(req.body)
 
     ChatwalaApi.Messages.GetReadUrlFromShort.execute(sendRequest, function(err, response){
