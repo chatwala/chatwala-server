@@ -83,7 +83,7 @@ var GetReadUrlFromShort = (function(){
                     null,
                     {},
                     function(err, document) {
-
+                        console.log(document);
                         if(err) {
                             var response = new Response();
                             response.response_code = responseCodes["failure"];
