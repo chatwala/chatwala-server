@@ -85,7 +85,7 @@ var StartReplyMessageSend=(function() {
             function(originalMessageDocument, waterfallCallback) {
 
 				var reply_to_shard_key = originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
-				var reply_to_read_url = SASHelper.getReplyToReadUrl(reply_to_shard_key,request.replying_to_message_id);
+				var reply_to_read_url = SASHelper.getReplyToReadURL(reply_to_shard_key,request.replying_to_message_id);
 				
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
