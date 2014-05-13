@@ -30,6 +30,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.REPLIED="replied";
     //MESSAGE_PROPERTIES.REPLIED_BY_message_id="replied_by_message_id";
     MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID="replying_to_message_id";
+	MESSAGE_PROPERTIES.REPLYING_TO_READ_URL="replying_to_read_url";
     MESSAGE_PROPERTIES.SHOWABLE="showable";
     MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";

@@ -5,6 +5,12 @@ var SASHelper=(function() {
     var blobServices={};
     var nonShardedBlobService=undefined;
 
+	function getReplyToReadURL(reply_to_shard_key, reply_to_message_id) {
+		var base_url = config.azure.blobStorageShard[reply_to_shard_key].base_url;
+		var reply_to_read_url = base_url + config.azure.blobStorageShard[reply_to_shard_key].container + "/" + reply_to_message_id;
+				
+	}
+
     function getCurrentShardKey() {
         return config.azure.currentShardKey;
     }

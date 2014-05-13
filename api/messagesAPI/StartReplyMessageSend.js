@@ -84,6 +84,9 @@ var StartReplyMessageSend=(function() {
             //2. put the message in the senders outbox
             function(originalMessageDocument, waterfallCallback) {
 
+				var reply_to_shard_key = originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
+				var reply_to_read_url = SASHelper.getReplyToReadUrl(reply_to_shard_key,request.replying_to_message_id);
+				
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
@@ -99,6 +102,7 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=request.start_recording;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=request.replying_to_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_READ_URL]= reply_to_read_url;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
