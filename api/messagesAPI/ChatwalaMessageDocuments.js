@@ -30,6 +30,7 @@ var ChatwalaMessageDocuments=(function() {
     MESSAGE_PROPERTIES.REPLIED="replied";
     //MESSAGE_PROPERTIES.REPLIED_BY_message_id="replied_by_message_id";
     MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID="replying_to_message_id";
+	MESSAGE_PROPERTIES.REPLYING_TO_READ_URL="replying_to_read_url";
     MESSAGE_PROPERTIES.SHOWABLE="showable";
     MESSAGE_PROPERTIES.TIMESTAMP="timestamp";
     MESSAGE_PROPERTIES.DECRYPTION_KEY="decryption_key";
@@ -71,6 +72,7 @@ var ChatwalaMessageDocuments=(function() {
             template[MESSAGE_PROPERTIES.REPLIED]= false;
             template[MESSAGE_PROPERTIES.DELETED]= false;
             template[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=null;
+            template[MESSAGE_PROPERTIES.REPLYING_TO_READ_URL]=null;
             template[MESSAGE_PROPERTIES.SHOWABLE]=false;
             template[MESSAGE_PROPERTIES.TIMESTAMP]=undefined; //since epoch
             template[MESSAGE_PROPERTIES.DECRYPTION_KEY]=null;
@@ -161,6 +163,7 @@ var ChatwalaMessageDocuments=(function() {
         metaDataJSON[MESSAGE_PROPERTIES.GROUP_ID]=properties[MESSAGE_PROPERTIES.GROUP_ID];
         metaDataJSON[MESSAGE_PROPERTIES.START_RECORDING]=properties[MESSAGE_PROPERTIES.START_RECORDING];
         metaDataJSON[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=properties[MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
+        metaDataJSON[MESSAGE_PROPERTIES.REPLYING_TO_READ_URL]=properties[MESSAGE_PROPERTIES.REPLYING_TO_READ_URL];
         metaDataJSON[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=properties[MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
 
         if(blnShowBoxProperties) {
