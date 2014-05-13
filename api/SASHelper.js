@@ -8,7 +8,7 @@ var SASHelper=(function() {
 	function getReplyToReadURL(reply_to_shard_key, reply_to_message_id) {
 		var base_url = config.azure.blobStorageShard[reply_to_shard_key].base_url;
 		var reply_to_read_url = base_url + config.azure.blobStorageShard[reply_to_shard_key].container + "/" + reply_to_message_id;
-				
+		return reply_to_read_url;			
 	}
 
     function getCurrentShardKey() {
@@ -116,6 +116,7 @@ var SASHelper=(function() {
     }
 
     return {
+    	"getReplyToReadURL":getReplyToReadURL,
         "getCurrentShardKey":getCurrentShardKey,
         "getWriteSharedAccessPolicy":getWriteSharedAccessPolicy,
         "getProfilePictureUploadURL":getProfilePictureUploadURL,
