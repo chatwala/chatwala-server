@@ -34,6 +34,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
         this.message_id = undefined;
         this.client_version_id=undefined;
         this.analytics_recipient_category=null;
+        this.recipient_id=undefined;
     };
 
     var Response = function() {
@@ -86,6 +87,8 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.OWNER_USER_ID]=request.sender_id;
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
+
+
 
                     message.properties["last_modified"] = new Date().getTime();
 
@@ -161,6 +164,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient=(function() {
                     query[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id]=message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.message_id];
                     */
 
+                    message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.DELETED]=false;
                     message.properties["last_modified"] = new Date().getTime();
 
                     collection.findAndModify(

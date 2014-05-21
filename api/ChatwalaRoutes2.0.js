@@ -57,13 +57,12 @@ function getReadUrlFromShort(req,res){
     var sendRequest = new ChatwalaApi.Messages.GetReadUrlFromShort.Request();
     sendRequest.share_id = req.body.share_id;
 
-    console.log(req.body)
-
     ChatwalaApi.Messages.GetReadUrlFromShort.execute(sendRequest, function(err, response){
         if(!err) {
             res.send(200, response);
         }
         else {
+            console.log(response);
             res.send(400, response);
         }
     })

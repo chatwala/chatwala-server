@@ -84,6 +84,9 @@ var StartReplyMessageSend=(function() {
             //2. put the message in the senders outbox
             function(originalMessageDocument, waterfallCallback) {
 
+				var reply_to_shard_key = originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
+				var reply_to_read_url = SASHelper.getReplyToReadURL(reply_to_shard_key,request.replying_to_message_id);
+				
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
@@ -99,6 +102,7 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=request.start_recording;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=originalMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=request.replying_to_message_id;
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_READ_URL]= reply_to_read_url;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=true;
 
@@ -125,8 +129,11 @@ var StartReplyMessageSend=(function() {
 
                             message.properties["last_modified"] = new Date().getTime();
 
+                            var query={};
+                            query[propMessageInstanceId]=message.properties[propMessageInstanceId];
+
                             collection.update(
-                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
+                                query,
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {
@@ -148,6 +155,10 @@ var StartReplyMessageSend=(function() {
 
             //3. put message in the recipients inbox
             function(outboxMessageDocument, waterfallCallback) {
+            
+            	var reply_to_shard_key = outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
+				var reply_to_read_url = SASHelper.getReplyToReadURL(reply_to_shard_key,request.replying_to_message_id);
+            	
                 var message = new ChatwalaMessageDocuments.Message();
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.VERSION] = ChatwalaMessageDocuments.getVersionIdByClientVersion(request.client_version_id);
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_ID]=request.message_id;
@@ -163,6 +174,7 @@ var StartReplyMessageSend=(function() {
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.START_RECORDING];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.GROUP_ID];
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_MESSAGE_ID];
+                message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.REPLYING_TO_READ_URL]= reply_to_read_url;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.SHOWABLE]=false;
                 message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY]=outboxMessageDocument[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.BLOB_STORAGE_SHARD_KEY];
@@ -184,9 +196,10 @@ var StartReplyMessageSend=(function() {
                             //delete message.properties[ChatwalaMessageDocuments.MESSAGE_PROPERTIES.MESSAGE_INSTANCE_ID];
 
                             message.properties["last_modified"] = new Date().getTime();
-
+                            var query={};
+                            query[propMessageInstanceId]=message.properties[propMessageInstanceId];
                             collection.update(
-                                {propMessageInstanceId:message.properties[propMessageInstanceId]},
+                                query,
                                 message.properties,
                                 {"upsert":true, "multi": false},
                                 function (err, updated) {

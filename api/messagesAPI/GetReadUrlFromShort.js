@@ -73,7 +73,7 @@ var GetReadUrlFromShort = (function(){
                 callback("failure",response);
                 return;
             } else {
-                console.log("db call");
+
                 var collection = db.collection('messageshorts');
                 var query = {};
                 query["short"] = share_id;
@@ -83,7 +83,7 @@ var GetReadUrlFromShort = (function(){
                     null,
                     {},
                     function(err, document) {
-                        console.log("collisions checked for");
+                        console.log(document);
                         if(err) {
                             var response = new Response();
                             response.response_code = responseCodes["failure"];

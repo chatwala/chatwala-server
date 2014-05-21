@@ -4,7 +4,7 @@
 
 var config = require('../../config.js');
 var CWMongoClient = require('../../cw_mongo.js');
-var azure = require("azure");
+var     azure = require("azure");
 var fs=require('fs');
 var async = require('async');
 var ChatwalaMessageDocuments = require("./../messagesAPI/ChatwalaMessageDocuments.js");
@@ -708,13 +708,95 @@ var MigrateHelper=(function() {
 
     }
 
+    var postSingleWalaToStorage=function(message_id) {
+
+        var account = config.azure.blobStorageShard.s1.storage_name;
+        var access_key = config.azure.blobStorageShard.s1.storage_key;
+        var bs = azure.createBlobService(account, access_key);
+
+        bs.createBlockBlobFromFile(config.azure.blobStorageShard.s1.container
+            , message_id
+            ,"./temp/" + message_id
+            , function(error){
+                if(error){
+                    console.log("Error uploading single wala");
+                    console.log(error);
+                }
+                else{
+                    console.log("Successfully uploaded single wala : " + message_id);
+                    return;
+                }
+            })
+
+    }
+
+    var getBlobContainerCurrentSize = function(shard_key){
+        var account = config.azure.blobStorageShard[shard_key].storage_name;
+        var access_key = config.azure.blobStorageShard[shard_key].storage_key;
+        var bs = azure.createBlobService(account, access_key);
+
+        var currentMarker=1;
+        var blobSize = 0;
+
+        calcBlobSize(bs, currentMarker, blobSize, function(err, size){
+            if(!err){
+                console.log("total size of container: " + size);
+                var readable_size = bytesToSize(size);
+                console.log("or in readable : " + readable_size);
+            }
+            else{
+                console.log("There was an error!")
+                console.log(err);
+            }
+
+        })
+
+    }
+
+    var calcBlobSize = function(bs, currentMarker, blobSize, callback){
+        if(!currentMarker){
+            callback(null, blobSize);
+        }
+        else{
+            var options= {};
+            if(currentMarker!=1) {
+                options.marker=currentMarker;
+            }
+
+            bs.listBlobs("thumbnails",options,function(error, blobs, continuation, response){
+                if(!error){
+                    marker = continuation.nextMarker;
+                    for(var i=0;i<blobs.length;i++){
+
+                        blobSize += parseFloat(blobs[i].properties["content-length"]);
+                    }
+                    calcBlobSize(bs, marker, blobSize, callback);
+
+                }
+                else{
+                    callback(error);
+                }
+            });
+        }
+
+    }
+
+    function bytesToSize(bytes) {
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes == 0) return '0 Bytes';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    };
+
     return {
         "migrateSingleWala": migrateSingleWala,
         "migrateListOfWalas": migrateListOfWalas,
         "migrateAllWalas": migrateAllWalas,
         "postMigrateMessageToQueue": postMigrateMessageToQueue,
         "startListeningForMigrateMessages": startListeningForMigrateMessages,
-        "countOldBlobs":countOldBlobs
+        "countOldBlobs":countOldBlobs,
+        "postSingleWalaToStorage":postSingleWalaToStorage,
+        "getBlobContainerCurrentSize":getBlobContainerCurrentSize
     }
 
 }());
