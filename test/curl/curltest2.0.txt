@@ -36,7 +36,14 @@ Connection: keep-alive
     }
 }
 
-//renew write sasurl
+----startKnownRecipientMessageSend----
+curl -i \
+-X POST \
+-H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
+-H "Content-Type: application/json" \
+-d '{"message_id":"rks0521_1", "sender_id":"d11111111-11111-1111-1111-111111111111", "recipient_id":"km11111111-11111-1111-1111-111111111111", "analytics_sender_category":"FIRST_OPEN"}' \
+"http://127.0.0.1:1337/messages/startKnownRecipientMessageSend";
+
 
 
 
@@ -189,8 +196,8 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"message_id":"km31"}' \
-"http://localhost:1337/messages/completeReplyMessageSend";
+-d '{"message_id":"rks0521_1"}' \
+"http://127.0.0.1:1337/messages/completeReplyMessageSend";
 
 response:
 
@@ -208,8 +215,8 @@ curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
--d '{"user_id":"d11111111-11111-1111-1111-111111111111"}' \
-"http://localhost:1337/messages/userInbox";
+-d '{"user_id":"km11111111-11111-1111-1111-111111111111"}' \
+"http://127.0.0.1:1337/messages/userInbox";
 
 
 HTTP/1.1 200 OK
