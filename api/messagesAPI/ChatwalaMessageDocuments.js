@@ -239,6 +239,8 @@ var ChatwalaMessageDocuments=(function() {
         message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
         message.properties[MESSAGE_PROPERTIES.SHOWABLE]=false;
 
+        console.log(message);
+
         try {
             message.generateBlobShardKey();
             message.generateMessageInstanceId();
