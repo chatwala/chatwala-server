@@ -142,6 +142,27 @@ function postGetReadURLForMessage(req,res){
 
 
 /******* START KNOWN RECIPIENT ROUTES*************/
+
+function postStartKnownRecipientMessageSend(req, res) {
+    var request = new ChatwalaApi.Messages.StartKnownRecipientMessageSend.Request();
+
+    request.message_id = req.body.message_id;
+    request.owner_user_id = req.body.sender_id;
+    request.recipient_id = req.body.recipient_id;
+    request.client_version_id = req.headers["x-chatwala-appversion"];
+    request.analytics_sender_category = req.body.analytics_sender_category;
+
+    ChatwalaApi.Messages.StartKnownRecipientMessageSend.execute(request, function(err, response){
+
+        if(!err) {
+            res.send(200, response);
+        }
+        else {
+            res.send(400, response);
+        }
+    });
+}
+
 function postStartReplyMessageSend(req, res) {
     var request = new ChatwalaApi.Messages.StartReplyMessageSend.Request();
     request.replying_to_message_id = req.body.replying_to_message_id;
@@ -356,6 +377,7 @@ function setRoutes(app) {
     app.post("/messages/getShortUrlFromMessageId", getShortUrlFromMessageId);
     app.post("/messages/getReadUrlFromShareId", getReadUrlFromShort);
     app.post("/messages/startUnknownRecipientMessageSend", postStartUnknownRecipientMessageSend);
+    app.post("/messages/startKnownRecipientMessageSend", postStartKnownRecipientMessageSend);
     app.post("/messages/completeUnknownRecipientMessageSend", postCompleteUnknownRecipientMessageSend);
     app.post("/messages/addUnknownRecipientMessageToInbox", postConvertUnknownRecipientMessageToKnownRecipient);
     app.post("/messages/startReplyMessageSend", postStartReplyMessageSend);

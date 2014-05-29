@@ -1,4 +1,5 @@
 var StartUnknownRecipientMessageSend = require("./StartUnknownRecipientMessageSendWithShareId.js");
+var StartKnownRecipientMessageSend = require("./StartKnownRecipientMessageSend.js");
 var CompleteUnknownRecipientMessageSend = require("./CompleteUnknownRecipientMessageSend.js");
 var ConvertUnknownRecipientMessageToKnownRecipient = require("./ConvertUnknownRecipientMessageToKnownRecipient.js");
 var StartReplyMessageSend = require("./StartReplyMessageSend.js");
@@ -17,6 +18,7 @@ var MessagesApi = {
     "GetShareUrlFromMessageId": GetShareUrlFromMessageId,
     "GetShortUrlFromMessageId": GetShortUrlFromMessageId,
     "StartUnknownRecipientMessageSend":StartUnknownRecipientMessageSend,
+    "StartKnownRecipientMessageSend":StartKnownRecipientMessageSend,
     "CompleteUnknownRecipientMessageSend":CompleteUnknownRecipientMessageSend,
     "ConvertUnknownRecipientMessageToKnownRecipient":ConvertUnknownRecipientMessageToKnownRecipient,
     "StartReplyMessageSend":StartReplyMessageSend,

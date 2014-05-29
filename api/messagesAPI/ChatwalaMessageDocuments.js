@@ -223,6 +223,37 @@ var ChatwalaMessageDocuments=(function() {
 
     }
 
+    function createNewStarterKnownRecipientMessage(message_id, sender_id, recipient_id) {
+
+        var message = new Message();
+        message.properties[MESSAGE_PROPERTIES.MESSAGE_ID]= message_id;
+        message.properties[MESSAGE_PROPERTIES.OWNER_USER_ID]=sender_id;
+        message.properties[MESSAGE_PROPERTIES.OWNER_ROLE]= ROLE_SENDER;
+        message.properties[MESSAGE_PROPERTIES.OTHER_USER_ID]= recipient_id;
+        message.properties[MESSAGE_PROPERTIES.OTHER_USER_ROLE]= ROLE_RECIPIENT;
+        message.properties[MESSAGE_PROPERTIES.RECIPIENT_ID]= recipient_id;
+        message.properties[MESSAGE_PROPERTIES.SENDER_ID]= sender_id;
+        message.properties[MESSAGE_PROPERTIES.UNKNOWN_RECIPIENT_STARTER]= false;
+        message.properties[MESSAGE_PROPERTIES.THREAD_STARTER]=true;
+        message.properties[MESSAGE_PROPERTIES.START_RECORDING]=0;
+        message.properties[MESSAGE_PROPERTIES.VIEWED]=false;
+        message.properties[MESSAGE_PROPERTIES.SHOWABLE]=false;
+
+        try {
+            message.generateBlobShardKey();
+            message.generateMessageInstanceId();
+            message.generateThreadInformation();
+            message.generateGroupId();
+            message.generateTimeStamp();
+            return message;
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+
+    }
+
     function getVersionIdByClientVersion(client_version_id){
 
         if(client_version_id === undefined || typeof client_version_id === "undefined" || client_version_id === "1.5.0" || client_version_id === "1.5.1" || client_version_id.substring(0,3) === "1.4"){
@@ -239,7 +270,7 @@ var ChatwalaMessageDocuments=(function() {
         "ROLE_RECIPIENT": ROLE_RECIPIENT,
         "RECIPIENT_UNKNOWN":RECIPIENT_UNKNOWN,
         "createNewStarterUnknownRecipientMessage": createNewStarterUnknownRecipientMessage,
-        //"createNewKnownRecipientMessage": createNewKnownRecipientMessage,
+        "createNewStarterKnownRecipientMessage": createNewStarterKnownRecipientMessage,
         "createMetaDataJSON": createMetaDataJSON,
         "getVersionIdByClientVersion":getVersionIdByClientVersion,
         "MESSAGE_PROPERTIES":MESSAGE_PROPERTIES,
