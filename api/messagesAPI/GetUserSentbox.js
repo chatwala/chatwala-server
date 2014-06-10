@@ -7,6 +7,7 @@ var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
 var GetUserSentbox=(function() {
 
+    console.log("Reached Get User Sent box");
     var responseCodes = {
         "success": {
             "code":1,
