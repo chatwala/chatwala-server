@@ -248,7 +248,7 @@ function postGetUserInbox(req, res) {
     });
 }
 
-function postGetUserOutbox(req, res) {
+function postGetUserSentbox(req, res) {
     var request = new ChatwalaApi.Messages.GetUserOutbox.Request();
     request.user_id = req.body.user_id;
     request.first_id = req.body.first_id;
@@ -400,7 +400,7 @@ function setRoutes(app) {
     app.post("/messages/completeReplyMessageSend", postCompleteReplyMessageSend);
     app.post("/messages/renewWriteUrlForMessage", postRenewWriteUrlForMessage);
     app.post("/messages/userInbox", postGetUserInbox);
-    app.post("/messages/userOutbox", postGetUserOutbox);
+    app.post("/messages/userSentbox", postGetUserSentbox);
     app.post("/messages/postGetReadURLForMessage",postGetReadURLForMessage);
     app.post("/user/postUserProfilePicture", postUserProfilePicture);
     app.post("/user/registerPushToken", postRegisterPushToken);
