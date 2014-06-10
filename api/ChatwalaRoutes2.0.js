@@ -249,11 +249,11 @@ function postGetUserInbox(req, res) {
 }
 
 function postGetUserSentbox(req, res) {
-    var request = new ChatwalaApi.Messages.GetUserOutbox.Request();
+    var request = new ChatwalaApi.Messages.GetUserSentbox.Request();
     request.user_id = req.body.user_id;
     request.first_id = req.body.first_id;
 
-    ChatwalaApi.Messages.GetUserInbox.execute(request, function(err, response){
+    ChatwalaApi.Messages.GetUserSentbox.execute(request, function(err, response){
         if(!err) {
             res.send(200, response);
         }
