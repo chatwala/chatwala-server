@@ -5,7 +5,7 @@ var async = require('async');
 var CWMongoClient = require('../../cw_mongo.js');
 var ChatwalaMessageDocuments = require("./ChatwalaMessageDocuments.js");
 
-var GetUserOutbox=(function() {
+var GetUserSentbox=(function() {
 
     var responseCodes = {
         "success": {
@@ -122,4 +122,4 @@ var GetUserOutbox=(function() {
     };
 }());
 
-module.exports = GetUserOutbox;
+module.exports = GetUserSentbox;

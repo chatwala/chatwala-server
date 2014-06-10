@@ -272,13 +272,13 @@ Connection: keep-alive
     "continue": false
 }
 
-----GetUserOutbox----
+----GetUserSentbox----
 curl -i \
 -X POST \
 -H "x-chatwala:58041de0bc854d9eb514d2f22d50ad4c:ac168ea53c514cbab949a80bebe09a8a" \
 -H "Content-Type: application/json" \
 -d '{"user_id":"km11111111-11111-1111-1111-111111111111"}' \
-"http://127.0.0.1:1337/messages/userOutbox";
+"http://127.0.0.1:1337/messages/userSentbox";
 
 
 ----GetMessageThumbnailWriteUrl-----

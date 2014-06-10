@@ -5,7 +5,7 @@ var ConvertUnknownRecipientMessageToKnownRecipient = require("./ConvertUnknownRe
 var StartReplyMessageSend = require("./StartReplyMessageSend.js");
 var CompleteReplyMessageSend = require("./CompleteReplyMessageSend.js");
 var GetUserInbox = require("./GetUserInbox.js");
-var GetUserOutbox = require("./GetUserOutbox.js");
+var GetUserSentbox = require("./GetUserSentbox.js");
 var RenewWriteSASURL = require("./RenewWriteSASURL.js");
 var GetReadURLForMessage = require("./GetReadURLForMessage.js");
 var GetShareUrlFromMessageId = require("./GetShareUrlFromMessageId.js");
@@ -25,7 +25,7 @@ var MessagesApi = {
     "StartReplyMessageSend":StartReplyMessageSend,
     "CompleteReplyMessageSend": CompleteReplyMessageSend,
     "GetUserInbox":GetUserInbox,
-    "GetUserOutbox":GetUserOutbox,
+    "GetUserSentbox":GetUserSentbox,
     "RenewWriteSASURL":RenewWriteSASURL,
     "GetReadURLForMessage":GetReadURLForMessage,
     "GetReadUrlFromShort":GetReadUrlFromShort,
